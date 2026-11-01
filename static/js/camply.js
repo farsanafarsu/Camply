@@ -52,8 +52,8 @@
     input.type = show ? "text" : "password";
     button.setAttribute("aria-pressed", show ? "true" : "false");
     button.setAttribute("aria-label", show ? "Hide password" : "Show password");
-    button.innerHTML = '<i data-lucide="' + (show ? "eye-off" : "eye") + '"></i>';
-    if (window.lucide) window.lucide.createIcons();
+    var label = button.querySelector(".pw-label");
+    if (label) label.textContent = show ? "Hide" : "Show";
     input.focus();
   });
 

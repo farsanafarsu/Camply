@@ -17,7 +17,7 @@
             <label for="id_password">Password</label>
             <div class="password-wrap">
                 <input type="password" name="password" id="id_password" autocomplete="current-password" placeholder="Enter your password" required>
-                <button type="button" class="password-toggle" data-password-toggle="id_password" aria-label="Show password" aria-pressed="false"><i data-lucide="eye"></i></button>
+                {% include "partials/password_toggle.html" with input_id="id_password" %}
             </div>
             {{ form.password.errors }}
         </div>

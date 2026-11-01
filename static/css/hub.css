@@ -1,0 +1,124 @@
+/* =====================================================================
+   "Introducing Camply" 3D stack (pure CSS 3D, no library).
+   Three isometric glass layers: ad platforms -> Camply -> live results.
+   --gap (layer spacing) and --grow (bar height) are driven by the scroll
+   story; --tilt-x / --tilt-y by the pointer (landing.js).
+   ===================================================================== */
+.hub { --gap: 88px; --grow: 1; position: relative; height: 540px; }
+.hub-scene { position: absolute; inset: 0; perspective: 1800px; perspective-origin: 50% 35%; }
+.hub-iso {
+  position: absolute; left: 40%; top: 60%; width: 300px; height: 300px; margin: -150px 0 0 -150px;
+  transform-style: preserve-3d;
+  transform: rotateX(calc(56deg + var(--tilt-y, 0deg))) rotateZ(calc(-42deg + var(--tilt-x, 0deg)));
+  transition: transform 0.5s cubic-bezier(.2, .7, .2, 1);
+  animation: hub-float 6s ease-in-out infinite alternate;
+}
+@keyframes hub-float { from { translate: 0 -6px; } to { translate: 0 8px; } }
+
+/* ---------- Layers ---------- */
+.hub-layer { position: absolute; inset: 0; border-radius: 28px; transform-style: preserve-3d; }
+.hub-layer-1 {
+  background: color-mix(in srgb, var(--surface) 94%, transparent); border: 1px solid var(--border);
+  box-shadow: 0 60px 90px -40px rgba(23, 25, 35, 0.45);
+}
+.hub-grid {
+  position: absolute; inset: 14px; border-radius: 18px;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 30px 30px; opacity: 0.8;
+}
+.hub-layer-2 {
+  transform: translateZ(var(--gap));
+  background: linear-gradient(135deg, rgba(255, 159, 67, 0.30), rgba(255, 107, 53, 0.18));
+  border: 1.5px solid rgba(255, 107, 53, 0.7);
+  box-shadow: 0 0 0 6px rgba(255, 107, 53, 0.06), 0 30px 60px -30px rgba(255, 107, 53, 0.55);
+}
+.hub-layer-3 {
+  transform: translateZ(calc(var(--gap) * 2));
+  /* Frosted glass, so the glowing Camply core below shows through. */
+  background: color-mix(in srgb, var(--surface) 58%, transparent); border: 1px solid color-mix(in srgb, var(--border) 70%, #fff);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35), 0 30px 60px -36px rgba(23, 25, 35, 0.4);
+}
+.hub-ring {
+  position: absolute; left: 50%; top: 50%; width: 210px; height: 210px; margin: -105px 0 0 -105px; border-radius: 50%;
+  border: 1.5px dashed rgba(255, 107, 53, 0.6); animation: hub-spin 24s linear infinite;
+}
+@keyframes hub-spin { to { rotate: 360deg; } }
+
+/* ---------- Extruded blocks: top face + the two sides the camera can see ---------- */
+.cube {
+  --hh: calc(var(--h, 22px) * var(--grow, 1));
+  position: absolute; left: var(--x, 0); top: var(--y, 0); width: var(--w, 64px); height: var(--d, 64px);
+  background: var(--top); border-radius: 4px; transform-style: preserve-3d; transform: translateZ(var(--hh));
+  display: grid; place-items: center; color: #fff; font: 700 1.05rem var(--font-heading);
+}
+/* Front side (+y), hangs from the bottom edge down to the plate. */
+.cube::before { content: ""; position: absolute; left: 0; top: 100%; width: 100%; height: var(--hh); background: var(--s1); transform-origin: top; transform: rotateX(-90deg); }
+/* Left side (-x), hangs from the left edge down to the plate. */
+.cube::after { content: ""; position: absolute; right: 100%; top: 0; width: var(--hh); height: 100%; background: var(--s2); transform-origin: right; transform: rotateY(-90deg); }
+
+/* A light edge keeps dark tiles (TikTok) visible on the dark-mode plate. */
+.tile { --h: 22px; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.22); }
+.core {
+  --w: 96px; --d: 96px; --h: 34px; --top: #FF6B35; --s1: #E0541F; --s2: #B9431A;
+  left: calc(50% - 48px); top: calc(50% - 48px); border-radius: 10px;
+  box-shadow: 0 0 50px rgba(255, 107, 53, 0.55), inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+.core svg { width: 62px; height: 62px; }
+/* Named hub-bar: the app's .bar (budget progress) has overflow: hidden, which would flatten these. */
+.hub-bar { --w: 30px; --d: 30px; --top: #FF9F43; --s1: #F08A2A; --s2: #D06E15; top: 58%; }
+.hub-bar.is-hi { --top: #FF6B35; --s1: #E0541F; --s2: #B9431A; }
+
+/* ---------- Results plate content ---------- */
+.hub-kpis { position: absolute; left: 7%; right: 7%; top: 9%; display: flex; gap: 8px; transform: translateZ(1px); }
+.hub-kpis span {
+  flex: 1; padding: 8px 10px; border-radius: 10px; background: var(--surface-2);
+  font: 700 0.86rem var(--font-heading); color: var(--text); font-variant-numeric: tabular-nums;
+}
+.hub-kpis small { display: block; font: 600 0.62rem var(--font-body); letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); }
+
+/* ---------- Data beams from each platform into Camply ---------- */
+.hub-beam {
+  position: absolute; left: var(--x); top: var(--y); width: 3px; height: var(--gap); margin-left: -1.5px;
+  transform-origin: top; transform: rotateX(90deg);
+  background: linear-gradient(to bottom, rgba(255, 107, 53, 0.15), rgba(255, 107, 53, 0.9)), linear-gradient(to bottom, transparent 40%, #FFF 50%, transparent 60%);
+  background-size: 100% 100%, 100% 300%; background-blend-mode: screen; border-radius: 3px;
+  animation: hub-pulse 2.2s var(--delay, 0s) linear infinite;
+}
+@keyframes hub-pulse { from { background-position: 0 0, 0 100%; } to { background-position: 0 0, 0 -200%; } }
+
+/* ---------- Labels and floating cards (flat, screen space) ---------- */
+.hub-labels { list-style: none; margin: 0; padding: 0; }
+.hub-label {
+  position: absolute; right: 0; display: flex; align-items: center; gap: 8px; max-width: 170px;
+  font-size: 0.82rem; color: var(--text-muted); line-height: 1.3;
+}
+.hub-label strong { color: var(--text); font-weight: 600; }
+.hub-label::before { content: ""; position: absolute; right: 100%; top: 50%; width: 36px; margin-right: 6px; border-top: 1.5px dashed var(--border); }
+.hub-dot { width: 10px; height: 10px; flex: none; border-radius: 50%; background: var(--teal); box-shadow: 0 0 0 4px color-mix(in srgb, var(--teal) 20%, transparent); }
+.hub-dot.is-orange { background: var(--orange); box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.2); }
+.hub-dot.is-muted { background: var(--text-muted); box-shadow: 0 0 0 4px var(--surface-2); }
+.hub-label-3 { top: 24%; }
+.hub-label-2 { top: 44%; }
+.hub-label-1 { top: 74%; }
+.hub-float-a { left: 0; top: 2%; }
+.hub-float-b { left: 6%; bottom: 0; right: auto; }
+
+/* ---------- Scroll story: the layers rise apart and the bars grow ---------- */
+.story.is-live .hub { --gap: calc(8px + var(--after, 0) * 80px); --grow: var(--after, 0); }
+.story.is-live .hub-label, .story.is-live .hub-float-a, .story.is-live .hub-float-b { opacity: var(--after, 0); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+  .hub { max-width: 620px; width: 100%; margin: 0 auto; }
+}
+@media (max-width: 640px) {
+  .hub { height: 470px; }
+  .hub-iso { left: 50%; top: 58%; scale: 0.78; }
+  .hub-labels { display: none; }
+  .hub-float-a { top: 0; left: 0; }
+  .hub-float-b { left: auto; right: 0; bottom: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hub-iso, .hub-ring, .hub-beam { animation: none; }
+  .hub-iso { transition: none; }
+}

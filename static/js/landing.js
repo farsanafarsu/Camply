@@ -49,6 +49,22 @@
     }
   }
 
+  // 3D stack follows the pointer a little (desktop only, not with reduced motion).
+  var hub = document.querySelector("[data-hub]");
+  if (hub && window.matchMedia("(hover: hover)").matches && !reduce.matches) {
+    hub.addEventListener("pointermove", function (e) {
+      var r = hub.getBoundingClientRect();
+      var x = (e.clientX - r.left) / r.width - 0.5;
+      var y = (e.clientY - r.top) / r.height - 0.5;
+      hub.style.setProperty("--tilt-x", (x * 12).toFixed(2) + "deg");
+      hub.style.setProperty("--tilt-y", (y * -10).toFixed(2) + "deg");
+    });
+    hub.addEventListener("pointerleave", function () {
+      hub.style.removeProperty("--tilt-x");
+      hub.style.removeProperty("--tilt-y");
+    });
+  }
+
   // "See the better way": glide to the reveal instead of jumping to the anchor.
   document.addEventListener("click", function (e) {
     var link = e.target.closest("[data-story-jump]");

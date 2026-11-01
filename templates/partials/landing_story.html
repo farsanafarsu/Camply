@@ -90,34 +90,52 @@ Without JavaScript or with reduced motion, the panels simply stack. landing.js a
           </ul>
         </div>
 
-        <div class="lp-preview story-preview" role="img" aria-label="Camply dashboard showing spend, leads and ROAS across platforms">
-          <div class="lp-window">
-            <div class="lp-window-bar"><span></span><span></span><span></span><em>Camply · PRception Media</em></div>
-            <div class="lp-window-body">
-              <div class="lp-mini-kpis">
-                <div><small>Total spend</small><strong>₹4,87,320</strong><span class="delta good"><i data-lucide="arrow-up"></i>18.6%</span></div>
-                <div><small>Leads</small><strong>2,846</strong><span class="delta good"><i data-lucide="arrow-up"></i>32.1%</span></div>
-                <div><small>Cost per lead</small><strong>₹171</strong><span class="delta good"><i data-lucide="arrow-down"></i>12.4%</span></div>
+        <div class="hub" data-hub role="img" aria-label="Meta, Google, TikTok and ChatGPT Ads flow into one Camply workspace, which shows live results for every client">
+          <div class="hub-scene" aria-hidden="true">
+            <div class="hub-iso">
+              <!-- Layer 1: ad platforms -->
+              <div class="hub-layer hub-layer-1">
+                <div class="hub-grid"></div>
+                <div class="cube tile" style="--x:18%;--y:18%;--top:#1877F2;--s1:#1263C9;--s2:#0E4FA3">M</div>
+                <div class="cube tile" style="--x:62%;--y:18%;--top:#34A853;--s1:#2A8C44;--s2:#1F6E35">G</div>
+                <div class="cube tile" style="--x:18%;--y:62%;--top:#1B1D26;--s1:#111218;--s2:#08090C">T</div>
+                <div class="cube tile" style="--x:62%;--y:62%;--top:#10A37F;--s1:#0B8467;--s2:#086650">AI</div>
               </div>
-              <div class="lp-mini-chart">
-                <div class="lp-mini-chart-head"><small>Spend by platform</small><span class="legend"><span><i style="background:#3B82F6"></i>Meta</span><span><i style="background:#FF9F43"></i>Google</span><span><i style="background:#E8467C"></i>TikTok</span></span></div>
-                <svg viewBox="0 0 320 120" preserveAspectRatio="none" aria-hidden="true">
-                  <defs><linearGradient id="storyFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3B82F6" stop-opacity="0.25"/><stop offset="1" stop-color="#3B82F6" stop-opacity="0"/></linearGradient></defs>
-                  <path d="M0 92 C 30 86, 50 70, 80 74 S 130 52, 160 58 S 210 34, 240 40 S 290 18, 320 22 L320 120 L0 120 Z" fill="url(#storyFill)"/>
-                  <path class="story-line" d="M0 92 C 30 86, 50 70, 80 74 S 130 52, 160 58 S 210 34, 240 40 S 290 18, 320 22" fill="none" stroke="#3B82F6" stroke-width="2.5"/>
-                  <path class="story-line" d="M0 104 C 40 100, 60 94, 90 96 S 140 80, 170 84 S 220 70, 250 72 S 300 60, 320 58" fill="none" stroke="#FF9F43" stroke-width="2.5"/>
-                  <path class="story-line" d="M0 112 C 40 110, 70 106, 100 108 S 150 100, 180 102 S 240 94, 270 96 S 305 90, 320 88" fill="none" stroke="#E8467C" stroke-width="2"/>
-                </svg>
+              <!-- Beams rising from each platform into Camply -->
+              <span class="hub-beam" style="--x:28%;--y:28%"></span>
+              <span class="hub-beam" style="--x:72%;--y:28%;--delay:.4s"></span>
+              <span class="hub-beam" style="--x:28%;--y:72%;--delay:.8s"></span>
+              <span class="hub-beam" style="--x:72%;--y:72%;--delay:1.2s"></span>
+              <!-- Layer 2: the Camply workspace -->
+              <div class="hub-layer hub-layer-2">
+                <div class="hub-ring"></div>
+                <div class="cube core"><svg viewBox="0 0 32 32"><path d="M22.5 11.2a8 8 0 1 0 0 9.6" fill="none" stroke="#171923" stroke-width="3.6" stroke-linecap="round"/><circle cx="23" cy="16" r="2" fill="#171923"/></svg></div>
               </div>
-              <div class="lp-mini-rows">
-                <div><span class="platform-dot platform-meta">M</span><span>Admissions 2026 · Lead form</span><b>₹73,200</b><span class="badge badge-active">Active</span></div>
-                <div><span class="platform-dot platform-google">G</span><span>Search · Resort bookings</span><b>₹51,940</b><span class="badge badge-active">Active</span></div>
-                <div><span class="platform-dot platform-tiktok">T</span><span>Creator stories · Reach</span><b>₹18,450</b><span class="badge badge-paused">Paused</span></div>
+              <!-- Layer 3: live results -->
+              <div class="hub-layer hub-layer-3">
+                <div class="hub-kpis">
+                  <span><small>Spend</small>₹4,87,320</span>
+                  <span><small>Leads</small>2,846</span>
+                  <span><small>CPL</small>₹171</span>
+                </div>
+                <div class="cube hub-bar" style="--x:10%;--h:36px"></div>
+                <div class="cube hub-bar" style="--x:24%;--h:54px"></div>
+                <div class="cube hub-bar" style="--x:38%;--h:46px"></div>
+                <div class="cube hub-bar" style="--x:52%;--h:74px"></div>
+                <div class="cube hub-bar" style="--x:66%;--h:66px"></div>
+                <div class="cube hub-bar is-hi" style="--x:80%;--h:98px"></div>
               </div>
             </div>
           </div>
-          <div class="lp-float lp-float-a"><span class="kpi-icon story-ok"><i data-lucide="bell-ring"></i></span><div><small>Budget alert</small><strong>Onam campaign at 80%</strong></div></div>
-          <div class="lp-float lp-float-b"><span class="kpi-icon"><i data-lucide="shield-check"></i></span><div><small>Client approved</small><strong>Diwali creative v3</strong></div></div>
+
+          <ul class="hub-labels" aria-hidden="true">
+            <li class="hub-label hub-label-3"><span class="hub-dot"></span><strong>Live results</strong> for every client</li>
+            <li class="hub-label hub-label-2"><span class="hub-dot is-orange"></span><strong>One Camply</strong> workspace</li>
+            <li class="hub-label hub-label-1"><span class="hub-dot is-muted"></span><strong>4 ad platforms</strong> connected</li>
+          </ul>
+
+          <div class="lp-float hub-float-a"><span class="kpi-icon story-ok"><i data-lucide="bell-ring"></i></span><div><small>Budget alert</small><strong>Onam campaign at 80%</strong></div></div>
+          <div class="lp-float hub-float-b"><span class="kpi-icon"><i data-lucide="shield-check"></i></span><div><small>Client approved</small><strong>Diwali creative v3</strong></div></div>
         </div>
       </div>
     </div>

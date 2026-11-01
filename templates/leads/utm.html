@@ -1,0 +1,24 @@
+{% extends "app.html" %}
+{% block title %}UTM builder{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>UTM builder</h1><p>Tag landing-page links so every lead shows which campaign it came from.</p></div></div>
+{% include "leads/_tabs.html" %}
+<div class="grid grid-2-1" style="margin-top:14px">
+  <div class="card card-pad">
+    <div class="field"><label for="u-url">Landing page URL</label><input id="u-url" type="url" placeholder="https://example.com/offer" data-utm-field="url"></div>
+    <div class="field"><label for="u-source">Source (utm_source)</label>
+      <select id="u-source" data-utm-field="utm_source"><option value="facebook">facebook</option><option value="instagram">instagram</option><option value="google">google</option><option value="youtube">youtube</option><option value="tiktok">tiktok</option><option value="chatgpt">chatgpt</option></select></div>
+    <div class="field"><label for="u-medium">Medium (utm_medium)</label>
+      <select id="u-medium" data-utm-field="utm_medium"><option value="paid_social">paid_social</option><option value="cpc">cpc</option><option value="display">display</option><option value="video">video</option></select></div>
+    <div class="field"><label for="u-campaign">Campaign (utm_campaign)</label><input id="u-campaign" type="text" placeholder="admissions_2026" data-utm-field="utm_campaign"></div>
+    <div class="field"><label for="u-content">Ad or creative (utm_content)</label><input id="u-content" type="text" placeholder="carousel_a" data-utm-field="utm_content"></div>
+    <div class="field"><label for="u-term">Keyword (utm_term, optional)</label><input id="u-term" type="text" data-utm-field="utm_term"></div>
+  </div>
+  <div class="card card-pad stack">
+    <h2>Your tagged link</h2>
+    <code class="utm-out" data-utm-out>Enter a landing page URL…</code>
+    <button class="btn btn-primary" type="button" data-utm-copy><i data-lucide="copy"></i>Copy link</button>
+    <p class="muted small" style="margin:0">Values are lower-cased and spaces become underscores, so reports group cleanly.</p>
+  </div>
+</div>
+{% endblock %}

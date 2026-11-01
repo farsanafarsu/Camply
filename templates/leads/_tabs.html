@@ -1,0 +1,6 @@
+<nav class="tabs" aria-label="Leads sections">
+  <a href="{% url 'leads:inbox' %}" class="{% nav_active 'leads:inbox' exact=True %}">Inbox</a>
+  {% can 'leads.manage' as cm %}{% if cm %}<a href="{% url 'leads:sources' %}" class="{% nav_active 'leads:sources' %}">Lead sources</a>{% endif %}
+  <a href="{% url 'leads:utm' %}" class="{% nav_active 'leads:utm' %}">UTM builder</a>
+  <a href="{% url 'leads:tracking' %}" class="{% nav_active 'leads:tracking' %}">Tracking health</a>
+</nav>

@@ -1,0 +1,37 @@
+{% extends "app.html" %}
+{% block title %}{{ lead }}{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url 'leads:inbox' %}">← Leads</a></p>
+<div class="page-head">
+  <div><div class="row"><span class="badge lead-{{ lead.status }}">{{ lead.get_status_display }}</span>{% if lead.duplicate_of %}<a class="badge badge-draft no-dot" href="{% url 'leads:detail' lead.duplicate_of.pk %}">Duplicate of {{ lead.duplicate_of }}</a>{% endif %}</div>
+  <h1 style="margin-top:8px">{{ lead }}</h1><p>{{ lead.client.name }} · received {{ lead.created_at|date:"d M Y, h:i A" }} · {{ lead.get_source_display }}</p></div>
+</div>
+<section class="grid grid-2-1">
+  <div class="stack">
+    <div class="card card-pad">
+      <dl class="kv">
+        <dt>Email</dt><dd>{% if lead.email %}<a href="mailto:{{ lead.email }}">{{ lead.email }}</a>{% else %}–{% endif %}</dd>
+        <dt>Phone</dt><dd>{% if lead.phone %}<a href="tel:+91{{ lead.phone }}">{{ lead.phone }}</a> · <a href="https://wa.me/91{{ lead.phone }}" target="_blank" rel="noopener">WhatsApp</a>{% else %}–{% endif %}</dd>
+        <dt>City</dt><dd>{{ lead.city|default:"–" }}</dd>
+        <dt>Campaign</dt><dd>{% if lead.campaign %}<a href="{% url 'dashboard:campaign_detail' lead.campaign.pk %}">{{ lead.campaign.name }}</a>{% else %}–{% endif %}</dd>
+        <dt>UTM</dt><dd class="small">{{ lead.utm_source|default:"–" }} / {{ lead.utm_medium|default:"–" }} / {{ lead.utm_campaign|default:"–" }}</dd>
+        <dt>Consent</dt><dd>{% if lead.consent %}<span class="badge badge-ok">Agreed to be contacted</span>{% else %}<span class="badge badge-never">Not recorded</span>{% endif %}</dd>
+        <dt>Deal value</dt><dd>{{ lead.value_paise|inr }}</dd>
+      </dl>
+      {% if lead.message %}<p class="callout" style="margin:16px 0 0">{{ lead.message|linebreaksbr }}</p>{% endif %}
+    </div>
+    <div class="card">
+      <div class="card-head"><h2>Notes</h2></div>
+      <div class="card-body">
+        {% if can_manage %}<form method="post" class="stack" style="gap:8px;margin-bottom:14px">{% csrf_token %}<label class="sr-only" for="note">Note</label><textarea id="note" name="note" rows="2" placeholder="Called, will visit on Saturday"></textarea><div><button class="btn btn-sm" type="submit">Add note</button></div></form>{% endif %}
+        <ul class="list-plain">{% for n in notes %}<li><span class="avatar">{{ n.author.initials|default:"?" }}</span><span>{{ n.body|linebreaksbr }}<br><span class="muted tiny">{{ n.author.display_name }} · {{ n.created_at|date:"d M, h:i A" }}</span></span></li>{% empty %}<li class="muted">No notes yet.</li>{% endfor %}</ul>
+      </div>
+    </div>
+  </div>
+  {% if can_manage %}
+  <div class="card"><div class="card-head"><h2>Update</h2></div><div class="card-body">
+    <form method="post">{% csrf_token %}{% include "partials/form_fields.html" with form=form %}<button class="btn btn-primary btn-block" type="submit">Save</button></form>
+  </div></div>
+  {% endif %}
+</section>
+{% endblock %}

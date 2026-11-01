@@ -73,6 +73,33 @@
     if (row) row.hidden = event.target.value !== "adjustment";
   });
 
+  // ----- UTM builder -----
+  function buildUtm() {
+    var out = document.querySelector("[data-utm-out]");
+    if (!out) return;
+    var base = (document.querySelector('[data-utm-field="url"]').value || "").trim();
+    if (!/^https?:\/\//i.test(base)) { out.textContent = "Enter a landing page URL starting with https://"; out.dataset.value = ""; return; }
+    var url;
+    try { url = new URL(base); } catch (e) { out.textContent = "That URL doesn't look right."; out.dataset.value = ""; return; }
+    document.querySelectorAll("[data-utm-field]").forEach(function (el) {
+      var key = el.getAttribute("data-utm-field");
+      if (key === "url") return;
+      var value = (el.value || "").trim().toLowerCase().replace(/\s+/g, "_");
+      if (value) url.searchParams.set(key, value); else url.searchParams.delete(key);
+    });
+    out.textContent = url.toString();
+    out.dataset.value = url.toString();
+  }
+  document.addEventListener("input", function (e) { if (e.target.closest("[data-utm-field]")) buildUtm(); });
+  document.addEventListener("change", function (e) { if (e.target.closest("[data-utm-field]")) buildUtm(); });
+  document.addEventListener("click", function (e) {
+    var button = e.target.closest("[data-utm-copy]");
+    if (!button) return;
+    var value = document.querySelector("[data-utm-out]").dataset.value;
+    if (!value || !navigator.clipboard) return;
+    navigator.clipboard.writeText(value).then(function () { button.lastChild.textContent = "Copied"; });
+  });
+
   // ----- Charts -----
   var charts = [];
   var inr = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });

@@ -1,0 +1,10 @@
+{% extends "app.html" %}
+{% block title %}Add lead{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url 'leads:inbox' %}">← Leads</a></p>
+<div class="page-head"><div><h1>Add a lead</h1><p>For phone enquiries, walk-ins or leads from a spreadsheet.</p></div></div>
+<div class="card card-pad" style="max-width:680px">
+  <form method="post">{% csrf_token %}{% include "partials/form_fields.html" with form=form %}
+    <button class="btn btn-primary" type="submit">Save lead</button></form>
+</div>
+{% endblock %}

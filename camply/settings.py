@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     "audit",
     "dashboard",
     "console",
+    "leads",
 ]
 
 MIGRATION_MODULES = {

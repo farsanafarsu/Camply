@@ -1,0 +1,24 @@
+{% extends "app.html" %}
+{% block title %}Lead sources{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Lead sources</h1><p>Send leads from any website form straight into Camply.</p></div></div>
+{% include "leads/_tabs.html" %}
+<div class="card" style="margin-top:14px"><div class="card-body table-wrap">
+  <table class="table">
+    <thead><tr><th>Client</th><th>Form URL</th><th></th></tr></thead>
+    <tbody>
+    {% for r in rows %}
+      <tr><td><strong>{{ r.client.name }}</strong></td>
+        <td class="small">{% if r.url %}<code>{{ r.url }}</code>{% else %}<span class="muted">Not set up</span>{% endif %}</td>
+        <td class="right"><form method="post" {% if r.url %}data-confirm="Create a new URL for {{ r.client.name }}? The old one stops working."{% endif %}>{% csrf_token %}<input type="hidden" name="client" value="{{ r.client.pk }}"><button class="btn btn-sm" type="submit">{% if r.url %}New URL{% else %}Create URL{% endif %}</button></form></td></tr>
+    {% empty %}<tr><td colspan="3" class="empty">Add a client first.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div></div>
+<div class="card card-pad" style="margin-top:18px">
+  <h2>How to connect a website form</h2>
+  <p class="muted">Set the form's action to the client's URL, with method POST. Camply reads these field names; only email or phone is required:</p>
+  <p><code>name, email, phone, city, message, consent, utm_source, utm_medium, utm_campaign, utm_content, utm_term</code></p>
+  <p class="muted small">Add a hidden <code>redirect</code> field with your thank-you page (https://…) to send visitors there after submitting. JSON posts work too. Meta and Google lead-form sync arrives with the live platform connectors.</p>
+</div>
+{% endblock %}

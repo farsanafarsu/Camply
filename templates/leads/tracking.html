@@ -1,0 +1,22 @@
+{% extends "app.html" %}
+{% block title %}Tracking health{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Tracking health</h1><p>Spot campaigns that spend but record no conversions, and accounts that stopped syncing.</p></div></div>
+{% include "leads/_tabs.html" %}
+<section class="grid grid-2" style="margin-top:14px">
+  <div class="card"><div class="card-head"><h2>Spending without conversions</h2><span class="muted small">Last 7 days, ₹1,000+ spend</span></div>
+    <div class="card-body"><ul class="list-plain">
+      {% for r in silent %}<li><i data-lucide="triangle-alert"></i><span><a href="{% url 'dashboard:campaign_detail' r.campaign.pk %}"><strong>{{ r.campaign.name }}</strong></a> · {{ r.campaign.client.name }}<br><span class="muted small">{{ r.spend|inr }} spent, {{ r.clicks|num }} clicks, 0 conversions. Check the pixel or conversion event.</span></span></li>
+      {% empty %}<li><i data-lucide="circle-check"></i><span>Every campaign with spend recorded conversions.</span></li>{% endfor %}
+    </ul></div></div>
+  <div class="card"><div class="card-head"><h2>Ad account sync</h2></div>
+    <div class="card-body"><ul class="list-plain">
+      {% for a in unhealthy %}<li><i data-lucide="refresh-cw"></i><span><strong>{{ a.name }}</strong> <span class="badge badge-{{ a.sync_status }}">{{ a.get_sync_status_display }}</span><br><span class="muted small">{{ a.last_sync_error|default:"Not synced yet." }}</span></span></li>
+      {% empty %}<li><i data-lucide="circle-check"></i><span>All ad accounts are syncing.</span></li>{% endfor %}
+    </ul></div></div>
+</section>
+<div class="card" style="margin-top:18px"><div class="card-head"><h2>Setup checklist</h2></div>
+  <div class="card-body grid grid-2">
+    {% for platform, items in checklist.items %}<div><h3>{{ platform }}</h3><ul class="checklist">{% for i in items %}<li>{{ i }}</li>{% endfor %}</ul></div>{% endfor %}
+  </div></div>
+{% endblock %}

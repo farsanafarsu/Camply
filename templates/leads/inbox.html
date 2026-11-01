@@ -1,0 +1,51 @@
+{% extends "app.html" %}
+{% block title %}Leads{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Leads</h1><p>Every lead from ad forms, websites and your team, in one pipeline.</p></div>
+  <div class="row">
+    {% can 'reports.export' as ce %}{% if ce %}<a class="btn" href="{% url 'leads:export' %}"><i data-lucide="download"></i>Export CSV</a>{% endif %}
+    {% can 'leads.manage' as cm %}{% if cm %}<a class="btn btn-primary" href="{% url 'leads:add' %}"><i data-lucide="plus"></i>Add lead</a>{% endif %}
+  </div>
+</div>
+{% include "leads/_tabs.html" %}
+
+<section class="pipeline" aria-label="Pipeline">
+  <a href="{% query_with status='' %}" class="pipe {% if not status %}is-on{% endif %}"><span>All</span></a>
+  {% for p in pipeline %}<a href="{% query_with status=p.value %}" class="pipe {% if status == p.value %}is-on{% endif %}"><span>{{ p.label }}</span><strong>{{ p.count|num }}</strong></a>{% endfor %}
+</section>
+
+{% if due %}
+<div class="alert alert-warning" style="margin:14px 0"><i data-lucide="bell-ring"></i><span><strong>Follow-ups due:</strong>
+  {% for l in due %}<a href="{% url 'leads:detail' l.pk %}">{{ l }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</span></div>
+{% endif %}
+
+<div class="card" style="margin-top:14px">
+  <div class="card-head">
+    <form method="get" class="row filters" role="search">
+      {% if status %}<input type="hidden" name="status" value="{{ status }}">{% endif %}
+      <label class="sr-only" for="f-client">Client</label>
+      <select id="f-client" name="client" onchange="this.form.submit()"><option value="">All clients</option>{% for c in clients %}<option value="{{ c.pk }}" {% if client_id == c.pk|stringformat:'s' %}selected{% endif %}>{{ c.name }}</option>{% endfor %}</select>
+      <label class="check small"><input type="checkbox" name="mine" value="1" {% if request.GET.mine %}checked{% endif %} onchange="this.form.submit()"> Assigned to me</label>
+      <label class="sr-only" for="f-q">Search</label><input id="f-q" type="search" name="q" value="{{ q }}" placeholder="Name, email or phone">
+    </form>
+  </div>
+  <div class="card-body table-wrap">
+    <table class="table">
+      <thead><tr><th>Lead</th><th>Client</th><th>Source</th><th>Status</th><th>Assigned</th><th>Received</th></tr></thead>
+      <tbody>
+      {% for l in leads %}
+        <tr>
+          <td><a class="row-link" href="{% url 'leads:detail' l.pk %}">{{ l }}</a>{% if l.duplicate_of_id %} <span class="badge badge-draft">Duplicate</span>{% endif %}<div class="muted tiny">{{ l.email }}{% if l.email and l.phone %} · {% endif %}{{ l.phone }}</div></td>
+          <td>{{ l.client.name }}</td>
+          <td class="small">{{ l.get_source_display }}{% if l.campaign %}<div class="muted tiny">{{ l.campaign.name }}</div>{% endif %}</td>
+          <td><span class="badge lead-{{ l.status }}">{{ l.get_status_display }}</span></td>
+          <td class="small">{{ l.assigned_to.display_name|default:"–" }}</td>
+          <td class="nowrap small">{{ l.created_at|date:"d M, h:i A" }}</td>
+        </tr>
+      {% empty %}<tr><td colspan="6" class="empty">No leads yet. Add one by hand, or connect a website form under Lead sources.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

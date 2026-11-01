@@ -116,6 +116,7 @@ class Command(BaseCommand):
                 self.stdout.write(f"  {account.name}: {summary['campaigns']} campaigns, {summary['rows']} rows")
 
         self._ledger(org, clients, owner)
+        seed_leads(org)
         self.stdout.write(self.style.SUCCESS(
             f"Seeded {org.name}: {len(clients)} clients, {len(USERS)} users. Sign in as {USERS[0][0]}."
         ))
@@ -166,3 +167,26 @@ class Command(BaseCommand):
                 sgst_paise=gst["sgst"], igst_paise=gst["igst"], total_paise=gst["total"],
                 status=Invoice.Status.PAID if i % 2 else Invoice.Status.ISSUED, created_by=owner,
             )
+
+
+DEMO_LEADS = [
+    ("Anjali Menon", "9847012345", "Thiruvananthapuram", "new", "Interested in the weekend staycation package."),
+    ("Rahul Krishnan", "9895023456", "Kochi", "contacted", "Wants a quote for 40 wedding guests."),
+    ("Fathima Rasheed", "9446034567", "Kollam", "qualified", "Asked about the data science batch timings."),
+    ("Vivek Nair", "9562045678", "Thrissur", "meeting", "Campus visit booked for Saturday."),
+    ("Sneha Pillai", "9745056789", "Kozhikode", "won", "Enrolled in the November batch."),
+    ("Arun Das", "9037067890", "Alappuzha", "lost", "Chose another resort."),
+]
+
+
+def seed_leads(org):
+    """A handful of fictional leads spread across the demo clients and campaigns."""
+    from leads.models import Lead
+
+    campaigns = list(Campaign.objects.filter(organization=org).select_related("client")[:6])
+    for (name, phone, city, status, message), campaign in zip(DEMO_LEADS, campaigns):
+        Lead.objects.create(
+            organization=org, client=campaign.client, campaign=campaign, platform=campaign.platform,
+            source=Lead.Source.PLATFORM, full_name=name, phone=phone, city=city, status=status,
+            message=message, consent=True, utm_source=campaign.platform, utm_campaign=campaign.name[:150],
+        )

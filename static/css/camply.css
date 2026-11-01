@@ -307,6 +307,26 @@ details.dropdown .menu a:hover, details.dropdown .menu button:hover { background
 .footnote { font-size: 0.8rem; color: var(--text-muted); margin-top: 14px; }
 .chip { display: inline-flex; padding: 3px 10px; border-radius: 99px; background: var(--surface-2); font-size: 0.78rem; color: var(--text-muted); }
 
+/* ---------- Section tabs, pipelines, checklists ---------- */
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 4px; overflow-x: auto; }
+.tabs a { padding: 10px 14px; color: var(--text-muted); font-weight: 600; font-size: 0.9rem; border-bottom: 2px solid transparent; white-space: nowrap; }
+.tabs a:hover { color: var(--text); text-decoration: none; }
+.tabs a.is-active { color: var(--text); border-bottom-color: var(--orange); }
+.pipeline { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.pipe { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border: 1px solid var(--border); border-radius: 99px; background: var(--surface); color: var(--text); font-size: 0.88rem; font-weight: 500; }
+.pipe:hover { text-decoration: none; border-color: var(--orange); }
+.pipe.is-on { background: var(--selected); border-color: var(--orange); color: var(--selected-text); }
+.pipe strong { font-family: var(--font-heading); }
+.lead-new { background: var(--info-bg); color: var(--text); }
+.lead-contacted, .lead-meeting { background: var(--warning-bg); color: var(--warning); }
+.lead-qualified, .lead-won { background: var(--positive-bg); color: var(--positive); }
+.lead-lost, .lead-invalid { background: var(--surface-2); color: var(--text-muted); }
+.checklist { list-style: none; padding: 0; margin: 10px 0 0; display: flex; flex-direction: column; gap: 8px; }
+.checklist li { padding-left: 26px; position: relative; font-size: 0.9rem; }
+.checklist li::before { content: "\2713"; position: absolute; left: 0; top: 0; width: 18px; height: 18px; border-radius: 50%; background: var(--selected); color: var(--accent-text); font-size: 0.7rem; display: grid; place-items: center; }
+.utm-out { display: block; padding: 14px; border-radius: var(--radius-sm); background: var(--surface-2); word-break: break-all; font-size: 0.85rem; }
+code { font-size: 0.85em; background: var(--surface-2); padding: 1px 6px; border-radius: 6px; }
+
 /* ---------- Auth (sign in / sign up) ---------- */
 .auth { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; background: var(--bg); }
 .auth-brand {

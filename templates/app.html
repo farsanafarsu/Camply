@@ -25,7 +25,7 @@
       {% can 'campaigns.view' as c %}{% if c %}<a href="{% url 'dashboard:campaigns' %}" class="{% nav_active 'dashboard:campaigns' %}"><i data-lucide="megaphone"></i>Campaigns</a>{% endif %}
       {% can 'creatives.view' as c %}{% if c %}<a href="{% url 'dashboard:creatives' %}" class="{% nav_active 'dashboard:creatives' %}"><i data-lucide="image"></i>Creatives<span class="pill">Soon</span></a>{% endif %}
       {% can 'reports.view' as c %}{% if c %}<a href="{% url 'dashboard:reports' %}" class="{% nav_active 'dashboard:reports' %}"><i data-lucide="chart-column"></i>Reports</a>{% endif %}
-      {% can 'leads.view' as c %}{% if c %}<a href="{% url 'dashboard:leads' %}" class="{% nav_active 'dashboard:leads' %}"><i data-lucide="users"></i>Leads<span class="pill">Soon</span></a>{% endif %}
+      {% can 'leads.view' as c %}{% if c %}<a href="{% url 'leads:inbox' %}" class="{% nav_active 'leads:inbox' %}"><i data-lucide="users"></i>Leads</a>{% endif %}
       {% can 'copilot.use' as c %}{% if c %}<a href="{% url 'dashboard:copilot' %}" class="{% nav_active 'dashboard:copilot' %}"><i data-lucide="sparkles"></i>AI Copilot<span class="pill">Soon</span></a>{% endif %}
       {% can 'automation.manage' as c %}{% if c %}<a href="{% url 'dashboard:automation' %}" class="{% nav_active 'dashboard:automation' %}"><i data-lucide="workflow"></i>Automation<span class="pill">Soon</span></a>{% endif %}
       {% can 'budget.view' as c %}{% if c %}<a href="{% url 'billing:wallet' %}" class="{% nav_active 'billing:wallet' %}{% nav_active 'billing:invoices' %}"><i data-lucide="indian-rupee"></i>Wallet &amp; Billing</a>{% endif %}

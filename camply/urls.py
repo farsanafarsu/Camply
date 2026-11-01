@@ -7,6 +7,7 @@ urlpatterns = [
     path("workspace/", include("workspace.urls")),
     path("ads/", include("ads.urls")),
     path("billing/", include("billing.urls")),
+    path("platform/", include("console.urls")),
     path("", include("dashboard.urls")),
 ]
 

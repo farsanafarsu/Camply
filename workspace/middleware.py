@@ -6,7 +6,9 @@ from .models import Membership
 SESSION_KEY = "camply_org_id"
 
 # Paths a signed-in user can reach before belonging to an organization.
-EXEMPT_PREFIXES = ("/accounts/", "/admin/", "/static/", "/workspace/onboarding", "/workspace/invite/")
+EXEMPT_PREFIXES = (
+    "/accounts/", "/admin/", "/static/", "/platform/", "/workspace/onboarding", "/workspace/invite/",
+)
 
 
 class CurrentMembershipMiddleware:
@@ -36,5 +38,8 @@ class CurrentMembershipMiddleware:
                 request.organization = membership.organization
                 request.session[SESSION_KEY] = str(membership.organization_id)
             elif not request.path.startswith(EXEMPT_PREFIXES):
+                # Platform admins don't need an agency of their own.
+                if user.is_superuser:
+                    return redirect(reverse("console:home"))
                 return redirect(reverse("workspace:onboarding"))
         return self.get_response(request)

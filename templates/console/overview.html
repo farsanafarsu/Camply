@@ -1,0 +1,42 @@
+{% extends "console/base.html" %}
+{% block title %}Platform admin{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Platform overview</h1><p>Every agency and user on Camply.</p></div>
+</div>
+
+<section class="grid grid-3" aria-label="Platform totals">
+  <a class="card kpi" href="{% url 'console:agencies' %}"><span class="kpi-icon"><i data-lucide="building-2"></i></span><div><div class="kpi-label">Agencies</div><div class="kpi-value">{{ stats.agencies|num }}</div></div></a>
+  <a class="card kpi" href="{% url 'console:users' %}"><span class="kpi-icon"><i data-lucide="users"></i></span><div><div class="kpi-label">Users</div><div class="kpi-value">{{ stats.users|num }}</div><span class="muted small">{{ stats.active_users|num }} signed in in the last 30 days</span></div></a>
+  <div class="card kpi"><span class="kpi-icon"><i data-lucide="briefcase"></i></span><div><div class="kpi-label">Clients</div><div class="kpi-value">{{ stats.clients|num }}</div></div></div>
+  <div class="card kpi"><span class="kpi-icon"><i data-lucide="wallet-cards"></i></span><div><div class="kpi-label">Ad accounts</div><div class="kpi-value">{{ stats.ad_accounts|num }}</div></div></div>
+  <div class="card kpi"><span class="kpi-icon"><i data-lucide="megaphone"></i></span><div><div class="kpi-label">Campaigns</div><div class="kpi-value">{{ stats.campaigns|num }}</div></div></div>
+  <a class="card kpi" href="{% url 'admin:index' %}"><span class="kpi-icon"><i data-lucide="database"></i></span><div><div class="kpi-label">Data editor</div><div class="small">Edit any record directly</div></div></a>
+</section>
+
+<section class="grid grid-2" style="margin-top:18px">
+  <div class="card">
+    <div class="card-head"><h2>Newest agencies</h2><a class="small" href="{% url 'console:agencies' %}">All agencies →</a></div>
+    <div class="card-body table-wrap">
+      <table class="table">
+        <thead><tr><th>Agency</th><th class="right">Members</th><th class="right">Clients</th><th>Joined</th></tr></thead>
+        <tbody>
+        {% for r in recent_agencies %}
+          <tr><td><a class="row-link" href="{% url 'console:agency_detail' r.org.pk %}">{{ r.org.name }}</a><div class="muted tiny">{{ r.org.city|default:"" }}{% if r.org.city %}, {% endif %}{{ r.org.state }}</div></td><td class="right">{{ r.members }}</td><td class="right">{{ r.clients }}</td><td class="nowrap">{{ r.org.created_at|date:"d M Y" }}</td></tr>
+        {% empty %}<tr><td colspan="4" class="empty">No agencies yet.</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h2>Newest users</h2><a class="small" href="{% url 'console:users' %}">All users →</a></div>
+    <div class="card-body">
+      <ul class="list-plain">
+        {% for u in recent_users %}
+          <li><span class="avatar">{{ u.initials }}</span><span><strong>{{ u.display_name }}</strong>{% if u.is_superuser %} <span class="badge badge-role">Platform admin</span>{% endif %}{% if not u.is_active %} <span class="badge badge-error">Disabled</span>{% endif %}<br><span class="muted tiny">{{ u.email }} · joined {{ u.date_joined|date:"d M Y" }}</span></span></li>
+        {% empty %}<li class="muted">No users yet.</li>{% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+{% endblock %}

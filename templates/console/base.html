@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="app">
+  <aside class="sidebar" aria-label="Platform admin navigation">
+    <a class="brand" href="{% url 'console:home' %}">{% include "partials/logo.html" %}Camply</a>
+    <div class="console-badge"><i data-lucide="shield-check"></i><span>Platform admin</span></div>
+    <nav class="nav">
+      <a href="{% url 'console:home' %}" class="{% nav_active 'console:home' exact=True %}"><i data-lucide="layout-dashboard"></i>Overview</a>
+      <a href="{% url 'console:agencies' %}" class="{% nav_active 'console:agencies' %}"><i data-lucide="building-2"></i>Agencies</a>
+      <a href="{% url 'console:users' %}" class="{% nav_active 'console:users' %}"><i data-lucide="users"></i>Users</a>
+      <span class="nav-label">Tools</span>
+      <a href="{% url 'admin:index' %}"><i data-lucide="database"></i>Data editor</a>
+      {% if user_memberships %}<a href="{% url 'dashboard:home' %}"><i data-lucide="arrow-left-right"></i>Open agency workspace</a>{% endif %}
+    </nav>
+    <div class="sidebar-footer">Camply-wide view · Asia/Kolkata</div>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <button class="btn btn-ghost icon-btn menu-btn" type="button" data-nav-toggle aria-label="Open menu"><i data-lucide="menu"></i></button>
+      <button class="btn btn-ghost icon-btn" type="button" data-theme-toggle aria-label="Switch light or dark mode"><i data-lucide="sun-moon"></i></button>
+      <details class="dropdown">
+        <summary class="user-menu" aria-label="Account menu">
+          <span class="avatar">{{ user.initials }}</span>
+          <span><span class="name">{{ user.display_name }}</span><br><span class="muted tiny">Platform admin</span></span>
+          <i data-lucide="chevron-down"></i>
+        </summary>
+        <div class="menu">
+          <a href="{% url 'mfa_index' %}">Two-step verification</a>
+          <a href="{% url 'account_change_password' %}">Change password</a>
+          <form method="post" action="{% url 'account_logout' %}">{% csrf_token %}<button type="submit">Sign out</button></form>
+        </div>
+      </details>
+    </header>
+    <main class="content" id="main">
+      {% include "partials/messages.html" %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+{% endblock %}

@@ -47,7 +47,7 @@ The live site uses its own database, so accounts made on your PC don't exist the
 account on the live site, add these environment variables in Render, then redeploy:
 
 - `CAMPLY_ADMIN_EMAIL` and `CAMPLY_ADMIN_PASSWORD`: your login
-- `CAMPLY_ORG_NAME`: optional, defaults to `PRception Media`
+- `CAMPLY_ORG_NAME`: optional; also makes you Owner of that agency. Leave it out for a pure platform admin
 
 Use this start command so the database is migrated and the admin is created on every deploy:
 
@@ -55,7 +55,8 @@ Use this start command so the database is migrated and the admin is created on e
 python manage.py migrate && python manage.py ensure_admin && gunicorn camply.wsgi
 ```
 
-Changing `CAMPLY_ADMIN_PASSWORD` and redeploying changes the password. A redeploy also clears any
+The password is only set when the account is created (set `CAMPLY_ADMIN_RESET_PASSWORD=true` to force it).
+Platform admins sign in to the console at `/platform/`: every agency and user, and the data editor at `/admin/`. A redeploy also clears any
 "Too many failed login attempts" block.
 
 ## How it is organised

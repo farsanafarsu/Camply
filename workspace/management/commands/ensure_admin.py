@@ -7,10 +7,10 @@ Safe to run on every deploy (e.g. in Render's start command):
 Reads:
     CAMPLY_ADMIN_EMAIL      the admin's email (required; does nothing if unset)
     CAMPLY_ADMIN_PASSWORD   their password (required with the email)
-    CAMPLY_ORG_NAME         organization to make them Owner of (default "PRception Media")
+    CAMPLY_ORG_NAME         optional: also make them Owner of this organization (created if needed)
     CAMPLY_ADMIN_RESET_PASSWORD  "true" to overwrite an existing account's password
 
-The account is made a verified Owner of that organization with Django admin access.
+The account is a verified platform admin (superuser) who signs in to the platform console.
 The password is set when the account is created. After that it is left alone (so a
 password changed in the app, or through "Forgot password", survives restarts) unless
 CAMPLY_ADMIN_RESET_PASSWORD is true.
@@ -39,11 +39,6 @@ class Command(BaseCommand):
 
         from allauth.account.models import EmailAddress
 
-        org_name = (os.environ.get("CAMPLY_ORG_NAME") or "PRception Media").strip()
-        org = Organization.objects.filter(name__iexact=org_name).first()
-        if org is None:
-            org = Organization.objects.create(name=org_name, state="Kerala", city="Thiruvananthapuram")
-
         user = User.objects.filter(email__iexact=email).first()
         created = user is None
         reset = (os.environ.get("CAMPLY_ADMIN_RESET_PASSWORD") or "").strip().lower() in {"1", "true", "yes"}
@@ -65,11 +60,19 @@ class Command(BaseCommand):
             address.primary = True
             address.save(update_fields=["verified", "primary"])
 
-        Membership.objects.update_or_create(
-            organization=org, user=user, defaults={"role": Role.OWNER, "all_clients": True}
-        )
+        org_note = ""
+        org_name = (os.environ.get("CAMPLY_ORG_NAME") or "").strip()
+        if org_name:
+            org = Organization.objects.filter(name__iexact=org_name).first()
+            if org is None:
+                org = Organization.objects.create(name=org_name, state="Kerala", city="Thiruvananthapuram")
+            Membership.objects.update_or_create(
+                organization=org, user=user, defaults={"role": Role.OWNER, "all_clients": True}
+            )
+            org_note = f" and Owner of {org.name}"
+
         if created:
-            outcome = f"Created admin {email} as Owner of {org.name} (password length {len(password)})."
+            outcome = f"Created platform admin {email}{org_note} (password length {len(password)})."
         elif reset:
             outcome = f"Updated admin {email}; password reset from CAMPLY_ADMIN_PASSWORD (length {len(password)})."
         else:

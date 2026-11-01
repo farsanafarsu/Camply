@@ -1,0 +1,18 @@
+{% extends "console/base.html" %}
+{% block title %}Agencies{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Agencies</h1><p>Every organization using Camply.</p></div>
+  <form method="get" class="row filters" role="search"><label class="sr-only" for="q">Search agencies</label><input id="q" type="search" name="q" value="{{ q }}" placeholder="Search name, city or GSTIN"></form>
+</div>
+<div class="card"><div class="card-body table-wrap">
+  <table class="table">
+    <thead><tr><th>Agency</th><th>Location</th><th>GSTIN</th><th class="right">Members</th><th class="right">Clients</th><th class="right">Ad accounts</th><th>Joined</th></tr></thead>
+    <tbody>
+    {% for r in rows %}
+      <tr><td><a class="row-link" href="{% url 'console:agency_detail' r.org.pk %}">{{ r.org.name }}</a></td><td>{{ r.org.city|default:"–" }}{% if r.org.city %}, {% endif %}{{ r.org.state }}</td><td class="small">{{ r.org.gstin|default:"–" }}</td><td class="right">{{ r.members }}</td><td class="right">{{ r.clients }}</td><td class="right">{{ r.ad_accounts }}</td><td class="nowrap">{{ r.org.created_at|date:"d M Y" }}</td></tr>
+    {% empty %}<tr><td colspan="7" class="empty">{% if q %}No agencies match “{{ q }}”.{% else %}No agencies yet.{% endif %}</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div></div>
+{% endblock %}

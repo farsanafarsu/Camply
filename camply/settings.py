@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     "billing",
     "audit",
     "dashboard",
+    "console",
 ]
 
 MIGRATION_MODULES = {
@@ -131,6 +132,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 LOGIN_URL = "account_login"
 LOGIN_REDIRECT_URL = "dashboard:home"
+# Sends platform admins to the console after sign-in; everyone else to LOGIN_REDIRECT_URL.
+ACCOUNT_ADAPTER = "accounts.adapter.AccountAdapter"
 ACCOUNT_LOGOUT_REDIRECT_URL = "account_login"
 
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None

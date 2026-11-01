@@ -132,6 +132,8 @@ a:hover { text-decoration: underline; }
   display: grid; place-items: center; font: 700 0.8rem var(--font-heading); pointer-events: none;
 }
 .org-switcher .chev { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; width: 16px; height: 16px; }
+.console-badge { display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-radius: var(--radius-sm); background: rgba(255, 107, 53, 0.14); color: #FFD2BF; font-weight: 600; font-size: 0.85rem; }
+.console-badge svg { width: 16px; height: 16px; color: var(--orange); }
 .nav { display: flex; flex-direction: column; gap: 2px; }
 .nav-label { font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: #7D8193; padding: 12px 12px 4px; }
 .nav a {
@@ -159,6 +161,8 @@ a:hover { text-decoration: underline; }
 /* ---------- Components ---------- */
 .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
 .card-pad { padding: 20px 22px; }
+a.card { color: inherit; text-decoration: none; transition: border-color 0.15s; }
+a.card:hover { border-color: color-mix(in srgb, var(--orange) 40%, var(--border)); text-decoration: none; }
 .card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 22px 0; flex-wrap: wrap; }
 .card-body { padding: 16px 22px 20px; }
 .grid { display: grid; gap: 18px; }

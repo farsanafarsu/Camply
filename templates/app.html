@@ -48,6 +48,7 @@
           <i data-lucide="chevron-down"></i>
         </summary>
         <div class="menu">
+          {% if user.is_superuser %}<a href="{% url 'console:home' %}">Platform admin</a>{% endif %}
           <a href="{% url 'workspace:profile' %}">Profile &amp; security</a>
           <a href="{% url 'mfa_index' %}">Two-step verification</a>
           <form method="post" action="{% url 'account_logout' %}">{% csrf_token %}<button type="submit">Sign out</button></form>

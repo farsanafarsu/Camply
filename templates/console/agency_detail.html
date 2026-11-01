@@ -1,0 +1,40 @@
+{% extends "console/base.html" %}
+{% block title %}{{ org.name }}{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url 'console:agencies' %}">← All agencies</a></p>
+<div class="page-head">
+  <div><h1>{{ org.name }}</h1><p>{{ org.city|default:"" }}{% if org.city %}, {% endif %}{{ org.state }}{% if org.gstin %} · GSTIN {{ org.gstin }}{% endif %} · joined {{ org.created_at|date:"d M Y" }}</p></div>
+  <a class="btn" href="{% url 'admin:workspace_organization_change' org.pk %}"><i data-lucide="pencil"></i>Edit in data editor</a>
+</div>
+<section class="grid grid-3">
+  <div class="card kpi"><div><div class="kpi-label">Members</div><div class="kpi-value">{{ members|length }}</div></div></div>
+  <div class="card kpi"><div><div class="kpi-label">Clients</div><div class="kpi-value">{{ clients|length }}</div></div></div>
+  <div class="card kpi"><div><div class="kpi-label">Campaigns</div><div class="kpi-value">{{ campaign_count|num }}</div></div></div>
+</section>
+<section class="grid grid-2" style="margin-top:18px">
+  <div class="card">
+    <div class="card-head"><h2>Members</h2></div>
+    <div class="card-body table-wrap">
+      <table class="table">
+        <thead><tr><th>Person</th><th>Role</th><th>Last sign-in</th></tr></thead>
+        <tbody>
+        {% for m in members %}
+          <tr><td><strong>{{ m.user.display_name }}</strong><div class="muted tiny">{{ m.user.email }}</div></td><td><span class="badge badge-role">{{ m.get_role_display }}</span>{% if not m.user.is_active %} <span class="badge badge-error">Disabled</span>{% endif %}</td><td class="nowrap small">{{ m.user.last_login|date:"d M Y, h:i A"|default:"Never" }}</td></tr>
+        {% empty %}<tr><td colspan="3" class="empty">No members.</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h2>Clients and ad accounts</h2></div>
+    <div class="card-body">
+      <ul class="list-plain">
+        {% for c in clients %}<li><i data-lucide="briefcase"></i><span><strong>{{ c.name }}</strong><br><span class="muted tiny">{{ c.industry|default:"" }}{% if c.industry and c.state %} · {% endif %}{{ c.state|default:"" }}</span></span></li>{% empty %}<li class="muted">No clients yet.</li>{% endfor %}
+      </ul>
+      {% if ad_accounts %}
+      <div class="footnote">Ad accounts: {% for a in ad_accounts %}{{ a.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

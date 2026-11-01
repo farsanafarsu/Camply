@@ -1,0 +1,39 @@
+{% extends "console/base.html" %}
+{% block title %}Users{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Users</h1><p>Everyone with a Camply login, across all agencies.</p></div>
+  <form method="get" class="row filters" role="search">
+    <label class="sr-only" for="status">Show</label>
+    <select id="status" name="status" onchange="this.form.submit()">
+      <option value="">All users</option>
+      <option value="admins" {% if status == 'admins' %}selected{% endif %}>Platform admins</option>
+      <option value="disabled" {% if status == 'disabled' %}selected{% endif %}>Disabled</option>
+    </select>
+    <label class="sr-only" for="q">Search users</label>
+    <input id="q" type="search" name="q" value="{{ q }}" placeholder="Search name or email">
+  </form>
+</div>
+<div class="card"><div class="card-body table-wrap">
+  <table class="table">
+    <thead><tr><th>Person</th><th>Agencies and roles</th><th>Two-step</th><th>Joined</th><th>Last sign-in</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+    {% for r in rows %}{% with u=r.user %}
+      <tr>
+        <td><div class="row"><span class="avatar">{{ u.initials }}</span><span><strong>{{ u.display_name }}</strong><div class="muted tiny">{{ u.email }}</div></span></div></td>
+        <td class="small">{% if u.is_superuser %}<span class="badge badge-role">Platform admin</span> {% endif %}{% for m in r.memberships %}<a href="{% url 'console:agency_detail' m.organization_id %}">{{ m.organization.name }}</a> · {{ m.get_role_display }}{% if not forloop.last %}<br>{% endif %}{% empty %}{% if not u.is_superuser %}<span class="muted">No agency</span>{% endif %}{% endfor %}</td>
+        <td>{% if r.two_factor %}<span class="badge badge-ok">On</span>{% else %}<span class="badge badge-never">Off</span>{% endif %}</td>
+        <td class="nowrap small">{{ u.date_joined|date:"d M Y" }}</td>
+        <td class="nowrap small">{{ u.last_login|date:"d M Y, h:i A"|default:"Never" }}</td>
+        <td>{% if u.is_active %}<span class="badge badge-ok">Active</span>{% else %}<span class="badge badge-error">Disabled</span>{% endif %}</td>
+        <td class="right">{% if u != user %}
+          <form method="post" action="{% url 'console:user_status' u.pk %}" {% if u.is_active %}data-confirm="Disable {{ u.email }}? They won't be able to sign in."{% endif %}>{% csrf_token %}
+            {% if u.is_active %}<input type="hidden" name="action" value="disable"><button class="btn btn-sm" type="submit">Disable</button>
+            {% else %}<input type="hidden" name="action" value="enable"><button class="btn btn-sm" type="submit">Enable</button>{% endif %}
+          </form>{% else %}<span class="muted tiny">You</span>{% endif %}</td>
+      </tr>
+    {% endwith %}{% empty %}<tr><td colspan="7" class="empty">No users match.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div></div>
+{% endblock %}

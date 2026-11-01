@@ -57,8 +57,11 @@ def can(context, perm):
 
 
 @register.simple_tag(takes_context=True)
-def nav_active(context, url_name):
-    """Return 'is-active' when the current URL belongs to the named nav section."""
+def nav_active(context, url_name, exact=False):
+    """Return 'is-active' when the current URL belongs to the named nav section.
+
+    With exact=True only that page itself counts (for section homes whose URL prefixes others).
+    """
     request = context.get("request")
     if not request or not request.resolver_match:
         return ""
@@ -67,8 +70,8 @@ def nav_active(context, url_name):
     except NoReverseMatch:
         return ""
     path = request.path
-    if target == "/":
-        return "is-active" if path == "/" else ""
+    if target == "/" or exact:
+        return "is-active" if path == target else ""
     return "is-active" if path.startswith(target) else ""
 
 

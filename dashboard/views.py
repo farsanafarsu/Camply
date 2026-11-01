@@ -196,3 +196,16 @@ def planned(request, section):
 
 def permission_denied(request, exception=None):
     return render(request, "403.html", status=403)
+
+
+def csrf_failure(request, reason=""):
+    """A form was submitted with an out-of-date security token.
+
+    Usually a page left open while the user signed in or out in another tab. Sign-in and
+    other account pages are simply reloaded with a note; elsewhere we explain what to do
+    instead of showing Django's bare "Forbidden" page.
+    """
+    if request.path.startswith("/accounts/"):
+        messages.warning(request, "That page had expired, so we reloaded it. Please try again.")
+        return redirect(request.path)
+    return render(request, "csrf_failure.html", status=403)

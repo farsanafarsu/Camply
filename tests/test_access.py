@@ -146,3 +146,25 @@ def test_password_reset_link_works_with_mongodb_ids(client, world, mailoutbox):
     client.post(form_url, {"password1": "Brand-New-Pass-2026", "password2": "Brand-New-Pass-2026"})
     world["owner"].refresh_from_db()
     assert world["owner"].check_password("Brand-New-Pass-2026")
+
+
+def test_stale_sign_in_form_reloads_with_a_note():
+    from django.test import Client
+
+    browser = Client(enforce_csrf_checks=True)
+    browser.get(reverse("account_login"))
+    response = browser.post(reverse("account_login"),
+                            {"csrfmiddlewaretoken": "stale" * 8, "login": "a@b.test", "password": "x"})
+    assert response.status_code == 302 and response.url == reverse("account_login")
+    page = browser.get(response.url).content.decode()
+    assert "That page had expired" in page
+
+
+def test_stale_form_elsewhere_shows_friendly_page(world):
+    from django.test import Client
+
+    browser = Client(enforce_csrf_checks=True)
+    browser.force_login(world["owner"])
+    response = browser.post(reverse("workspace:switch"), {"organization": "x"})
+    assert response.status_code == 403
+    assert "This page expired" in response.content.decode()

@@ -88,6 +88,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "camply.urls"
+# Friendly handling of stale forms (e.g. a sign-in page left open in another tab).
+CSRF_FAILURE_VIEW = "dashboard.views.csrf_failure"
 WSGI_APPLICATION = "camply.wsgi.application"
 
 TEMPLATES = [

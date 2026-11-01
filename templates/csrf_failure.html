@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Page expired{% endblock %}
+{% block body %}
+<div class="auth-simple">
+  <a class="brand" style="color:var(--text);padding:0;margin-bottom:28px" href="/">{% include "partials/logo.html" %}Camply</a>
+  <div class="card card-pad stack">
+    <h1>This page expired</h1>
+    <p class="muted" style="margin:0">The form was opened before you signed in or out, possibly in another tab, so it couldn't be sent safely. Nothing was changed.</p>
+    <div class="row">
+      <a class="btn btn-primary" href="{{ request.path }}">Reload and try again</a>
+      <a class="btn" href="/">Go to Camply</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

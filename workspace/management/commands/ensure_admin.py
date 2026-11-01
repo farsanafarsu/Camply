@@ -34,14 +34,16 @@ class Command(BaseCommand):
         if not email:
             self.stdout.write("Camply admin setup: CAMPLY_ADMIN_EMAIL is not set; skipping.")
             return
-        if not password:
-            raise CommandError("CAMPLY_ADMIN_PASSWORD must be set together with CAMPLY_ADMIN_EMAIL.")
 
         from allauth.account.models import EmailAddress
 
         user = User.objects.filter(email__iexact=email).first()
         created = user is None
-        reset = (os.environ.get("CAMPLY_ADMIN_RESET_PASSWORD") or "").strip().lower() in {"1", "true", "yes"}
+        if created and not password:
+            raise CommandError("Set CAMPLY_ADMIN_PASSWORD to create the admin account for CAMPLY_ADMIN_EMAIL.")
+        reset = bool(password) and (
+            (os.environ.get("CAMPLY_ADMIN_RESET_PASSWORD") or "").strip().lower() in {"1", "true", "yes"}
+        )
         if created:
             user = User(email=email)
         if created or reset:
@@ -75,6 +77,11 @@ class Command(BaseCommand):
             outcome = f"Created platform admin {email}{org_note} (password length {len(password)})."
         elif reset:
             outcome = f"Updated admin {email}; password reset from CAMPLY_ADMIN_PASSWORD (length {len(password)})."
+        elif password:
+            # Says whether signing in with the Render value would work, without revealing anything.
+            matches = "yes" if user.check_password(password) else "no"
+            outcome = (f"Admin {email} already exists; password left unchanged. "
+                       f"Does CAMPLY_ADMIN_PASSWORD match the account's password? {matches}.")
         else:
             outcome = f"Admin {email} already exists; password left unchanged."
         self.stdout.write(self.style.SUCCESS(f"Camply admin setup: {outcome}"))

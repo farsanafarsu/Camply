@@ -43,6 +43,20 @@
     form.submit();
   });
 
+  // ----- Show / hide password -----
+  document.addEventListener("click", function (event) {
+    var button = event.target.closest("[data-password-toggle]");
+    if (!button) return;
+    var input = document.getElementById(button.getAttribute("data-password-toggle"));
+    var show = input.type === "password";
+    input.type = show ? "text" : "password";
+    button.setAttribute("aria-pressed", show ? "true" : "false");
+    button.setAttribute("aria-label", show ? "Hide password" : "Show password");
+    button.innerHTML = '<i data-lucide="' + (show ? "eye-off" : "eye") + '"></i>';
+    if (window.lucide) window.lucide.createIcons();
+    input.focus();
+  });
+
   // ----- Confirm before irreversible or spend-changing actions -----
   document.addEventListener("submit", function (event) {
     var message = event.target.getAttribute("data-confirm");

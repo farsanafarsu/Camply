@@ -27,7 +27,7 @@
       {% can 'reports.view' as c %}{% if c %}<a href="{% url 'dashboard:reports' %}" class="{% nav_active 'dashboard:reports' %}"><i data-lucide="chart-column"></i>Reports</a>{% endif %}
       {% can 'leads.view' as c %}{% if c %}<a href="{% url 'leads:inbox' %}" class="{% nav_active 'leads:inbox' %}"><i data-lucide="users"></i>Leads</a>{% endif %}
       {% can 'copilot.use' as c %}{% if c %}<a href="{% url 'dashboard:copilot' %}" class="{% nav_active 'dashboard:copilot' %}"><i data-lucide="sparkles"></i>AI Copilot<span class="pill">Soon</span></a>{% endif %}
-      {% can 'automation.manage' as c %}{% if c %}<a href="{% url 'dashboard:automation' %}" class="{% nav_active 'dashboard:automation' %}"><i data-lucide="workflow"></i>Automation<span class="pill">Soon</span></a>{% endif %}
+      {% can 'automation.manage' as c %}{% if c %}<a href="{% url 'automation:rules' %}" class="{% nav_active 'automation:rules' %}"><i data-lucide="workflow"></i>Automation</a>{% endif %}
       {% can 'budget.view' as c %}{% if c %}<a href="{% url 'billing:wallet' %}" class="{% nav_active 'billing:wallet' %}{% nav_active 'billing:invoices' %}"><i data-lucide="indian-rupee"></i>Wallet &amp; Billing</a>{% endif %}
 
       <span class="nav-label">Workspace</span>
@@ -52,6 +52,10 @@
   <div class="main">
     <header class="topbar">
       <button class="btn btn-ghost icon-btn menu-btn" type="button" data-nav-toggle aria-label="Open menu"><i data-lucide="menu"></i></button>
+      {% if current_membership %}
+      {% can 'campaigns.view' as cv %}{% if cv and pending_approvals %}<a class="btn btn-ghost btn-sm" href="{% url 'automation:approvals' %}" title="Changes waiting for approval"><i data-lucide="clipboard-check"></i>{{ pending_approvals }} to approve</a>{% endif %}
+      <a class="btn btn-ghost icon-btn bell" href="{% url 'automation:alerts' %}" aria-label="Alerts{% if unread_alerts %}: {{ unread_alerts }} new{% endif %}" title="Alerts"><i data-lucide="bell"></i>{% if unread_alerts %}<span class="bell-count">{{ unread_alerts }}</span>{% endif %}</a>
+      {% endif %}
       <button class="btn btn-ghost icon-btn" type="button" data-theme-toggle aria-label="Switch light or dark mode" title="Light / dark mode"><i data-lucide="sun-moon"></i></button>
       <details class="dropdown">
         <summary class="user-menu" aria-label="Account menu">

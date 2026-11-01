@@ -1,0 +1,29 @@
+{% extends "app.html" %}
+{% block title %}Alerts{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Alerts</h1><p>Budget, performance, delivery, sync and approval alerts from your rules.</p></div>
+  <div class="row">
+    <a class="btn btn-sm {% if show != 'resolved' %}btn-dark{% endif %}" href="?show=open">Open</a>
+    <a class="btn btn-sm {% if show == 'resolved' %}btn-dark{% endif %}" href="?show=resolved">Resolved</a>
+    {% if show != 'resolved' and alerts %}<form method="post" action="{% url 'automation:alert_action' %}">{% csrf_token %}<button class="btn btn-sm" name="action" value="read_all">Mark all as read</button></form>{% endif %}
+  </div>
+</div>
+{% include "automation/_tabs.html" %}
+<div class="card card-pad" style="margin-top:14px">
+  {% for a in alerts %}
+  <div class="alert-row {% if not a.is_read %}is-unread{% endif %}">
+    <span class="sev sev-{{ a.severity }}" title="{{ a.get_severity_display }}"></span>
+    <div>
+      <strong>{% if a.link %}<a href="{{ a.link }}">{{ a.title }}</a>{% else %}{{ a.title }}{% endif %}</strong>
+      <span class="badge badge-{% if a.severity == 'critical' %}error{% elif a.severity == 'warning' %}paused{% else %}never{% endif %}">{{ a.get_severity_display }}</span>
+      {% if a.body %}<div class="small muted">{{ a.body }}</div>{% endif %}
+      <div class="tiny muted">{{ a.client.name|default:"Agency-wide" }} · {{ a.created_at|date:"d M, h:i A" }}{% if a.resolved_at %} · resolved {{ a.resolved_at|date:"d M" }}{% endif %}</div>
+    </div>
+    {% if not a.resolved_at %}<form method="post" action="{% url 'automation:alert_action' %}">{% csrf_token %}<input type="hidden" name="alert" value="{{ a.pk }}"><button class="btn btn-sm" name="action" value="resolve">Resolve</button></form>{% endif %}
+  </div>
+  {% empty %}
+  <div class="empty"><i data-lucide="bell-off"></i><div>{% if show == 'resolved' %}No resolved alerts.{% else %}No open alerts. All clear.{% endif %}</div></div>
+  {% endfor %}
+</div>
+{% endblock %}

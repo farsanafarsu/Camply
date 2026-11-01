@@ -1,0 +1,5 @@
+<nav class="tabs" aria-label="Automation sections">
+  {% can 'automation.manage' as am %}{% if am %}<a href="{% url 'automation:rules' %}" class="{% nav_active 'automation:rules' exact=True %}">Rules</a>{% endif %}
+  <a href="{% url 'automation:alerts' %}" class="{% nav_active 'automation:alerts' %}">Alerts{% if unread_alerts %} ({{ unread_alerts }}){% endif %}</a>
+  {% can 'campaigns.view' as cv %}{% if cv %}<a href="{% url 'automation:approvals' %}" class="{% nav_active 'automation:approvals' %}">Approvals{% if pending_approvals %} ({{ pending_approvals }}){% endif %}</a>{% endif %}
+</nav>

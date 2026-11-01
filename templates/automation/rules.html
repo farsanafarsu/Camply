@@ -1,0 +1,54 @@
+{% extends "app.html" %}
+{% block title %}Automation{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Automation</h1><p>Rules Camply checks every hour. They alert you, and changes to spend or status always wait for approval.</p></div>
+  <form method="post" action="{% url 'automation:run' %}">{% csrf_token %}<button class="btn" type="submit"><i data-lucide="play"></i>Run checks now</button></form>
+</div>
+{% include "automation/_tabs.html" %}
+<section class="grid grid-2-1" style="margin-top:14px">
+  <div class="card"><div class="card-body table-wrap">
+    <table class="table">
+      <thead><tr><th>Rule</th><th>Client</th><th>Notify</th><th>Last checked</th><th></th></tr></thead>
+      <tbody>
+      {% for r in rules %}
+        <tr>
+          <td><strong>{{ r.name }}</strong>{% if not r.is_active %} <span class="badge badge-never">Off</span>{% endif %}<div class="muted tiny">{{ r.get_kind_display }} · {{ r.summary }}</div></td>
+          <td class="small">{{ r.client.name|default:"All clients" }}</td>
+          <td class="small">{% if r.recipients %}{{ r.recipients|join:", " }}{% else %}In Camply only{% endif %}</td>
+          <td class="small nowrap">{{ r.last_run_at|date:"d M, h:i A"|default:"Not yet" }}</td>
+          <td class="right nowrap">
+            <form method="post" action="{% url 'automation:rule_action' r.pk %}" style="display:inline">{% csrf_token %}<button class="btn btn-sm" name="action" value="toggle">{% if r.is_active %}Turn off{% else %}Turn on{% endif %}</button></form>
+            <form method="post" action="{% url 'automation:rule_action' r.pk %}" style="display:inline" data-confirm="Delete the rule “{{ r.name }}”?">{% csrf_token %}<button class="btn btn-sm btn-ghost" name="action" value="delete">Delete</button></form>
+          </td>
+        </tr>
+      {% empty %}<tr><td colspan="5" class="empty">No rules yet. Add one, for example “Alert me at 80% of a client's monthly budget”.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div></div>
+  <div class="card">
+    <div class="card-head"><h2>Add a rule</h2></div>
+    <div class="card-body">
+      <form method="post" data-rule-form>{% csrf_token %}
+        {% include "partials/form_fields.html" with form=form %}
+        <button class="btn btn-primary btn-block" type="submit">Save rule</button>
+      </form>
+    </div>
+  </div>
+</section>
+{{ params|json_script:"rule-params" }}
+<script>
+  (function () {
+    var params = JSON.parse(document.getElementById("rule-params").textContent);
+    var kind = document.getElementById("id_kind");
+    function sync() {
+      ["percent", "cpl_rupees", "days", "frequency"].forEach(function (name) {
+        var field = document.getElementById("id_" + name);
+        if (field) field.closest(".field").hidden = (params[kind.value] || []).indexOf(name) === -1;
+      });
+    }
+    kind.addEventListener("change", sync);
+    sync();
+  })();
+</script>
+{% endblock %}

@@ -347,6 +347,17 @@ code { font-size: 0.85em; background: var(--surface-2); padding: 1px 6px; border
 .steps-mini li.is-current::before { background: var(--orange); color: var(--midnight); }
 .steps-mini li.is-rejected { background: var(--negative-bg); color: var(--negative); }
 
+/* ---------- Alerts ---------- */
+.bell { position: relative; }
+.bell-count { position: absolute; top: 2px; right: 0; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 99px; background: var(--orange); color: var(--midnight); font: 700 0.68rem/18px var(--font-body); text-align: center; }
+.alert-row { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: start; padding: 14px 0; border-bottom: 1px solid var(--border); }
+.alert-row:last-child { border-bottom: 0; }
+.sev { width: 10px; height: 10px; border-radius: 50%; margin-top: 6px; background: var(--text-muted); }
+.sev-warning { background: var(--amber); }
+.sev-critical { background: var(--negative); }
+.alert-row.is-unread strong { color: var(--text); }
+.alert-row:not(.is-unread) { opacity: 0.85; }
+
 /* ---------- Auth (sign in / sign up) ---------- */
 .auth { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; background: var(--bg); }
 .auth-brand {

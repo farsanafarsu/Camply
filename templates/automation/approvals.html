@@ -1,0 +1,43 @@
+{% extends "app.html" %}
+{% block title %}Approvals{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Approvals</h1><p>Changes to spend or status wait here until a person approves them. Nothing is applied automatically.</p></div></div>
+{% include "automation/_tabs.html" %}
+<div class="card" style="margin-top:14px">
+  <div class="card-head"><h2>Waiting for approval</h2></div>
+  <div class="card-body table-wrap">
+    <table class="table">
+      <thead><tr><th>Change</th><th>Campaign</th><th>Why</th><th>Asked by</th><th></th></tr></thead>
+      <tbody>
+      {% for r in pending %}
+        <tr>
+          <td><strong>{{ r.description }}</strong><div class="muted tiny">{{ r.created_at|date:"d M, h:i A" }}</div></td>
+          <td><a href="{% url 'dashboard:campaign_detail' r.campaign.pk %}">{{ r.campaign.name }}</a><div class="muted tiny">{{ r.client.name|default:"" }}</div></td>
+          <td class="small">{{ r.reason|default:"–" }}</td>
+          <td class="small">{% if r.requested_by %}{{ r.requested_by.display_name }}{% else %}{{ r.get_source_display }}{% endif %}</td>
+          <td class="right nowrap">{% if can_decide %}
+            <form method="post" action="{% url 'automation:approval_decide' r.pk %}" style="display:inline" data-confirm="Apply this change on {{ r.campaign.get_platform_display }} now?">{% csrf_token %}<button class="btn btn-sm btn-primary" name="decision" value="approve">Approve</button></form>
+            <form method="post" action="{% url 'automation:approval_decide' r.pk %}" style="display:inline">{% csrf_token %}<button class="btn btn-sm" name="decision" value="reject">Reject</button></form>
+          {% endif %}</td>
+        </tr>
+      {% empty %}<tr><td colspan="5" class="empty">Nothing waiting for approval.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="card" style="margin-top:18px">
+  <div class="card-head"><h2>Recent decisions</h2></div>
+  <div class="card-body table-wrap">
+    <table class="table">
+      <thead><tr><th>Change</th><th>Campaign</th><th>Outcome</th><th>Decided by</th></tr></thead>
+      <tbody>
+      {% for r in history %}
+        <tr><td>{{ r.description }}</td><td>{{ r.campaign.name }}</td>
+          <td><span class="badge badge-{% if r.status == 'applied' %}ok{% elif r.status == 'rejected' %}never{% else %}error{% endif %}">{{ r.get_status_display }}</span>{% if r.result_message %}<div class="muted tiny">{{ r.result_message }}</div>{% endif %}</td>
+          <td class="small">{{ r.decided_by.display_name|default:"–" }} · {{ r.decided_at|date:"d M, h:i A" }}</td></tr>
+      {% empty %}<tr><td colspan="4" class="empty">No decisions yet.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

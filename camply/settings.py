@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     "console",
     "leads",
     "creatives",
+    "automation",
 ]
 
 MIGRATION_MODULES = {
@@ -105,6 +106,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "workspace.context_processors.workspace",
+                "automation.context_processors.notifications",
             ],
             "builtins": ["camply.templatetags.camply_tags"],
         },
@@ -173,8 +175,6 @@ if env("MICROSOFT_CLIENT_ID"):
 
 # --- Locale: India -------------------------------------------------------------
 LANGUAGE_CODE = "en-in"
-# URLs typed without a scheme (e.g. "example.com") are treated as https.
-FORMS_URLFIELD_ASSUME_HTTPS = True
 TIME_ZONE = "Asia/Kolkata"
 USE_I18N = True
 USE_TZ = True
@@ -208,6 +208,7 @@ CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_ALWAYS_EAGER = not REDIS_URL
 CELERY_BEAT_SCHEDULE = {
     "sync-all-ad-accounts": {"task": "ads.tasks.sync_all_accounts", "schedule": 60 * 60},
+    "evaluate-automation-rules": {"task": "automation.tasks.evaluate_all_rules", "schedule": 60 * 60},
 }
 
 # --- Integrations ----------------------------------------------------------------

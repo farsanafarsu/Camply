@@ -134,3 +134,23 @@ def set_campaign_status(campaign: Campaign, new_status: str, *, actor, request=N
         organization=campaign.organization, action="campaign.status", entity=campaign, actor=actor,
         request=request, before=before, after={"status": new_status},
     )
+
+
+def set_daily_budget(campaign: Campaign, daily_budget_paise: int, *, actor, request=None):
+    """Change a campaign's daily budget on its platform, then locally, with an audit record."""
+    if daily_budget_paise <= 0:
+        raise ValueError("The daily budget must be more than zero.")
+    adapter = adapter_for_account(campaign.ad_account)
+    before = {"daily_budget_paise": campaign.daily_budget_paise}
+    after = {"daily_budget_paise": daily_budget_paise}
+    try:
+        adapter.require(Capability.UPDATE_BUDGET)
+        adapter.update_daily_budget(campaign, daily_budget_paise)
+    except AdapterError as exc:
+        audit.record(organization=campaign.organization, action="campaign.budget", entity=campaign, actor=actor,
+                     request=request, before=before, after=after, outcome="failed", message=str(exc))
+        raise
+    campaign.daily_budget_paise = daily_budget_paise
+    campaign.save(update_fields=["daily_budget_paise", "updated_at"])
+    audit.record(organization=campaign.organization, action="campaign.budget", entity=campaign, actor=actor,
+                 request=request, before=before, after=after)

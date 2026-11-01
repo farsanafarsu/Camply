@@ -1,0 +1,5 @@
+{% comment %}Shows a % change. `invert` = true when lower is better (e.g. cost per lead).{% endcomment %}
+{% if value is None %}<span class="delta flat">No prior data</span>{% else %}
+{% if value > 0 %}{% if invert %}<span class="delta bad">{% else %}<span class="delta good">{% endif %}<i data-lucide="arrow-up"></i>{{ value|signed_pct }}
+{% elif value < 0 %}{% if invert %}<span class="delta good">{% else %}<span class="delta bad">{% endif %}<i data-lucide="arrow-down"></i>{{ value|signed_pct }}
+{% else %}<span class="delta flat">0.0%{% endif %}</span> <span class="muted tiny">vs previous period</span>{% endif %}

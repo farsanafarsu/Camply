@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Set up your organization{% endblock %}
+{% block body %}
+<div class="auth-simple">
+  <a class="brand" style="color:var(--text);padding:0;margin-bottom:28px" href="/">{% include "partials/logo.html" %}Camply</a>
+  {% include "partials/messages.html" %}
+  {% if pending %}
+    <div class="card card-pad stack" style="margin-bottom:18px">
+      <h2>You've been invited</h2>
+      {% for i in pending %}<div class="row"><span>{{ i.organization.name }} · {{ i.get_role_display }}</span><span class="spacer"></span><a class="btn btn-primary btn-sm" href="{% url 'workspace:accept_invite' i.token %}">Review invite</a></div>{% endfor %}
+    </div>
+  {% endif %}
+  <div class="card card-pad">
+    <h1>Set up your agency</h1>
+    <p class="muted">You'll be the owner. You can invite your team and add clients next.</p>
+    <form method="post">{% csrf_token %}
+      {% include "partials/form_fields.html" with form=form %}
+      <button class="btn btn-primary btn-block" type="submit">Create organization</button>
+    </form>
+  </div>
+  <form class="auth-foot" method="post" action="{% url 'account_logout' %}">{% csrf_token %}<button class="btn btn-ghost btn-sm" type="submit">Sign out</button></form>
+</div>
+{% endblock %}

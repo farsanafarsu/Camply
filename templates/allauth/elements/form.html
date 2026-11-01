@@ -1,0 +1,5 @@
+{% load allauth %}
+<form method="{{ attrs.method }}" {% if attrs.action %}action="{{ attrs.action }}"{% endif %} class="stack" style="gap:0">
+    {% slot body %}{% endslot %}
+    <div class="row" style="margin-top:6px">{% slot actions %}{% endslot %}</div>
+</form>

@@ -1,0 +1,16 @@
+{% extends "app.html" %}
+{% block title %}Audit log{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Audit log</h1><p>Every change made through Camply: who, what, when and the outcome.</p></div></div>
+<div class="card"><div class="card-body table-wrap">
+  <table class="table">
+    <thead><tr><th>When (IST)</th><th>Who</th><th>Action</th><th>Record</th><th>Client</th><th>Outcome</th><th>Details</th></tr></thead>
+    <tbody>
+    {% for e in events %}
+      <tr><td class="nowrap">{{ e.created_at|date:"d M Y, h:i A" }}</td><td>{{ e.actor.display_name|default:"Camply (automatic)" }}</td><td><code>{{ e.action }}</code></td><td>{{ e.entity_label }}<div class="muted tiny">{{ e.entity_type }}</div></td><td>{{ e.client|default:"–" }}</td><td><span class="badge badge-{{ e.outcome }}">{{ e.get_outcome_display }}</span></td>
+        <td class="small">{% if e.message %}{{ e.message }}{% endif %}{% if e.before %}<div class="muted">Before: {{ e.before }}</div>{% endif %}{% if e.after %}<div class="muted">After: {{ e.after }}</div>{% endif %}</td></tr>
+    {% empty %}<tr><td colspan="7" class="empty">No activity yet.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div></div>
+{% endblock %}

@@ -1,0 +1,155 @@
+{% extends "app.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Dashboard</h1>
+    <p>Here's your advertising performance across all platforms.</p>
+  </div>
+  {% include "partials/filters.html" %}
+</div>
+
+{% if not freshness.accounts %}
+  <div class="callout stack" style="margin-bottom:18px">
+    <strong>No ad accounts yet.</strong>
+    <span>Connect an ad account or add one for manual reporting to see results here.</span>
+    <div><a class="btn btn-primary" href="{% url 'ads:integrations' %}"><i data-lucide="plug"></i>Go to integrations</a></div>
+  </div>
+{% endif %}
+
+<section class="grid grid-kpi" aria-label="Key metrics">
+  <div class="card kpi">
+    <span class="kpi-icon"><i data-lucide="indian-rupee"></i></span>
+    <div><div class="kpi-label">Total spend</div><div class="kpi-value">{{ kpis.spend_paise|inr }}</div>{% include "partials/delta.html" with value=kpis.change.spend_paise %}</div>
+  </div>
+  <div class="card kpi">
+    <span class="kpi-icon"><i data-lucide="users"></i></span>
+    <div><div class="kpi-label">Total leads</div><div class="kpi-value">{{ kpis.leads|num }}</div>{% include "partials/delta.html" with value=kpis.change.leads %}</div>
+  </div>
+  <div class="card kpi">
+    <span class="kpi-icon"><i data-lucide="eye"></i></span>
+    <div><div class="kpi-label">Total impressions</div><div class="kpi-value">{{ kpis.impressions|num }}</div>{% include "partials/delta.html" with value=kpis.change.impressions %}</div>
+  </div>
+  <div class="card kpi">
+    <span class="kpi-icon"><i data-lucide="mouse-pointer-click"></i></span>
+    <div><div class="kpi-label">Avg. cost per lead</div><div class="kpi-value">{{ kpis.cpl_paise|inr }}</div>{% include "partials/delta.html" with value=kpis.change.cpl_paise invert=True %}</div>
+  </div>
+  <div class="card kpi">
+    <span class="kpi-icon"><i data-lucide="trending-up"></i></span>
+    <div>
+      <div class="kpi-label">ROAS <span class="muted tiny" title="Revenue ÷ spend, only for campaigns with revenue tracking connected">ⓘ</span></div>
+      <div class="kpi-value">{{ kpis.roas|ratio }}</div>
+      {% if kpis.roas is None %}<span class="delta flat">No revenue tracking</span>
+      {% elif kpis.roas_delta is None %}<span class="delta flat">No prior data</span>
+      {% elif kpis.roas_delta == 0 %}<span class="delta flat">No change</span> <span class="muted tiny">vs previous period</span>
+      {% else %}<span class="delta {% if kpis.roas_delta > 0 %}good{% else %}bad{% endif %}"><i data-lucide="{% if kpis.roas_delta > 0 %}arrow-up{% else %}arrow-down{% endif %}"></i>{% if kpis.roas_delta > 0 %}+{% endif %}{{ kpis.roas_delta|floatformat:1 }}x</span> <span class="muted tiny">vs previous period</span>{% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="grid grid-2-1" style="margin-top:18px">
+  <div class="card">
+    <div class="card-head">
+      <h2>Spend overview</h2>
+      <div class="legend">{% for s in trend.series %}<span><i style="background:{{ s.color }}"></i>{{ s.label }}</span>{% endfor %}</div>
+    </div>
+    <div class="card-body">
+      {% if trend.series %}
+        <div class="chart-box"><canvas id="spend-trend-chart" role="img" aria-label="Daily spend by platform"></canvas></div>
+      {% else %}
+        <div class="empty"><i data-lucide="chart-line"></i><div>No spend in this period.</div></div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h2>Platform performance</h2><span class="muted small">Share of spend</span></div>
+    <div class="card-body">
+      {% if breakdown %}
+      <div class="donut-wrap">
+        <div class="donut-box">
+          <canvas id="platform-donut" role="img" aria-label="Spend share by platform"></canvas>
+          <div class="donut-center"><strong>{{ total_spend|inr }}</strong><span class="muted small">Total spend</span></div>
+        </div>
+        <ul class="breakdown-list">
+          {% for p in breakdown %}
+          <li>
+            {% include "partials/platform.html" with code=p.platform label=p.label %}
+            <span class="muted">{{ p.share|floatformat:0 }}%</span>
+            <strong class="right">{{ p.spend_paise|inr }}</strong>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% else %}
+        <div class="empty"><i data-lucide="chart-pie"></i><div>No platform data yet.</div></div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<section class="card" style="margin-top:18px">
+  <div class="card-head">
+    <h2>Recent campaigns</h2>
+    <a href="{% url 'dashboard:campaigns' %}{% query_with %}" class="small">View all campaigns →</a>
+  </div>
+  <div class="card-body">
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th>Campaign</th><th>Platform</th><th class="right">Spend</th><th class="right">Results</th><th class="right">CPL</th><th class="right">ROAS</th><th>Status</th></tr></thead>
+        <tbody>
+        {% for r in recent_campaigns %}
+          <tr>
+            <td><a class="row-link" href="{% url 'dashboard:campaign_detail' r.campaign.pk %}">{{ r.campaign.name }}</a><div class="muted tiny">{{ r.campaign.client|default:"Unassigned" }}</div></td>
+            <td>{% include "partials/platform.html" with code=r.campaign.platform label=r.campaign.get_platform_display %}</td>
+            <td class="right">{{ r.spend_paise|inr }}</td>
+            <td class="right">{{ r.leads|num }} leads</td>
+            <td class="right">{{ r.cpl_paise|inr }}</td>
+            <td class="right">{{ r.roas|ratio }}</td>
+            <td><span class="badge badge-{{ r.campaign.status }}">{{ r.campaign.get_status_display }}</span></td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="7" class="empty">No campaigns match these filters.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="grid grid-2" style="margin-top:18px">
+  <div class="card">
+    <div class="card-head"><h2>Connection health</h2><span class="muted small">{{ active_campaigns }} active campaign{{ active_campaigns|pluralize }}</span></div>
+    <div class="card-body">
+      <ul class="list-plain">
+        <li><i data-lucide="refresh-cw"></i><span>Last sync: <strong>{% if freshness.last_synced_at %}{{ freshness.last_synced_at|date:"d M Y, h:i A" }} IST{% else %}never{% endif %}</strong> across {{ freshness.accounts }} ad account{{ freshness.accounts|pluralize }}.</span></li>
+        {% for a in freshness.unhealthy %}
+          <li><i data-lucide="triangle-alert"></i><span><strong>{{ a.name }}</strong> <span class="badge badge-{{ a.sync_status }}">{{ a.get_sync_status_display }}</span><br><span class="muted small">{{ a.last_sync_error }}</span></span></li>
+        {% empty %}
+          <li><i data-lucide="circle-check"></i><span>All accounts are syncing normally.</span></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h2>Recent activity</h2></div>
+    <div class="card-body">
+      <ul class="list-plain">
+        {% for e in activity %}
+          <li><span class="avatar">{% if e.actor %}{{ e.actor.initials }}{% else %}<i data-lucide="bot"></i>{% endif %}</span>
+            <span><strong>{{ e.actor.display_name|default:"Camply" }}</strong> · {{ e.action }} {{ e.entity_label }}
+              {% if e.outcome != 'success' %}<span class="badge badge-{{ e.outcome }}">{{ e.get_outcome_display }}</span>{% endif %}
+              <br><span class="muted tiny">{{ e.created_at|timesince }} ago</span></span></li>
+        {% empty %}
+          <li class="muted">Nothing yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<p class="footnote">Figures as reported by each platform, in INR, Asia/Kolkata time. Impressions and reach are defined differently on each platform. Cost per lead = total spend ÷ total leads. ROAS only includes campaigns with revenue tracking.</p>
+
+{{ trend|json_script:"spend-trend-data" }}
+{{ donut|json_script:"platform-donut-data" }}
+{% endblock %}
+{% block scripts %}<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>{% endblock %}

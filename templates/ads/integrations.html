@@ -1,0 +1,28 @@
+{% extends "app.html" %}
+{% block title %}Integrations{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Integrations</h1><p>Ad platforms Camply can connect to, and what each connection can do.</p></div></div>
+<div class="grid grid-2">
+  {% for card in cards %}
+  <div class="card card-pad stack">
+    <div class="row">
+      {% include "partials/platform.html" with code=card.platform.value label=card.platform.label %}
+      <span class="spacer"></span>
+      {% if card.available %}<span class="badge badge-ok">Connector ready</span>{% else %}<span class="badge badge-draft">Connector in development</span>{% endif %}
+    </div>
+    <div class="small">
+      <strong>{{ card.account_count }}</strong> ad account{{ card.account_count|pluralize }} in Camply ·
+      {% for c in card.connections %}{{ c.label }} <span class="badge badge-{{ c.status }}">{{ c.get_status_display }}</span>{% if not forloop.last %}, {% endif %}{% empty %}no live connection{% endfor %}
+    </div>
+    <div>{% for c in card.capabilities %}<span class="chip">{{ c }}</span> {% empty %}<span class="muted small">Manual reporting only until the connector is built.</span>{% endfor %}</div>
+    <div class="row">
+      <button class="btn btn-sm" type="button" disabled title="Needs platform app credentials (see docs)"><i data-lucide="plug"></i>Connect account</button>
+      <a class="small" href="{{ card.docs_url }}" target="_blank" rel="noopener">API documentation ↗</a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<div class="callout" style="margin-top:18px">
+  <strong>Connecting live accounts</strong> needs each platform's approved developer app (Meta app review, Google Ads developer token, TikTok Business API app, OpenAI Ads API access). Until then, accounts without a live connection show sandbox data in development, and can be marked for manual reporting in production.
+</div>
+{% endblock %}

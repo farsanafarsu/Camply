@@ -1,0 +1,25 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Camply{% endblock %} · Camply</title>
+  <meta name="description" content="Camply — every campaign, one platform.">
+  <script>
+    // Apply the saved theme before first paint to avoid a flash.
+    try { var t = localStorage.getItem("camply-theme"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="{% static 'img/camply-mark.svg' %}" type="image/svg+xml">
+  <link rel="stylesheet" href="{% static 'css/camply.css' %}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  {% block body %}{% endblock %}
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  {% block scripts %}{% endblock %}
+  <script src="{% static 'js/camply.js' %}"></script>
+</body>
+</html>

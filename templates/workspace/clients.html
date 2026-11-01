@@ -1,0 +1,24 @@
+{% extends "app.html" %}
+{% block title %}Clients{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Clients</h1><p>The brands and businesses {{ current_org.name }} runs ads for.</p></div></div>
+<section class="grid {% if form %}grid-2-1{% endif %}">
+  <div class="card"><div class="card-body table-wrap">
+    <table class="table">
+      <thead><tr><th>Client</th><th>Industry</th><th>State</th><th class="right">Monthly budget</th><th class="right">Ad accounts</th><th></th></tr></thead>
+      <tbody>
+      {% for c in clients %}
+        <tr><td><strong>{{ c.name }}</strong><div class="muted tiny">{{ c.contact_email|default:"" }}</div></td><td>{{ c.industry|default:"–" }}</td><td>{{ c.state|default:"–" }}</td><td class="right">{{ c.monthly_budget_paise|inr }}</td><td class="right">{{ c.ad_accounts.all|length }}</td>
+          <td class="right">{% if form %}<a class="btn btn-sm" href="{% url 'workspace:client_edit' c.pk %}">Edit</a>{% endif %}</td></tr>
+      {% empty %}<tr><td colspan="6" class="empty">No clients yet.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div></div>
+  {% if form %}
+  <div class="card">
+    <div class="card-head"><h2>Add a client</h2></div>
+    <div class="card-body"><form method="post">{% csrf_token %}{% include "partials/form_fields.html" with form=form %}<button class="btn btn-primary btn-block" type="submit">Add client</button></form></div>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

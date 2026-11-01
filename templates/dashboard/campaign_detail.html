@@ -1,0 +1,82 @@
+{% extends "app.html" %}
+{% block title %}{{ campaign.name }}{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url 'dashboard:campaigns' %}">← All campaigns</a></p>
+<div class="page-head">
+  <div>
+    <div class="row">{% include "partials/platform.html" with code=campaign.platform label=campaign.get_platform_display %}<span class="badge badge-{{ campaign.status }}">{{ campaign.get_status_display }}</span></div>
+    <h1 style="margin-top:8px">{{ campaign.name }}</h1>
+    <p>{{ campaign.ad_account.name }} · {{ campaign.objective|default:"No objective" }}</p>
+  </div>
+  <div class="row">
+    {% can 'campaigns.edit' as can_edit %}
+    {% if can_edit and can_pause %}
+      <form method="post" action="{% url 'dashboard:campaign_status' campaign.pk %}" data-confirm="Pause this campaign on {{ campaign.get_platform_display }}? It will stop spending.">{% csrf_token %}<input type="hidden" name="action" value="pause"><button class="btn" type="submit"><i data-lucide="pause"></i>Pause</button></form>
+    {% elif can_edit and can_resume %}
+      <form method="post" action="{% url 'dashboard:campaign_status' campaign.pk %}" data-confirm="Resume this campaign on {{ campaign.get_platform_display }}? It will start spending again.">{% csrf_token %}<input type="hidden" name="action" value="resume"><button class="btn btn-primary" type="submit"><i data-lucide="play"></i>Resume</button></form>
+    {% endif %}
+  </div>
+</div>
+
+<div class="row" style="margin-bottom:18px">{% include "partials/filters.html" with range_only=True %}</div>
+
+<section class="grid grid-kpi">
+  <div class="card kpi"><div><div class="kpi-label">Spend</div><div class="kpi-value">{{ totals.spend_paise|inr }}</div></div></div>
+  <div class="card kpi"><div><div class="kpi-label">Impressions</div><div class="kpi-value">{{ totals.impressions|num }}</div></div></div>
+  <div class="card kpi"><div><div class="kpi-label">Clicks</div><div class="kpi-value">{{ totals.clicks|num }}</div><span class="muted small">{{ totals.ctr|pct:2 }} CTR</span></div></div>
+  <div class="card kpi"><div><div class="kpi-label">Leads</div><div class="kpi-value">{{ totals.leads|num }}</div><span class="muted small">{{ totals.cpl_paise|inr }} per lead</span></div></div>
+  <div class="card kpi"><div><div class="kpi-label">ROAS</div><div class="kpi-value">{{ totals.roas|ratio }}</div>{% if totals.roas is None %}<span class="muted small">No revenue tracking</span>{% endif %}</div></div>
+</section>
+
+<section class="grid grid-2-1" style="margin-top:18px">
+  <div class="card">
+    <div class="card-head"><h2>Daily spend and leads</h2><div class="legend"><span><i style="background:#FF6B35"></i>Spend</span><span><i style="background:var(--positive)"></i>Leads</span></div></div>
+    <div class="card-body"><div class="chart-box"><canvas id="campaign-chart" role="img" aria-label="Daily spend and leads"></canvas></div></div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h2>Settings</h2></div>
+    <div class="card-body">
+      <dl class="kv">
+        <dt>Daily budget</dt><dd>{{ campaign.daily_budget_paise|inr }}</dd>
+        <dt>Lifetime budget</dt><dd>{{ campaign.lifetime_budget_paise|inr }}</dd>
+        <dt>Schedule</dt><dd>{{ campaign.start_date|date:"d M Y"|default:"–" }} → {{ campaign.end_date|date:"d M Y"|default:"ongoing" }}</dd>
+        <dt>Platform ID</dt><dd class="small">{{ campaign.external_id }}</dd>
+        <dt>Last synced</dt><dd>{{ campaign.ad_account.last_synced_at|date:"d M Y, h:i A"|default:"never" }}</dd>
+        <dt>Actions available</dt><dd>{% for c in capabilities %}<span class="chip">{{ c }}</span> {% empty %}<span class="muted">Read-only on this platform</span>{% endfor %}</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section class="grid grid-2" style="margin-top:18px">
+  <div class="card">
+    <div class="card-head"><h2>Ad sets and ads</h2></div>
+    <div class="card-body">
+      {% if ad_sets %}
+      <ul class="tree">
+        {% for s in ad_sets %}
+        <li><div class="row"><strong>{{ s.name }}</strong><span class="badge badge-{{ s.status }}">{{ s.get_status_display }}</span><span class="spacer"></span><span class="muted small">{{ s.daily_budget_paise|inr }}/day</span></div>
+          <ul>{% for ad in s.ads.all %}<li><span>{{ ad.name }}</span><span class="badge badge-{% if ad.review_status == 'approved' %}ok{% elif ad.review_status == 'disapproved' %}error{% else %}pending_approval{% endif %}">{{ ad.get_review_status_display }}</span></li>{% empty %}<li class="muted">No ads synced.</li>{% endfor %}</ul>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}<div class="empty">Ad set and ad details have not been synced for this campaign yet.</div>{% endif %}
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h2>Change history</h2></div>
+    <div class="card-body">
+      <ul class="list-plain">
+        {% for e in history %}
+        <li><span class="avatar">{{ e.actor.initials|default:"C" }}</span><span>
+          <strong>{{ e.actor.display_name|default:"Camply" }}</strong> changed status {% if e.before.status %}from <em>{{ e.before.status }}</em> {% endif %}to <em>{{ e.after.status }}</em>
+          {% if e.outcome != 'success' %}<span class="badge badge-{{ e.outcome }}">{{ e.get_outcome_display }}</span><br><span class="muted small">{{ e.message }}</span>{% endif %}
+          <br><span class="muted tiny">{{ e.created_at|date:"d M Y, h:i A" }}</span></span></li>
+        {% empty %}<li class="muted">No changes made through Camply yet.</li>{% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+{{ series|json_script:"campaign-series-data" }}
+{% endblock %}
+{% block scripts %}<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>{% endblock %}

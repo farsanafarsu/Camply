@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="app">
+  <aside class="sidebar" aria-label="Main navigation">
+    <a class="brand" href="{% url 'dashboard:home' %}">{% include "partials/logo.html" %}Camply</a>
+
+    {% if current_org %}
+    <form method="post" action="{% url 'workspace:switch' %}" class="org-switcher">
+      {% csrf_token %}
+      <span class="org-badge" aria-hidden="true">{{ current_org.initial }}</span>
+      <label class="sr-only" for="org-select">Organization</label>
+      <select id="org-select" name="organization" onchange="this.form.submit()">
+        {% for m in user_memberships %}<option value="{{ m.organization_id }}" {% if m.organization_id == current_org.pk %}selected{% endif %}>{{ m.organization.name }}</option>{% endfor %}
+      </select>
+      <i data-lucide="chevrons-up-down" class="chev"></i>
+    </form>
+    {% endif %}
+
+    <nav class="nav">
+      <a href="{% url 'dashboard:home' %}" class="{% nav_active 'dashboard:home' %}"><i data-lucide="layout-dashboard"></i>Dashboard</a>
+      {% can 'accounts.view' as c %}{% if c %}<a href="{% url 'ads:accounts' %}" class="{% nav_active 'ads:accounts' %}"><i data-lucide="wallet-cards"></i>Ad Accounts</a>{% endif %}
+      {% can 'campaigns.view' as c %}{% if c %}<a href="{% url 'dashboard:campaigns' %}" class="{% nav_active 'dashboard:campaigns' %}"><i data-lucide="megaphone"></i>Campaigns</a>{% endif %}
+      {% can 'creatives.view' as c %}{% if c %}<a href="{% url 'dashboard:creatives' %}" class="{% nav_active 'dashboard:creatives' %}"><i data-lucide="image"></i>Creatives<span class="pill">Soon</span></a>{% endif %}
+      {% can 'reports.view' as c %}{% if c %}<a href="{% url 'dashboard:reports' %}" class="{% nav_active 'dashboard:reports' %}"><i data-lucide="chart-column"></i>Reports</a>{% endif %}
+      {% can 'leads.view' as c %}{% if c %}<a href="{% url 'dashboard:leads' %}" class="{% nav_active 'dashboard:leads' %}"><i data-lucide="users"></i>Leads<span class="pill">Soon</span></a>{% endif %}
+      {% can 'copilot.use' as c %}{% if c %}<a href="{% url 'dashboard:copilot' %}" class="{% nav_active 'dashboard:copilot' %}"><i data-lucide="sparkles"></i>AI Copilot<span class="pill">Soon</span></a>{% endif %}
+      {% can 'automation.manage' as c %}{% if c %}<a href="{% url 'dashboard:automation' %}" class="{% nav_active 'dashboard:automation' %}"><i data-lucide="workflow"></i>Automation<span class="pill">Soon</span></a>{% endif %}
+      {% can 'budget.view' as c %}{% if c %}<a href="{% url 'billing:wallet' %}" class="{% nav_active 'billing:wallet' %}{% nav_active 'billing:invoices' %}"><i data-lucide="indian-rupee"></i>Wallet &amp; Billing</a>{% endif %}
+
+      <span class="nav-label">Workspace</span>
+      <a href="{% url 'workspace:clients' %}" class="{% nav_active 'workspace:clients' %}"><i data-lucide="building-2"></i>Clients</a>
+      <a href="{% url 'workspace:team' %}" class="{% nav_active 'workspace:team' %}"><i data-lucide="user-cog"></i>Team</a>
+      {% can 'accounts.view' as c %}{% if c %}<a href="{% url 'ads:integrations' %}" class="{% nav_active 'ads:integrations' %}"><i data-lucide="plug"></i>Integrations</a>{% endif %}
+      {% can 'audit.view' as c %}{% if c %}<a href="{% url 'dashboard:audit_log' %}" class="{% nav_active 'dashboard:audit_log' %}"><i data-lucide="history"></i>Audit log</a>{% endif %}
+      {% can 'org.manage' as c %}{% if c %}<a href="{% url 'workspace:settings' %}" class="{% nav_active 'workspace:settings' %}"><i data-lucide="settings"></i>Settings</a>{% endif %}
+    </nav>
+    <div class="sidebar-footer">All amounts in INR · Asia/Kolkata</div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="btn btn-ghost icon-btn menu-btn" type="button" data-nav-toggle aria-label="Open menu"><i data-lucide="menu"></i></button>
+      <button class="btn btn-ghost icon-btn" type="button" data-theme-toggle aria-label="Switch light or dark mode" title="Light / dark mode"><i data-lucide="sun-moon"></i></button>
+      <details class="dropdown">
+        <summary class="user-menu" aria-label="Account menu">
+          <span class="avatar">{{ user.initials }}</span>
+          <span><span class="name">{{ user.display_name }}</span><br><span class="muted tiny">{{ current_membership.get_role_display }}</span></span>
+          <i data-lucide="chevron-down"></i>
+        </summary>
+        <div class="menu">
+          <a href="{% url 'workspace:profile' %}">Profile &amp; security</a>
+          <a href="{% url 'mfa_index' %}">Two-step verification</a>
+          <form method="post" action="{% url 'account_logout' %}">{% csrf_token %}<button type="submit">Sign out</button></form>
+        </div>
+      </details>
+    </header>
+    <main class="content" id="main">
+      {% include "partials/messages.html" %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+{% endblock %}

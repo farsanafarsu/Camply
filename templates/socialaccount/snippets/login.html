@@ -1,0 +1,6 @@
+{% load socialaccount %}
+{% get_providers as socialaccount_providers %}
+{% if socialaccount_providers %}
+    <div class="divider">Or continue with</div>
+    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+{% endif %}

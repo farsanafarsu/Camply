@@ -1,0 +1,42 @@
+{% extends "app.html" %}
+{% block title %}Ad accounts{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Ad accounts</h1><p>Every connected or manually reported ad account, which client it belongs to, and its sync health.</p></div>
+  <form method="get" class="row filters" data-autosubmit>
+    <label class="sr-only" for="f-platform">Platform</label>
+    <select id="f-platform" name="platform"><option value="">All platforms</option>{% for value, label in platforms %}<option value="{{ value }}" {% if platform == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select>
+  </form>
+</div>
+{% can 'integrations.manage' as can_manage %}
+<div class="card"><div class="card-body table-wrap">
+  <table class="table">
+    <thead><tr><th>Account</th><th>Platform</th><th>Client</th><th>Sync health</th><th>Last synced (IST)</th><th>Available actions</th><th></th></tr></thead>
+    <tbody>
+    {% for row in rows %}{% with a=row.account %}
+      <tr>
+        <td><strong>{{ a.name }}</strong><div class="muted tiny">ID {{ a.external_id }} · {{ a.currency }}</div></td>
+        <td>{% include "partials/platform.html" with code=a.platform label=a.get_platform_display %}</td>
+        <td>
+          {% if can_manage %}
+          <form method="post" action="{% url 'ads:assign_client' a.pk %}">{% csrf_token %}
+            <label class="sr-only" for="client-{{ a.pk }}">Client for {{ a.name }}</label>
+            <select id="client-{{ a.pk }}" name="client" onchange="this.form.submit()">
+              <option value="">Unassigned</option>
+              {% for c in clients %}<option value="{{ c.pk }}" {% if a.client_id == c.pk %}selected{% endif %}>{{ c.name }}</option>{% endfor %}
+            </select>
+          </form>
+          {% else %}{{ a.client|default:"Unassigned" }}{% endif %}
+        </td>
+        <td><span class="badge badge-{{ a.sync_status }}">{{ a.get_sync_status_display }}</span>{% if a.last_sync_error %}<div class="muted tiny">{{ a.last_sync_error }}</div>{% endif %}{% if not a.connection and not a.is_manual %}<div class="muted tiny">Sandbox data (no live connection)</div>{% endif %}</td>
+        <td class="nowrap">{{ a.last_synced_at|date:"d M Y, h:i A"|default:"–" }}</td>
+        <td>{% for c in row.capabilities %}<span class="chip">{{ c }}</span> {% empty %}<span class="muted small">Read-only / manual</span>{% endfor %}</td>
+        <td class="right">{% if can_manage and not a.is_manual %}<form method="post" action="{% url 'ads:sync_now' a.pk %}">{% csrf_token %}<button class="btn btn-sm" type="submit"><i data-lucide="refresh-cw"></i>Sync now</button></form>{% endif %}</td>
+      </tr>
+    {% endwith %}{% empty %}
+      <tr><td colspan="7" class="empty">No ad accounts yet. <a href="{% url 'ads:integrations' %}">Connect a platform</a>.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div></div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "app.html" %}
+{% block title %}Campaigns{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Campaigns</h1><p>Every campaign across connected platforms, with results for the selected period.</p></div>
+</div>
+<div class="card">
+  <div class="card-head">
+    {% include "partials/filters.html" %}
+    <form method="get" class="row filters" role="search">
+      {% for key, value in request.GET.items %}{% if key != 'q' and key != 'status' %}<input type="hidden" name="{{ key }}" value="{{ value }}">{% endif %}{% endfor %}
+      <label class="sr-only" for="f-status">Status</label>
+      <select id="f-status" name="status" onchange="this.form.submit()">
+        <option value="">All statuses</option>
+        {% for value, label in statuses %}<option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+      </select>
+      <label class="sr-only" for="f-q">Search campaigns</label>
+      <input id="f-q" type="search" name="q" value="{{ q }}" placeholder="Search campaigns">
+    </form>
+  </div>
+  <div class="card-body">
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr>
+          <th><a href="{% query_with sort='name' %}">Campaign</a></th><th>Platform</th><th>Objective</th>
+          <th class="right"><a href="{% query_with sort='spend' %}">Spend</a></th>
+          <th class="right">Impr.</th><th class="right">Clicks</th>
+          <th class="right"><a href="{% query_with sort='leads' %}">Leads</a></th>
+          <th class="right"><a href="{% query_with sort='cpl' %}">CPL</a></th>
+          <th class="right"><a href="{% query_with sort='roas' %}">ROAS</a></th>
+          <th class="right">Daily budget</th><th>Status</th>
+        </tr></thead>
+        <tbody>
+        {% for r in rows %}
+          <tr>
+            <td><a class="row-link" href="{% url 'dashboard:campaign_detail' r.campaign.pk %}">{{ r.campaign.name }}</a><div class="muted tiny">{{ r.campaign.client|default:"Unassigned" }} · {{ r.campaign.ad_account.name }}</div></td>
+            <td>{% include "partials/platform.html" with code=r.campaign.platform label=r.campaign.get_platform_display %}</td>
+            <td class="muted">{{ r.campaign.objective|default:"–" }}</td>
+            <td class="right">{{ r.spend_paise|inr }}</td>
+            <td class="right">{{ r.impressions|num }}</td>
+            <td class="right">{{ r.clicks|num }}</td>
+            <td class="right">{{ r.leads|num }}</td>
+            <td class="right">{{ r.cpl_paise|inr }}</td>
+            <td class="right">{{ r.roas|ratio }}</td>
+            <td class="right">{{ r.campaign.daily_budget_paise|inr }}</td>
+            <td><span class="badge badge-{{ r.campaign.status }}">{{ r.campaign.get_status_display }}</span></td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="11" class="empty">No campaigns match these filters.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p class="footnote">{{ rows|length }} campaign{{ rows|length|pluralize }} · {{ filters.start|date:"d M Y" }} – {{ filters.end|date:"d M Y" }} · INR · Asia/Kolkata</p>
+  </div>
+</div>
+{% endblock %}

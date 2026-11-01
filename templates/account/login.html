@@ -1,0 +1,30 @@
+{% extends "account/base_entrance.html" %}
+{% load allauth account %}
+{% block head_title %}Sign in{% endblock head_title %}
+{% block content %}
+    <h1>Welcome to Camply 👋</h1>
+    <p class="lede">Sign in to manage your advertising campaigns.</p>
+    {% url 'account_login' as login_url %}
+    <form method="post" action="{{ login_url }}" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}<div class="alert alert-error" style="margin-bottom:14px"><i data-lucide="circle-alert"></i><span>{{ form.non_field_errors|join:" " }}</span></div>{% endif %}
+        <div class="field">
+            <label for="id_login">Email address</label>
+            <input type="email" name="login" id="id_login" autocomplete="email" placeholder="Enter your email" required value="{{ form.login.value|default:'' }}">
+            {{ form.login.errors }}
+        </div>
+        <div class="field">
+            <label for="id_password">Password</label>
+            <input type="password" name="password" id="id_password" autocomplete="current-password" placeholder="Enter your password" required>
+            {{ form.password.errors }}
+        </div>
+        <div class="row" style="justify-content:space-between;margin-bottom:18px">
+            <label class="check small"><input type="checkbox" name="remember" id="id_remember"> Keep me signed in</label>
+            <a class="small" href="{% url 'account_reset_password' %}">Forgot password?</a>
+        </div>
+        {{ redirect_field }}
+        <button class="btn btn-primary btn-block" type="submit">Sign in</button>
+    </form>
+    {% if SOCIALACCOUNT_ENABLED %}{% include "socialaccount/snippets/login.html" %}{% endif %}
+    <p class="auth-foot">Don't have an account? <a href="{{ signup_url }}">Create an account</a></p>
+{% endblock content %}

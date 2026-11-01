@@ -1,0 +1,16 @@
+{% extends "account/base_entrance.html" %}
+{% load allauth %}
+{% block head_title %}Create your account{% endblock head_title %}
+{% block content %}
+    <h1>Create your Camply account</h1>
+    <p class="lede">Set up your agency workspace in a couple of minutes.</p>
+    {% url 'account_signup' as action_url %}
+    <form method="post" action="{{ action_url }}">
+        {% csrf_token %}
+        {% element fields form=form %}{% endelement %}
+        {{ redirect_field }}
+        <button class="btn btn-primary btn-block" type="submit">Create account</button>
+    </form>
+    {% if SOCIALACCOUNT_ENABLED %}{% include "socialaccount/snippets/login.html" with page_layout="entrance" %}{% endif %}
+    <p class="auth-foot">Already have an account? <a href="{{ login_url }}">Sign in</a></p>
+{% endblock content %}

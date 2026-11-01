@@ -1,0 +1,56 @@
+{% extends "app.html" %}
+{% block title %}Team{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Team &amp; access</h1><p>Who can use {{ current_org.name }}, their role, and which clients they can see.</p></div></div>
+
+<section class="grid grid-2-1">
+  <div class="card">
+    <div class="card-head"><h2>Members</h2></div>
+    <div class="card-body table-wrap">
+      <table class="table">
+        <thead><tr><th>Person</th><th>Role</th><th>Clients</th><th></th></tr></thead>
+        <tbody>
+        {% for m in members %}
+          <tr>
+            <td><div class="row"><span class="avatar">{{ m.user.initials }}</span><span><strong>{{ m.user.display_name }}</strong><div class="muted tiny">{{ m.user.email }}</div></span></div></td>
+            <td><span class="badge badge-role">{{ m.get_role_display }}</span></td>
+            <td class="small">{% if m.sees_all_clients %}All clients{% else %}{% for c in m.clients.all %}{{ c.name }}{% if not forloop.last %}, {% endif %}{% empty %}<span class="muted">None assigned</span>{% endfor %}{% endif %}</td>
+            <td class="right">{% if can_manage and m.user != user %}<a class="btn btn-sm" href="{% url 'workspace:member_edit' m.pk %}">Edit access</a>{% endif %}</td>
+          </tr>
+        {% endfor %}
+        {% for i in invitations %}
+          <tr><td><div class="row"><span class="avatar"><i data-lucide="mail"></i></span><span><strong>{{ i.email }}</strong><div class="muted tiny">Invited {{ i.created_at|timesince }} ago</div></span></div></td><td><span class="badge badge-role">{{ i.get_role_display }}</span></td><td class="small muted">Pending invite</td><td></td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% if invite_form %}
+  <div class="card">
+    <div class="card-head"><h2>Invite someone</h2></div>
+    <div class="card-body">
+      <form method="post" action="{% url 'workspace:invite' %}">{% csrf_token %}
+        {% include "partials/form_fields.html" with form=invite_form %}
+        <button class="btn btn-primary btn-block" type="submit"><i data-lucide="send"></i>Send invitation</button>
+      </form>
+    </div>
+  </div>
+  {% endif %}
+</section>
+
+<section class="card" style="margin-top:18px">
+  <div class="card-head"><h2>Permissions by role</h2><span class="muted small">Enforced on the server for every page and action</span></div>
+  <div class="card-body table-wrap">
+    <table class="table matrix">
+      <thead><tr><th>Permission</th>{% for r in roles %}<th>{{ r.label }}</th>{% endfor %}</tr></thead>
+      <tbody>
+      {% for group, label, allowed in matrix %}
+        {% ifchanged group %}<tr><td colspan="{{ roles|length|add:1 }}" style="background:var(--surface-2)"><strong class="small">{{ group }}</strong></td></tr>{% endifchanged %}
+        <tr><td>{{ label }}</td>{% for ok in allowed %}<td>{% if ok %}<span class="tick" aria-label="Allowed">✓ <span class="sr-only">Allowed</span></span>{% else %}<span class="cross" aria-label="Not allowed">–<span class="sr-only">Not allowed</span></span>{% endif %}</td>{% endfor %}</tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    <p class="footnote">Owners see every client. Other roles see only the clients assigned to them, unless “Access to all clients” is on.</p>
+  </div>
+</section>
+{% endblock %}

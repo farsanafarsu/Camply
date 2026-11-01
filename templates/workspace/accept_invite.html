@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Join {{ invitation.organization.name }}{% endblock %}
+{% block body %}
+<div class="auth-simple">
+  <a class="brand" style="color:var(--text);padding:0;margin-bottom:28px" href="/">{% include "partials/logo.html" %}Camply</a>
+  <div class="card card-pad stack">
+    <h1>Join {{ invitation.organization.name }}</h1>
+    <p class="muted" style="margin:0">You've been invited as <strong>{{ invitation.get_role_display }}</strong>{% if invitation.invited_by %} by {{ invitation.invited_by.display_name }}{% endif %}.</p>
+    <form method="post">{% csrf_token %}<button class="btn btn-primary btn-block" type="submit">Accept invitation</button></form>
+  </div>
+</div>
+{% endblock %}

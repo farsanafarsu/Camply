@@ -1,0 +1,10 @@
+{% extends "app.html" %}
+{% block title %}Profile &amp; security{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Profile &amp; security</h1><p>{{ user.email }}</p></div></div>
+<div class="grid grid-3">
+  <a class="card card-pad stack" href="{% url 'mfa_index' %}"><i data-lucide="shield-check"></i><h3>Two-step verification</h3><span class="muted small">Use an authenticator app and recovery codes.</span></a>
+  <a class="card card-pad stack" href="{% url 'account_change_password' %}"><i data-lucide="key-round"></i><h3>Password</h3><span class="muted small">Change your password.</span></a>
+  <a class="card card-pad stack" href="{% url 'socialaccount_connections' %}"><i data-lucide="link"></i><h3>Google &amp; Microsoft</h3><span class="muted small">Link accounts for one-click sign in.</span></a>
+</div>
+{% endblock %}

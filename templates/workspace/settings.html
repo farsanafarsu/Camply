@@ -1,0 +1,12 @@
+{% extends "app.html" %}
+{% block title %}Settings{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Organization settings</h1><p>Used on GST invoices and to decide between CGST + SGST and IGST.</p></div></div>
+<div class="card card-pad" style="max-width:640px">
+  <form method="post">{% csrf_token %}
+    {% include "partials/form_fields.html" with form=form %}
+    <button class="btn btn-primary" type="submit">Save settings</button>
+  </form>
+  <p class="footnote">Currency: INR · Timezone: Asia/Kolkata · GST on fees: 18%</p>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "app.html" %}
+{% block title %}Invoice {{ invoice.number }}{% endblock %}
+{% block content %}
+<p class="small no-print"><a href="{% url 'billing:invoices' %}">← All invoices</a></p>
+<div class="page-head no-print">
+  <div><h1>Invoice {{ invoice.number }}</h1></div>
+  <button class="btn" type="button" data-print><i data-lucide="printer"></i>Print / save PDF</button>
+</div>
+<article class="card card-pad stack" style="max-width:820px">
+  <div class="row">
+    <div>
+      <div class="brand" style="color:var(--text);padding:0">{% include "partials/logo.html" %}{{ invoice.organization.legal_name|default:invoice.organization.name }}</div>
+      <div class="small muted">{{ invoice.organization.city }}{% if invoice.organization.city %}, {% endif %}{{ invoice.organization.state }}{% if invoice.organization.gstin %} · GSTIN {{ invoice.organization.gstin }}{% endif %}</div>
+    </div>
+    <span class="spacer"></span>
+    <div class="right"><h2>TAX INVOICE</h2><div class="small">{{ invoice.number }}</div><span class="badge badge-{{ invoice.status }}">{{ invoice.get_status_display }}</span></div>
+  </div>
+  <div class="grid grid-2">
+    <dl class="kv"><dt>Billed to</dt><dd><strong>{{ invoice.client.name }}</strong>{% if invoice.client.gstin %}<br>GSTIN {{ invoice.client.gstin }}{% endif %}</dd><dt>Place of supply</dt><dd>{{ invoice.place_of_supply|default:"Not specified" }}</dd></dl>
+    <dl class="kv"><dt>Issue date</dt><dd>{{ invoice.issue_date|date:"d M Y" }}</dd><dt>Due date</dt><dd>{{ invoice.due_date|date:"d M Y" }}</dd></dl>
+  </div>
+  <table class="table">
+    <thead><tr><th>Description</th><th>SAC</th><th class="right">Amount</th></tr></thead>
+    <tbody>
+      <tr><td>{{ invoice.description }}</td><td>998361</td><td class="right">{{ invoice.subtotal_paise|inr_paise }}</td></tr>
+      {% if invoice.igst_paise %}
+        <tr><td colspan="2" class="right">IGST @ {{ gst_rate }}%</td><td class="right">{{ invoice.igst_paise|inr_paise }}</td></tr>
+      {% else %}
+        <tr><td colspan="2" class="right">CGST @ 9%</td><td class="right">{{ invoice.cgst_paise|inr_paise }}</td></tr>
+        <tr><td colspan="2" class="right">SGST @ 9%</td><td class="right">{{ invoice.sgst_paise|inr_paise }}</td></tr>
+      {% endif %}
+      <tr><td colspan="2" class="right"><strong>Total</strong></td><td class="right"><strong>{{ invoice.total_paise|inr_paise }}</strong></td></tr>
+    </tbody>
+  </table>
+  <p class="footnote">SAC 998361: advertising services. Confirm the SAC code with your accountant. This invoice covers agency service fees only; ad spend is billed by each platform directly.</p>
+</article>
+{% endblock %}

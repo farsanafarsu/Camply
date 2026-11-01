@@ -1,0 +1,12 @@
+{% extends "app.html" %}
+{% block title %}Edit {{ client.name }}{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url 'workspace:clients' %}">← Clients</a></p>
+<div class="page-head"><div><h1>{{ client.name }}</h1></div></div>
+<div class="card card-pad" style="max-width:640px">
+  <form method="post">{% csrf_token %}
+    {% include "partials/form_fields.html" with form=form %}
+    <div class="row"><button class="btn btn-primary" type="submit">Save</button><a class="btn btn-ghost" href="{% url 'workspace:clients' %}">Cancel</a></div>
+  </form>
+</div>
+{% endblock %}

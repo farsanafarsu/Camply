@@ -1,0 +1,30 @@
+<form method="get" class="row filters" data-autosubmit aria-label="Filters">
+  {% if extra_hidden %}{% for name, value in extra_hidden %}<input type="hidden" name="{{ name }}" value="{{ value }}">{% endfor %}{% endif %}
+  <label class="sr-only" for="f-range">Date range</label>
+  <select id="f-range" name="range">
+    {% for key, label in presets.items %}<option value="{{ key }}" {% if filters.preset == key %}selected{% endif %}>{{ label }}</option>{% endfor %}
+    <option value="custom" {% if filters.preset == 'custom' %}selected{% endif %}>Custom range…</option>
+  </select>
+  <span class="row" data-custom-range {% if filters.preset != 'custom' %}hidden{% endif %}>
+    <label class="sr-only" for="f-start">From</label>
+    <input id="f-start" type="date" name="start" value="{{ filters.start|date:'Y-m-d' }}">
+    <label class="sr-only" for="f-end">To</label>
+    <input id="f-end" type="date" name="end" value="{{ filters.end|date:'Y-m-d' }}">
+    <button class="btn btn-sm" type="submit">Apply</button>
+  </span>
+  {% if not range_only and filter_clients|length > 1 %}
+  <label class="sr-only" for="f-client">Client</label>
+  <select id="f-client" name="client">
+    <option value="">All clients</option>
+    {% for c in filter_clients %}<option value="{{ c.pk }}" {% if filters.client_id == c.pk|stringformat:'s' %}selected{% endif %}>{{ c.name }}</option>{% endfor %}
+  </select>
+  {% endif %}
+  {% if not range_only %}
+  <label class="sr-only" for="f-platform">Platform</label>
+  <select id="f-platform" name="platform">
+    <option value="">All platforms</option>
+    {% for value, label in platforms %}<option value="{{ value }}" {% if filters.platform == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+  </select>
+  {% endif %}
+  <noscript><button class="btn btn-sm" type="submit">Apply</button></noscript>
+</form>

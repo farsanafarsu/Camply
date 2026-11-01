@@ -1,0 +1,50 @@
+{% extends "app.html" %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Cross-channel report</h1><p>{{ filters.start|date:"d M Y" }} – {{ filters.end|date:"d M Y" }} · compare platforms side by side.</p></div>
+  <div class="row no-print">
+    {% can 'reports.export' as can_export %}
+    {% if can_export %}<a class="btn" href="{% url 'dashboard:reports_csv' %}{% query_with %}"><i data-lucide="download"></i>Export CSV</a>{% endif %}
+    <button class="btn" type="button" data-print><i data-lucide="printer"></i>Print / PDF</button>
+  </div>
+</div>
+<div class="row no-print" style="margin-bottom:18px">{% include "partials/filters.html" %}</div>
+
+<section class="grid grid-kpi">
+  <div class="card kpi"><div><div class="kpi-label">Spend</div><div class="kpi-value">{{ kpis.spend_paise|inr }}</div>{% include "partials/delta.html" with value=kpis.change.spend_paise %}</div></div>
+  <div class="card kpi"><div><div class="kpi-label">Clicks</div><div class="kpi-value">{{ kpis.clicks|num }}</div>{% include "partials/delta.html" with value=kpis.change.clicks %}</div></div>
+  <div class="card kpi"><div><div class="kpi-label">CTR</div><div class="kpi-value">{{ kpis.ctr|pct:2 }}</div></div></div>
+  <div class="card kpi"><div><div class="kpi-label">Leads</div><div class="kpi-value">{{ kpis.leads|num }}</div>{% include "partials/delta.html" with value=kpis.change.leads %}</div></div>
+  <div class="card kpi"><div><div class="kpi-label">Cost per lead</div><div class="kpi-value">{{ kpis.cpl_paise|inr }}</div>{% include "partials/delta.html" with value=kpis.change.cpl_paise invert=True %}</div></div>
+</section>
+
+<section class="card" style="margin-top:18px">
+  <div class="card-head"><h2>By platform</h2></div>
+  <div class="card-body table-wrap">
+    <table class="table">
+      <thead><tr><th>Platform</th><th class="right">Spend</th><th class="right">Share</th><th class="right">Impressions</th><th class="right">Clicks</th><th class="right">Leads</th><th class="right">CPL</th></tr></thead>
+      <tbody>
+        {% for p in breakdown %}
+        <tr><td>{% include "partials/platform.html" with code=p.platform label=p.label %}</td><td class="right">{{ p.spend_paise|inr }}</td><td class="right">{{ p.share|floatformat:1 }}%</td><td class="right">{{ p.impressions|num }}</td><td class="right">{{ p.clicks|num }}</td><td class="right">{{ p.leads|num }}</td><td class="right">{{ p.cpl_paise|inr }}</td></tr>
+        {% empty %}<tr><td colspan="7" class="empty">No data for this period.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="card" style="margin-top:18px">
+  <div class="card-head"><h2>By campaign</h2></div>
+  <div class="card-body table-wrap">
+    <table class="table">
+      <thead><tr><th>Campaign</th><th>Client</th><th>Platform</th><th class="right">Spend</th><th class="right">Clicks</th><th class="right">CTR</th><th class="right">Leads</th><th class="right">CPL</th><th class="right">ROAS</th></tr></thead>
+      <tbody>
+        {% for r in rows %}
+        <tr><td>{{ r.campaign.name }}</td><td>{{ r.campaign.client|default:"–" }}</td><td>{{ r.campaign.get_platform_display }}</td><td class="right">{{ r.spend_paise|inr }}</td><td class="right">{{ r.clicks|num }}</td><td class="right">{{ r.ctr|pct:2 }}</td><td class="right">{{ r.leads|num }}</td><td class="right">{{ r.cpl_paise|inr }}</td><td class="right">{{ r.roas|ratio }}</td></tr>
+        {% empty %}<tr><td colspan="9" class="empty">No campaigns.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+    <p class="footnote">Currency INR · Timezone Asia/Kolkata · Last sync {% if freshness.last_synced_at %}{{ freshness.last_synced_at|date:"d M Y, h:i A" }}{% else %}never{% endif %}. Figures are as reported by each platform, using each platform's default attribution window. CPL = spend ÷ leads; CTR = clicks ÷ impressions; ROAS only where revenue tracking is connected.</p>
+  </div>
+</section>
+{% endblock %}

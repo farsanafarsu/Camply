@@ -1,0 +1,31 @@
+{% extends "app.html" %}
+{% block title %}Invoices{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url 'billing:wallet' %}">← Wallet &amp; billing</a></p>
+<div class="page-head"><div><h1>GST invoices</h1><p>Service-fee invoices with {{ gst_rate }}% GST — CGST + SGST within your state, IGST for other states.</p></div></div>
+<section class="grid grid-2-1">
+  <div class="card"><div class="card-body table-wrap">
+    <table class="table">
+      <thead><tr><th>Invoice</th><th>Client</th><th>Issued</th><th class="right">Before GST</th><th class="right">GST</th><th class="right">Total</th><th>Status</th></tr></thead>
+      <tbody>
+      {% for i in invoices %}
+        <tr><td><a class="row-link" href="{% url 'billing:invoice_detail' i.pk %}">{{ i.number }}</a></td><td>{{ i.client.name }}</td><td class="nowrap">{{ i.issue_date|date:"d M Y" }}</td><td class="right">{{ i.subtotal_paise|inr_paise }}</td><td class="right">{{ i.tax_paise|inr_paise }}</td><td class="right"><strong>{{ i.total_paise|inr_paise }}</strong></td><td><span class="badge badge-{{ i.status }}">{{ i.get_status_display }}</span></td></tr>
+      {% empty %}<tr><td colspan="7" class="empty">No invoices yet.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div></div>
+  {% can 'budget.manage' as can_manage %}
+  {% if can_manage %}
+  <div class="card">
+    <div class="card-head"><h2>New invoice</h2></div>
+    <div class="card-body">
+      <form method="post" action="{% url 'billing:create_invoice' %}">{% csrf_token %}
+        {% include "partials/form_fields.html" with form=form %}
+        <button class="btn btn-primary btn-block" type="submit">Create invoice</button>
+      </form>
+      <p class="footnote">GST type is chosen from your organization's state and the client's state. Set both in Settings and Clients.</p>
+    </div>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

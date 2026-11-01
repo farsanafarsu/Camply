@@ -29,6 +29,7 @@
     s.setProperty("--after", ramp(p, 0.56, 0.78).toFixed(4));
     s.setProperty("--progress", p.toFixed(4));
     story.classList.toggle("is-after", p > 0.6);
+    story.classList.toggle("is-done", p > 0.97);
   }
 
   function onScroll() {
@@ -79,14 +80,25 @@
   });
   setMode();
 
-  // Reveal the comparison rows as they scroll into view.
-  if ("IntersectionObserver" in window && !reduce.matches) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); } });
-    }, { threshold: 0.2 });
-    document.querySelectorAll(".change-row").forEach(function (el) {
-      el.classList.add("reveal");
-      io.observe(el);
-    });
+  // Flip cards: each turns from "Before" to "With Camply" as it rises from the bottom
+  // of the screen to the middle, and lifts toward the viewer mid-turn.
+  var flips = Array.prototype.slice.call(document.querySelectorAll("[data-flip]"));
+  if (flips.length && !reduce.matches) {
+    var flipTicking = false;
+    var updateFlips = function () {
+      flipTicking = false;
+      var vh = window.innerHeight, start = vh * 0.95, end = vh * 0.5;
+      flips.forEach(function (card) {
+        var t = ramp(clamp((start - card.getBoundingClientRect().top) / (start - end)), 0, 1);
+        card.style.setProperty("--flip", (t * 180).toFixed(1) + "deg");
+        card.style.setProperty("--lift", (Math.sin(t * Math.PI) * 70).toFixed(1) + "px");
+      });
+    };
+    var onFlipScroll = function () {
+      if (!flipTicking) { flipTicking = true; window.requestAnimationFrame(updateFlips); }
+    };
+    window.addEventListener("scroll", onFlipScroll, { passive: true });
+    window.addEventListener("resize", onFlipScroll);
+    updateFlips();
   }
 })();

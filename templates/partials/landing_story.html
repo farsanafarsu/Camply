@@ -144,23 +144,33 @@ Without JavaScript or with reduced motion, the panels simply stack. landing.js a
   </div>
 </section>
 
-<!-- Before / with Camply -->
+<!-- Before / with Camply: 3D flip cards that turn over as they scroll into view -->
 <section class="lp-section change" id="change">
   <div class="lp-container">
     <div class="lp-section-head">
       <span class="lp-eyebrow">From chaos to clarity</span>
-      <h2>What changes when you switch to Camply</h2>
-      <p>The same work your team does today, without the tab-hopping, copy-pasting and late-night client messages.</p>
+      <h2>Watch each headache flip into a habit</h2>
+      <p>Scroll, and every card turns over: what your team does today on the front, how it works in Camply on the back.</p>
     </div>
-    <div class="change-table" role="table" aria-label="Before and with Camply">
-      <div class="change-head" role="row"><span role="columnheader">Before Camply</span><span role="columnheader" class="change-arrow-col"></span><span role="columnheader">With Camply</span></div>
+    <ol class="flip-grid" data-flip-grid>
       {% for before, after, icon in change_rows %}
-      <div class="change-row" role="row">
-        <div class="change-before" role="cell"><span class="change-x" aria-hidden="true">✕</span>{{ before }}</div>
-        <div class="change-arrow" aria-hidden="true"><i data-lucide="arrow-right"></i></div>
-        <div class="change-after" role="cell"><span class="kpi-icon"><i data-lucide="{{ icon }}"></i></span>{{ after }}</div>
-      </div>
+      <li class="flip" data-flip>
+        <div class="flip-inner">
+          <div class="flip-face flip-front">
+            <span class="flip-tag">Before Camply</span>
+            <span class="flip-x" aria-hidden="true">✕</span>
+            <p>{{ before }}</p>
+            <span class="flip-num" aria-hidden="true">0{{ forloop.counter }}</span>
+          </div>
+          <div class="flip-face flip-back">
+            <span class="flip-tag is-on">With Camply</span>
+            <span class="flip-icon" aria-hidden="true"><i data-lucide="{{ icon }}"></i></span>
+            <p>{{ after }}</p>
+            <span class="flip-check" aria-hidden="true"><i data-lucide="check"></i></span>
+          </div>
+        </div>
+      </li>
       {% endfor %}
-    </div>
+    </ol>
   </div>
 </section>

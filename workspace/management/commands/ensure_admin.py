@@ -8,10 +8,12 @@ Reads:
     CAMPLY_ADMIN_EMAIL      the admin's email (required; does nothing if unset)
     CAMPLY_ADMIN_PASSWORD   their password (required with the email)
     CAMPLY_ORG_NAME         organization to make them Owner of (default "PRception Media")
+    CAMPLY_ADMIN_RESET_PASSWORD  "true" to overwrite an existing account's password
 
 The account is made a verified Owner of that organization with Django admin access.
-The password is reset to CAMPLY_ADMIN_PASSWORD each time, so changing the variable and
-redeploying changes the password.
+The password is set when the account is created. After that it is left alone (so a
+password changed in the app, or through "Forgot password", survives restarts) unless
+CAMPLY_ADMIN_RESET_PASSWORD is true.
 """
 
 import os
@@ -44,9 +46,11 @@ class Command(BaseCommand):
 
         user = User.objects.filter(email__iexact=email).first()
         created = user is None
+        reset = (os.environ.get("CAMPLY_ADMIN_RESET_PASSWORD") or "").strip().lower() in {"1", "true", "yes"}
         if created:
             user = User(email=email)
-        user.set_password(password)
+        if created or reset:
+            user.set_password(password)
         user.is_active = True
         user.is_staff = True
         user.is_superuser = True
@@ -64,8 +68,10 @@ class Command(BaseCommand):
         Membership.objects.update_or_create(
             organization=org, user=user, defaults={"role": Role.OWNER, "all_clients": True}
         )
-        action = "Created" if created else "Updated"
-        self.stdout.write(self.style.SUCCESS(
-            f"Camply admin setup: {action} admin {email} as Owner of {org.name} "
-            f"(password length {len(password)})."
-        ))
+        if created:
+            outcome = f"Created admin {email} as Owner of {org.name} (password length {len(password)})."
+        elif reset:
+            outcome = f"Updated admin {email}; password reset from CAMPLY_ADMIN_PASSWORD (length {len(password)})."
+        else:
+            outcome = f"Admin {email} already exists; password left unchanged."
+        self.stdout.write(self.style.SUCCESS(f"Camply admin setup: {outcome}"))

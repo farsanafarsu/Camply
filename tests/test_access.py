@@ -133,3 +133,16 @@ def test_user_without_membership_goes_to_onboarding(client, world):
     response = client.get(reverse("dashboard:home"))
     assert response.status_code == 302
     assert response.url == reverse("workspace:onboarding")
+
+
+def test_password_reset_link_works_with_mongodb_ids(client, world, mailoutbox):
+    import re
+
+    response = client.post(reverse("account_reset_password"), {"email": "owner@a.test"})
+    assert response.status_code == 302
+    link = re.search(r"/accounts/password/reset/key/\S+", mailoutbox[0].body).group(0)
+    response = client.get(link, follow=True)
+    form_url = response.redirect_chain[-1][0]
+    client.post(form_url, {"password1": "Brand-New-Pass-2026", "password2": "Brand-New-Pass-2026"})
+    world["owner"].refresh_from_db()
+    assert world["owner"].check_password("Brand-New-Pass-2026")

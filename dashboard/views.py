@@ -27,9 +27,16 @@ def filter_context(request):
     }
 
 
+def home(request):
+    """Visitors see the marketing home page; signed-in users see their dashboard."""
+    if not request.user.is_authenticated:
+        return render(request, "landing.html")
+    return dashboard(request)
+
+
 @login_required
 @require_perm("dashboard.view")
-def home(request):
+def dashboard(request):
     membership = request.membership
     filters, ctx = filter_context(request)
     breakdown, total_spend = analytics.platform_breakdown(membership, filters)

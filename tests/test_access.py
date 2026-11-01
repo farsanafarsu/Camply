@@ -116,6 +116,17 @@ def test_dashboard_totals_respect_scope(client, world):
     assert response.context["kpis"]["spend_paise"] == alpha_spend
 
 
+def test_visitors_see_home_page_and_members_see_dashboard(client, world):
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "landing.html" in [t.name for t in response.templates]
+    assert "Alpha campaign" not in response.content.decode()
+
+    login(client, world["owner"])
+    response = client.get("/")
+    assert "dashboard/home.html" in [t.name for t in response.templates]
+
+
 def test_user_without_membership_goes_to_onboarding(client, world):
     loner = make_user("new@x.test")
     login(client, loner)

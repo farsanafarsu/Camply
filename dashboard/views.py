@@ -27,10 +27,21 @@ def filter_context(request):
     }
 
 
+# Home page "Before Camply / With Camply" rows: (before, after, icon).
+CHANGE_ROWS = [
+    ("Logging in to four ad managers for every client", "One sign-in for every client and every platform", "layout-dashboard"),
+    ("Copying numbers into Excel every Monday morning", "Reports that update themselves and export in one click", "chart-column"),
+    ("Sending screenshots to clients on WhatsApp", "Client logins, shareable reports and approval links", "users"),
+    ("Finding out about overspend at month-end", "Budget alerts at 80%, before it's too late", "bell-ring"),
+    ("Guessing which ads actually bring leads", "Every lead tagged to the campaign that won it", "target"),
+    ("Making GST invoices by hand", "CGST, SGST or IGST invoices in seconds", "indian-rupee"),
+]
+
+
 def home(request):
     """Visitors see the marketing home page; signed-in users see their dashboard."""
     if not request.user.is_authenticated:
-        return render(request, "landing.html")
+        return render(request, "landing.html", {"change_rows": CHANGE_ROWS})
     return dashboard(request)
 
 

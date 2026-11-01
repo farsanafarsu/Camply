@@ -1,0 +1,119 @@
+/* =====================================================================
+   Home page scroll story: the old way -> "It's time to change" -> Camply
+   Default (no JS, phones, reduced motion): panels stack in normal flow.
+   .is-live (added by landing.js): the section pins and panels crossfade.
+   ===================================================================== */
+/* overflow-x: clip (not hidden) keeps the scattered cards on screen without breaking position: sticky. */
+.story { position: relative; overflow-x: clip; background: radial-gradient(1100px 520px at 85% -10%, var(--selected), transparent 60%), var(--bg); }
+.story-panel { padding: 56px 0; }
+.story-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 56px; align-items: center; }
+.story-copy h1, .story-title { font-size: clamp(2.1rem, 4.2vw, 3.4rem); line-height: 1.1; font-weight: 700; letter-spacing: -0.02em; margin: 18px 0; }
+.story-eyebrow-muted { background: var(--surface-2); color: var(--text-muted); }
+.story-strike { position: relative; white-space: nowrap; }
+.story-strike::after { content: ""; position: absolute; left: -2%; right: -2%; top: 55%; height: 0.12em; background: var(--orange); border-radius: 4px; transform: scaleX(0); transform-origin: left; animation: strike 0.9s 0.6s cubic-bezier(.6, .1, .2, 1) forwards; }
+@keyframes strike { to { transform: scaleX(1); } }
+.story-scroll-hint { display: inline-flex; align-items: center; gap: 10px; margin-top: 8px; color: var(--text-muted); font-size: 0.9rem; font-weight: 500; }
+.story-mouse { width: 22px; height: 34px; border: 2px solid var(--text-muted); border-radius: 12px; display: grid; justify-items: center; padding-top: 6px; }
+.story-mouse span { width: 3px; height: 7px; border-radius: 2px; background: var(--orange); animation: wheel 1.6s ease-in-out infinite; }
+@keyframes wheel { 0% { transform: translateY(0); opacity: 1; } 70% { transform: translateY(9px); opacity: 0; } 100% { opacity: 0; } }
+
+/* The chaos: scattered windows, a spreadsheet, a WhatsApp message, a sticky note */
+.chaos { position: relative; height: 470px; }
+.chaos-card {
+  position: absolute; left: var(--x); top: var(--y); width: min(300px, 62%);
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px;
+  box-shadow: 0 18px 40px -18px rgba(23, 25, 35, 0.35); font-size: 0.82rem;
+  rotate: var(--r); animation: drift 6s var(--d, 0s) ease-in-out infinite alternate;
+}
+@keyframes drift { from { transform: translateY(-5px); } to { transform: translateY(6px); } }
+.chaos-bar { display: flex; align-items: center; gap: 8px; font-weight: 600; margin-bottom: 10px; color: var(--text); }
+.chaos-bar .platform-dot { width: 20px; height: 20px; font-size: 0.62rem; }
+.chaos-rows { display: flex; flex-direction: column; gap: 6px; }
+.chaos-rows i { display: block; height: 8px; border-radius: 4px; background: var(--surface-2); }
+.chaos-rows i.short { width: 55%; }
+.chaos-warn { background: var(--warning-bg); color: var(--warning); border-radius: 8px; padding: 7px 10px; font-weight: 600; }
+.chaos-file { display: flex; align-items: center; gap: 8px; font-weight: 600; margin-bottom: 10px; }
+.xls { width: 20px; height: 20px; border-radius: 4px; background: #1D6F42; color: #fff; display: grid; place-items: center; font: 700 0.65rem var(--font-heading); }
+.chaos-grid { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; font-variant-numeric: tabular-nums; }
+.chaos-grid span { padding: 5px 8px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.chaos-grid span:nth-child(-n+3) { background: var(--surface-2); font-weight: 600; color: var(--text-muted); }
+.chaos-grid .err { color: var(--negative); font-weight: 700; }
+.chaos-chat { background: #E9F7EF; border-color: #CDEBD8; }
+.chat-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: #171923; }
+.chat-head small { display: block; color: #3D8B5C; font-size: 0.72rem; }
+.chat-avatar { width: 28px; height: 28px; border-radius: 50%; background: #25D366; color: #fff; display: grid; place-items: center; font: 700 0.65rem var(--font-heading); }
+.chat-bubble { background: #fff; color: #171923; border-radius: 10px 10px 10px 2px; padding: 8px 10px; line-height: 1.4; box-shadow: 0 1px 1px rgba(0, 0, 0, .06); }
+.chat-bubble time { display: block; text-align: right; font-size: 0.68rem; color: #6B7079; margin-top: 2px; }
+.chaos-note { width: 190px; background: #FFE58F; border-color: #F5D565; color: #4A3B00; font: 600 0.9rem/1.35 var(--font-body); padding: 16px 14px; border-radius: 4px; }
+.chaos-toast { width: auto; display: flex; align-items: center; gap: 8px; background: var(--midnight); color: #fff; border-color: var(--midnight); font-weight: 500; }
+.toast-dot { width: 8px; height: 8px; border-radius: 50%; background: #FF6B6B; flex: none; }
+
+/* Turning point */
+.story-mid { display: grid; place-items: center; text-align: center; padding: 72px 16px; }
+.story-change { margin: 0; font: 700 clamp(2.6rem, 7vw, 5.4rem)/1.05 var(--font-heading); letter-spacing: -0.03em; color: var(--text); }
+
+/* Introducing Camply */
+.story-preview .lp-window { transform: perspective(1400px) rotateY(-5deg) rotateX(2deg); }
+.story-ok { background: var(--warning-bg); color: var(--warning); }
+.story-line { stroke-dasharray: 520; stroke-dashoffset: 0; }
+.story-progress { display: none; }
+
+/* ---------- Live (pinned, scroll-driven) ---------- */
+.story.is-live { height: 320vh; }
+.story.is-live .story-sticky { position: sticky; top: 72px; height: calc(100vh - 72px); overflow: hidden; }
+.story.is-live .story-panel { position: absolute; inset: 0; display: flex; align-items: center; padding: 0; }
+.story.is-live .story-before { opacity: var(--before, 1); }
+.story.is-live .story-before .story-copy { translate: 0 calc((1 - var(--before, 1)) * -40px); }
+.story.is-live .story-mid { justify-content: center; opacity: var(--mid, 0); scale: calc(0.92 + var(--mid, 0) * 0.08); pointer-events: none; }
+.story.is-live .story-after { opacity: var(--after, 0); translate: 0 calc((1 - var(--after, 0)) * 48px); pointer-events: none; }
+.story.is-live.is-after .story-after { pointer-events: auto; }
+.story.is-live.is-after .story-before { pointer-events: none; }
+/* The chaos pulls together toward the centre and fades as the story turns. */
+.story.is-live .chaos-card {
+  translate: calc(var(--tx) * var(--p, 0) * 3) calc(var(--ty) * var(--p, 0) * 3);
+  rotate: calc(var(--r) * (1 - var(--p, 0)));
+  scale: calc(1 - var(--p, 0) * 0.45);
+  filter: blur(calc(var(--p, 0) * 3px));
+}
+.story.is-live .story-preview .lp-window { scale: calc(0.92 + var(--after, 0) * 0.08); }
+.story.is-live .story-line { stroke-dashoffset: calc((1 - var(--after, 0)) * 520); }
+.story.is-live .story-progress { display: block; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--surface-2); }
+.story.is-live .story-progress span { display: block; height: 100%; width: calc(var(--progress, 0) * 100%); background: var(--orange); }
+
+/* ---------- Stacked mode reveal (phones) ---------- */
+.reveal { opacity: 0; translate: 0 24px; transition: opacity 0.6s ease, translate 0.6s ease; }
+.reveal.is-in { opacity: 1; translate: 0 0; }
+
+/* ---------- Before / with Camply ---------- */
+.change-table { max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+.change-head { display: grid; grid-template-columns: 1fr 56px 1fr; padding: 0 6px; font: 600 0.78rem var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+.change-head span:last-child { color: var(--accent-text); }
+.change-row { display: grid; grid-template-columns: 1fr 56px 1fr; align-items: stretch; }
+.change-before, .change-after { display: flex; align-items: center; gap: 12px; padding: 16px 18px; border-radius: var(--radius); font-size: 0.98rem; }
+.change-before { background: var(--surface-2); color: var(--text-muted); }
+.change-x { width: 26px; height: 26px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--negative-bg); color: var(--negative); font-size: 0.75rem; font-weight: 700; }
+.change-after { background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow); color: var(--text); font-weight: 600; }
+.change-after .kpi-icon { width: 34px; height: 34px; border-radius: 10px; }
+.change-after .kpi-icon svg { width: 17px; height: 17px; }
+.change-arrow { display: grid; place-items: center; color: var(--orange); }
+.change-arrow svg { width: 22px; height: 22px; }
+
+@media (max-width: 1024px) {
+  .story-grid { grid-template-columns: 1fr; gap: 32px; }
+  .chaos { height: 440px; max-width: 560px; width: 100%; margin: 0 auto; }
+  .story-preview .lp-window { transform: none; }
+}
+@media (max-width: 640px) {
+  .story-panel { padding: 36px 0; }
+  .chaos { height: 540px; }
+  .chaos-card { width: 74%; left: min(var(--x), 24%); }
+  .chaos-toast { left: 0; }
+  .chaos-note { width: 170px; }
+  .change-head { display: none; }
+  .change-row { grid-template-columns: 1fr; gap: 6px; }
+  .change-arrow { rotate: 90deg; height: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chaos-card, .story-mouse span { animation: none; }
+  .story-strike::after { animation: none; transform: scaleX(1); }
+}

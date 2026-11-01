@@ -1,0 +1,125 @@
+{% comment %}
+Scroll story hero: the old way -> "It's time to change" -> Introducing Camply.
+Without JavaScript or with reduced motion, the panels simply stack. landing.js adds
+`is-live` and drives --before / --mid / --after / --p while the section is pinned.
+{% endcomment %}
+<section class="story" data-story aria-label="Why Camply">
+  <div class="story-sticky">
+
+    <!-- 1. The old way -->
+    <div class="story-panel story-before">
+      <div class="lp-container story-grid">
+        <div class="story-copy">
+          <span class="lp-eyebrow story-eyebrow-muted">Sound familiar?</span>
+          <h1>Still running ads across <span class="story-strike">five tabs</span>, three spreadsheets and a WhatsApp group?</h1>
+          <p class="lp-lede">Meta in one tab, Google in another, TikTok asking you to log in again. Numbers copied into Excel at midnight, screenshots sent to every client, and nobody quite sure what was spent this month.</p>
+          <div class="story-scroll-hint" aria-hidden="true"><span class="story-mouse"><span></span></span>Scroll to see a better way</div>
+        </div>
+
+        <div class="chaos" aria-hidden="true">
+          <div class="chaos-card chaos-tab" style="--x:-4%;--y:2%;--r:-6deg;--tx:30%;--ty:28%;--d:0s">
+            <div class="chaos-bar"><span class="platform-dot platform-meta">M</span>Ads Manager · Business 3 of 7</div>
+            <div class="chaos-rows"><i></i><i></i><i></i><i class="short"></i></div>
+          </div>
+          <div class="chaos-card chaos-tab" style="--x:46%;--y:-4%;--r:5deg;--tx:-14%;--ty:34%;--d:.4s">
+            <div class="chaos-bar"><span class="platform-dot platform-google">G</span>Google Ads</div>
+            <div class="chaos-warn">Wrong account. Switch to “Kovalam Bay”?</div>
+          </div>
+          <div class="chaos-card chaos-sheet" style="--x:8%;--y:40%;--r:3deg;--tx:22%;--ty:-4%;--d:.8s">
+            <div class="chaos-file"><span class="xls">X</span>Client_Report_Nov_FINAL_v7.xlsx</div>
+            <div class="chaos-grid"><span>Spend</span><span>Leads</span><span>CPL</span><span>₹48,732</span><span>284</span><span class="err">#REF!</span><span>₹21,904</span><span>??</span><span class="err">#DIV/0!</span></div>
+          </div>
+          <div class="chaos-card chaos-chat" style="--x:58%;--y:30%;--r:-4deg;--tx:-24%;--ty:2%;--d:.2s">
+            <div class="chat-head"><span class="chat-avatar">KB</span><div><strong>Kovalam Bay Resorts</strong><small>online</small></div></div>
+            <div class="chat-bubble">Hi, what's our cost per lead this week? Our MD is asking 😟<time>11:42 PM</time></div>
+          </div>
+          <div class="chaos-card chaos-note" style="--x:34%;--y:74%;--r:-8deg;--tx:6%;--ty:-34%;--d:.6s">Pause Onam campaign before the budget runs out!!</div>
+          <div class="chaos-card chaos-tab" style="--x:64%;--y:68%;--r:6deg;--tx:-30%;--ty:-30%;--d:1s">
+            <div class="chaos-bar"><span class="platform-dot platform-tiktok">T</span>TikTok Ads Manager</div>
+            <div class="chaos-warn">Session expired. Please log in again.</div>
+          </div>
+          <div class="chaos-card chaos-toast" style="--x:-2%;--y:78%;--r:2deg;--tx:36%;--ty:-40%;--d:.5s"><span class="toast-dot"></span>Your ad was disapproved · 3 days ago</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. The turning point -->
+    <div class="story-panel story-mid" aria-hidden="true">
+      <p class="story-change">It's time to <span class="lp-accent">change.</span></p>
+    </div>
+
+    <!-- 3. Introducing Camply -->
+    <div class="story-panel story-after">
+      <div class="lp-container story-grid">
+        <div class="story-copy">
+          <span class="lp-eyebrow">Introducing Camply</span>
+          <h2 class="story-title">Every campaign.<br><span class="lp-accent">One platform.</span></h2>
+          <p class="lp-lede">Camply brings Meta, Google, TikTok and ChatGPT Ads for every client into one dashboard, with live results, budgets, GST invoices, approvals and leads. Built for agencies in India.</p>
+          <div class="lp-cta-row">
+            <a class="btn btn-primary lp-btn-lg" href="{% url 'account_signup' %}">Get started free <i data-lucide="arrow-right"></i></a>
+            <a class="btn lp-btn-lg" href="#change">See what changes</a>
+          </div>
+          <ul class="lp-chips" aria-label="Supported ad platforms">
+            <li>{% include "partials/platform.html" with code="meta" label="Meta Ads" %}</li>
+            <li>{% include "partials/platform.html" with code="google" label="Google Ads" %}</li>
+            <li>{% include "partials/platform.html" with code="tiktok" label="TikTok Ads" %}</li>
+            <li>{% include "partials/platform.html" with code="openai" label="ChatGPT Ads" %}</li>
+          </ul>
+        </div>
+
+        <div class="lp-preview story-preview" role="img" aria-label="Camply dashboard showing spend, leads and ROAS across platforms">
+          <div class="lp-window">
+            <div class="lp-window-bar"><span></span><span></span><span></span><em>Camply · PRception Media</em></div>
+            <div class="lp-window-body">
+              <div class="lp-mini-kpis">
+                <div><small>Total spend</small><strong>₹4,87,320</strong><span class="delta good"><i data-lucide="arrow-up"></i>18.6%</span></div>
+                <div><small>Leads</small><strong>2,846</strong><span class="delta good"><i data-lucide="arrow-up"></i>32.1%</span></div>
+                <div><small>Cost per lead</small><strong>₹171</strong><span class="delta good"><i data-lucide="arrow-down"></i>12.4%</span></div>
+              </div>
+              <div class="lp-mini-chart">
+                <div class="lp-mini-chart-head"><small>Spend by platform</small><span class="legend"><span><i style="background:#3B82F6"></i>Meta</span><span><i style="background:#FF9F43"></i>Google</span><span><i style="background:#E8467C"></i>TikTok</span></span></div>
+                <svg viewBox="0 0 320 120" preserveAspectRatio="none" aria-hidden="true">
+                  <defs><linearGradient id="storyFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3B82F6" stop-opacity="0.25"/><stop offset="1" stop-color="#3B82F6" stop-opacity="0"/></linearGradient></defs>
+                  <path d="M0 92 C 30 86, 50 70, 80 74 S 130 52, 160 58 S 210 34, 240 40 S 290 18, 320 22 L320 120 L0 120 Z" fill="url(#storyFill)"/>
+                  <path class="story-line" d="M0 92 C 30 86, 50 70, 80 74 S 130 52, 160 58 S 210 34, 240 40 S 290 18, 320 22" fill="none" stroke="#3B82F6" stroke-width="2.5"/>
+                  <path class="story-line" d="M0 104 C 40 100, 60 94, 90 96 S 140 80, 170 84 S 220 70, 250 72 S 300 60, 320 58" fill="none" stroke="#FF9F43" stroke-width="2.5"/>
+                  <path class="story-line" d="M0 112 C 40 110, 70 106, 100 108 S 150 100, 180 102 S 240 94, 270 96 S 305 90, 320 88" fill="none" stroke="#E8467C" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="lp-mini-rows">
+                <div><span class="platform-dot platform-meta">M</span><span>Admissions 2026 · Lead form</span><b>₹73,200</b><span class="badge badge-active">Active</span></div>
+                <div><span class="platform-dot platform-google">G</span><span>Search · Resort bookings</span><b>₹51,940</b><span class="badge badge-active">Active</span></div>
+                <div><span class="platform-dot platform-tiktok">T</span><span>Creator stories · Reach</span><b>₹18,450</b><span class="badge badge-paused">Paused</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="lp-float lp-float-a"><span class="kpi-icon story-ok"><i data-lucide="bell-ring"></i></span><div><small>Budget alert</small><strong>Onam campaign at 80%</strong></div></div>
+          <div class="lp-float lp-float-b"><span class="kpi-icon"><i data-lucide="shield-check"></i></span><div><small>Client approved</small><strong>Diwali creative v3</strong></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="story-progress" aria-hidden="true"><span></span></div>
+  </div>
+</section>
+
+<!-- Before / with Camply -->
+<section class="lp-section change" id="change">
+  <div class="lp-container">
+    <div class="lp-section-head">
+      <span class="lp-eyebrow">From chaos to clarity</span>
+      <h2>What changes when you switch to Camply</h2>
+      <p>The same work your team does today, without the tab-hopping, copy-pasting and late-night client messages.</p>
+    </div>
+    <div class="change-table" role="table" aria-label="Before and with Camply">
+      <div class="change-head" role="row"><span role="columnheader">Before Camply</span><span role="columnheader" class="change-arrow-col"></span><span role="columnheader">With Camply</span></div>
+      {% for before, after, icon in change_rows %}
+      <div class="change-row" role="row">
+        <div class="change-before" role="cell"><span class="change-x" aria-hidden="true">✕</span>{{ before }}</div>
+        <div class="change-arrow" aria-hidden="true"><i data-lucide="arrow-right"></i></div>
+        <div class="change-after" role="cell"><span class="kpi-icon"><i data-lucide="{{ icon }}"></i></span>{{ after }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

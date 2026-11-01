@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}Every campaign. One platform.{% endblock %}
-{% block head %}<link rel="stylesheet" href="{% static 'css/landing.css' %}">{% endblock %}
+{% block head %}<link rel="stylesheet" href="{% static 'css/landing.css' %}"><link rel="stylesheet" href="{% static 'css/story.css' %}">{% endblock %}
 {% block body %}
 <header class="lp-nav" data-lp-nav>
   <div class="lp-container lp-nav-inner">
     <a class="lp-logo" href="/">{% include "partials/logo.html" %}Camply</a>
     <nav class="lp-links" aria-label="Main">
+      <a href="#change">Why Camply</a>
       <a href="#features">Features</a>
       <a href="#how">How it works</a>
       <a href="#platforms">Integrations</a>
@@ -20,6 +21,7 @@
     </div>
   </div>
   <nav class="lp-mobile" aria-label="Mobile">
+    <a href="#change">Why Camply</a>
     <a href="#features">Features</a>
     <a href="#how">How it works</a>
     <a href="#platforms">Integrations</a>
@@ -29,59 +31,7 @@
 </header>
 
 <main>
-  <!-- Hero -->
-  <section class="lp-hero">
-    <svg class="lp-hero-wave" viewBox="0 0 1440 520" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M760 520 C 980 470, 1060 300, 1240 250 S 1440 150, 1440 150 L1440 520 Z" fill="#FF9F43" opacity="0.55"/>
-      <path d="M880 520 C 1060 480, 1140 360, 1300 330 S 1440 280, 1440 280 L1440 520 Z" fill="#FF6B35"/>
-    </svg>
-    <div class="lp-container lp-hero-grid">
-      <div class="lp-hero-copy">
-        <span class="lp-eyebrow">All-in-one ad management platform</span>
-        <h1>Manage all your ad campaigns in <span class="lp-accent">one place</span></h1>
-        <p class="lp-lede">Plan, run and track campaigns across Meta, Google, TikTok and ChatGPT Ads for every client, from one dashboard built for agencies in India.</p>
-        <div class="lp-cta-row">
-          <a class="btn btn-primary lp-btn-lg" href="{% url 'account_signup' %}">Get started free <i data-lucide="arrow-right"></i></a>
-          <a class="btn lp-btn-lg" href="#how">See how it works</a>
-        </div>
-        <ul class="lp-chips" aria-label="Supported ad platforms">
-          <li>{% include "partials/platform.html" with code="meta" label="Meta Ads" %}</li>
-          <li>{% include "partials/platform.html" with code="google" label="Google Ads" %}</li>
-          <li>{% include "partials/platform.html" with code="tiktok" label="TikTok Ads" %}</li>
-          <li>{% include "partials/platform.html" with code="openai" label="ChatGPT Ads" %}</li>
-        </ul>
-      </div>
-
-      <div class="lp-preview" aria-label="Preview of the Camply dashboard" role="img">
-        <div class="lp-window">
-          <div class="lp-window-bar"><span></span><span></span><span></span><em>Camply · Dashboard</em></div>
-          <div class="lp-window-body">
-            <div class="lp-mini-kpis">
-              <div><small>Total spend</small><strong>₹4,87,320</strong><span class="delta good"><i data-lucide="arrow-up"></i>18.6%</span></div>
-              <div><small>Leads</small><strong>2,846</strong><span class="delta good"><i data-lucide="arrow-up"></i>32.1%</span></div>
-              <div><small>ROAS</small><strong>4.2x</strong><span class="delta good"><i data-lucide="arrow-up"></i>1.8x</span></div>
-            </div>
-            <div class="lp-mini-chart">
-              <div class="lp-mini-chart-head"><small>Spend overview</small><span class="legend"><span><i style="background:#3B82F6"></i>Meta</span><span><i style="background:#FF9F43"></i>Google</span></span></div>
-              <svg viewBox="0 0 320 120" preserveAspectRatio="none" aria-hidden="true">
-                <defs><linearGradient id="lpFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3B82F6" stop-opacity="0.25"/><stop offset="1" stop-color="#3B82F6" stop-opacity="0"/></linearGradient></defs>
-                <path d="M0 92 C 30 86, 50 70, 80 74 S 130 52, 160 58 S 210 34, 240 40 S 290 18, 320 22 L320 120 L0 120 Z" fill="url(#lpFill)"/>
-                <path d="M0 92 C 30 86, 50 70, 80 74 S 130 52, 160 58 S 210 34, 240 40 S 290 18, 320 22" fill="none" stroke="#3B82F6" stroke-width="2.5"/>
-                <path d="M0 104 C 40 100, 60 94, 90 96 S 140 80, 170 84 S 220 70, 250 72 S 300 60, 320 58" fill="none" stroke="#FF9F43" stroke-width="2.5"/>
-              </svg>
-            </div>
-            <div class="lp-mini-rows">
-              <div><span class="platform-dot platform-meta">M</span><span>Admissions 2026 · Lead form</span><b>₹73,200</b><span class="badge badge-active">Active</span></div>
-              <div><span class="platform-dot platform-google">G</span><span>Search · Resort bookings</span><b>₹51,940</b><span class="badge badge-active">Active</span></div>
-              <div><span class="platform-dot platform-tiktok">T</span><span>Creator stories · Reach</span><b>₹18,450</b><span class="badge badge-paused">Paused</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="lp-float lp-float-a"><span class="platform-dot platform-meta">M</span><div><small>Cost per lead</small><strong>₹171</strong></div></div>
-        <div class="lp-float lp-float-b"><span class="kpi-icon"><i data-lucide="shield-check"></i></span><div><small>Change approved</small><strong>Budget +₹5,000</strong></div></div>
-      </div>
-    </div>
-  </section>
+  {% include "partials/landing_story.html" %}
 
   <!-- Proof strip -->
   <section class="lp-strip" aria-label="At a glance">
@@ -220,6 +170,7 @@
 </footer>
 {% endblock %}
 {% block scripts %}
+<script src="{% static 'js/landing.js' %}" defer></script>
 <script>
   (function () {
     var nav = document.querySelector("[data-lp-nav]");

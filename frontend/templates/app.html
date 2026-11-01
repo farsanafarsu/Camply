@@ -52,8 +52,9 @@
   <div class="main">
     <header class="topbar">
       <button class="btn btn-ghost icon-btn menu-btn" type="button" data-nav-toggle aria-label="Open menu"><i data-lucide="menu"></i></button>
+      <a class="topbar-brand" href="{% url 'dashboard:home' %}">{% include "partials/logo.html" %}Camply</a>
       {% if current_membership %}
-      {% can 'campaigns.view' as cv %}{% if cv and pending_approvals %}<a class="btn btn-ghost btn-sm" href="{% url 'automation:approvals' %}" title="Changes waiting for approval"><i data-lucide="clipboard-check"></i>{{ pending_approvals }} to approve</a>{% endif %}
+      {% can 'campaigns.view' as cv %}{% if cv and pending_approvals %}<a class="btn btn-ghost btn-sm" href="{% url 'automation:approvals' %}" title="Changes waiting for approval"><i data-lucide="clipboard-check"></i>{{ pending_approvals }}<span class="approve-label"> to approve</span></a>{% endif %}
       <a class="btn btn-ghost icon-btn bell" href="{% url 'automation:alerts' %}" aria-label="Alerts{% if unread_alerts %}: {{ unread_alerts }} new{% endif %}" title="Alerts"><i data-lucide="bell"></i>{% if unread_alerts %}<span class="bell-count">{{ unread_alerts }}</span>{% endif %}</a>
       {% endif %}
       <button class="btn btn-ghost icon-btn" type="button" data-theme-toggle aria-label="Switch light or dark mode" title="Light / dark mode"><i data-lucide="sun-moon"></i></button>

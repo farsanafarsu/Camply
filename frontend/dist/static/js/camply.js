@@ -20,6 +20,20 @@
     renderCharts();
   });
 
+  // ----- Tables: label each cell with its column heading so phones can show rows as cards -----
+  document.querySelectorAll("table.table:not(.matrix):not(.keep-table)").forEach(function (table) {
+    var heads = Array.prototype.map.call(table.querySelectorAll("thead th"), function (th) { return th.textContent.trim(); });
+    if (!heads.length) return;
+    table.querySelectorAll("tbody tr").forEach(function (tr) {
+      var col = 0;
+      Array.prototype.forEach.call(tr.children, function (td) {
+        if (!td.hasAttribute("colspan") && heads[col]) td.setAttribute("data-label", heads[col]);
+        col += td.colSpan || 1;
+      });
+    });
+    table.classList.add("table-cards");
+  });
+
   // ----- Mobile navigation -----
   document.addEventListener("click", function (event) {
     var app = document.querySelector(".app");

@@ -49,6 +49,15 @@
     }
   }
 
+  // "See the better way": glide to the reveal instead of jumping to the anchor.
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest("[data-story-jump]");
+    if (!link || !story.classList.contains("is-live")) return;
+    e.preventDefault();
+    var travel = story.offsetHeight - window.innerHeight;
+    window.scrollTo({ top: story.offsetTop + travel * 0.82, behavior: "smooth" });
+  });
+
   [reduce, wide].forEach(function (mq) {
     if (mq.addEventListener) mq.addEventListener("change", setMode); else mq.addListener(setMode);
   });

@@ -10,35 +10,58 @@ Without JavaScript or with reduced motion, the panels simply stack. landing.js a
     <div class="story-panel story-before">
       <div class="lp-container story-grid">
         <div class="story-copy">
-          <span class="lp-eyebrow story-eyebrow-muted">Sound familiar?</span>
-          <h1>Still running ads across <span class="story-strike">five tabs</span>, three spreadsheets and a WhatsApp group?</h1>
-          <p class="lp-lede">Meta in one tab, Google in another, TikTok asking you to log in again. Numbers copied into Excel at midnight, screenshots sent to every client, and nobody quite sure what was spent this month.</p>
-          <div class="story-scroll-hint" aria-hidden="true"><span class="story-mouse"><span></span></span>Scroll to see a better way</div>
+          <span class="story-clock"><span class="story-live-dot" aria-hidden="true"></span>Monday, 11:42 PM · still at the office</span>
+          <h1 class="story-h1">
+            <span>Five ad managers.</span>
+            <span>Twelve spreadsheets.</span>
+            <span class="story-h1-muted">Zero clear answers.<svg class="story-squiggle" viewBox="0 0 300 14" preserveAspectRatio="none" aria-hidden="true"><path d="M2 9 C 40 2, 70 13, 110 7 S 180 2, 220 8 S 275 12, 298 5" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></svg></span>
+          </h1>
+          <p class="lp-lede">Meta in one tab, Google in another, TikTok logged out again, and a client asking for last week's cost per lead at midnight. Sound familiar?</p>
+          <div class="lp-cta-row">
+            <a class="btn btn-dark lp-btn-lg" href="#story-after" data-story-jump>See the better way <i data-lucide="arrow-down"></i></a>
+            <a class="btn lp-btn-lg" href="{% url 'account_signup' %}">Get started free</a>
+          </div>
+          <div class="story-scroll-hint" aria-hidden="true"><span class="story-mouse"><span></span></span>Scroll to watch it change</div>
         </div>
 
         <div class="chaos" aria-hidden="true">
-          <div class="chaos-card chaos-tab" style="--x:-4%;--y:2%;--r:-6deg;--tx:30%;--ty:28%;--d:0s">
-            <div class="chaos-bar"><span class="platform-dot platform-meta">M</span>Ads Manager · Business 3 of 7</div>
-            <div class="chaos-rows"><i></i><i></i><i></i><i class="short"></i></div>
+          <!-- Back layer: the browser everyone has open, with far too many tabs -->
+          <div class="chaos-card chaos-browser" style="--x:4%;--y:13%;--r:-1.5deg;--tx:6%;--ty:4%;--d:0s">
+            <div class="browser-tabs">
+              <span class="btab is-on"><b class="platform-dot platform-meta">M</b>Ads Manager</span>
+              <span class="btab"><b class="platform-dot platform-google">G</b>Google Ads</span>
+              <span class="btab"><b class="platform-dot platform-tiktok">T</b>TikTok</span>
+              <span class="btab"><b class="xls">X</b>Report_v7</span>
+              <span class="btab">+14</span>
+            </div>
+            <div class="browser-url"><i></i>business.facebook.com/adsmanager · Business 3 of 7</div>
+            <div class="browser-body">
+              <div class="sk-row"><i style="width:38%"></i><i style="width:16%"></i><i style="width:20%"></i></div>
+              <div class="sk-row"><i style="width:30%"></i><i style="width:22%"></i><i style="width:14%"></i></div>
+              <div class="sk-row"><i style="width:42%"></i><i style="width:12%"></i><i style="width:18%"></i></div>
+              <div class="browser-loading"><span class="spinner"></span>Loading results…</div>
+            </div>
           </div>
-          <div class="chaos-card chaos-tab" style="--x:46%;--y:-4%;--r:5deg;--tx:-14%;--ty:34%;--d:.4s">
-            <div class="chaos-bar"><span class="platform-dot platform-google">G</span>Google Ads</div>
-            <div class="chaos-warn">Wrong account. Switch to “Kovalam Bay”?</div>
+
+          <!-- Middle layer -->
+          <div class="chaos-card chaos-dialog" style="--x:57%;--y:0%;--r:3.5deg;--tx:-22%;--ty:26%;--d:.5s">
+            <strong><b class="platform-dot platform-google">G</b>Switch account?</strong>
+            <p>You're signed in as <em>kovalam.ads@…</em>. Campaigns for “Lumen Dental” are in another account.</p>
+            <div class="dialog-actions"><span>Cancel</span><span class="is-primary">Switch</span></div>
           </div>
-          <div class="chaos-card chaos-sheet" style="--x:8%;--y:40%;--r:3deg;--tx:22%;--ty:-4%;--d:.8s">
+          <div class="chaos-card chaos-sheet" style="--x:-3%;--y:57%;--r:-4deg;--tx:24%;--ty:-16%;--d:.9s">
             <div class="chaos-file"><span class="xls">X</span>Client_Report_Nov_FINAL_v7.xlsx</div>
             <div class="chaos-grid"><span>Spend</span><span>Leads</span><span>CPL</span><span>₹48,732</span><span>284</span><span class="err">#REF!</span><span>₹21,904</span><span>??</span><span class="err">#DIV/0!</span></div>
           </div>
-          <div class="chaos-card chaos-chat" style="--x:58%;--y:30%;--r:-4deg;--tx:-24%;--ty:2%;--d:.2s">
-            <div class="chat-head"><span class="chat-avatar">KB</span><div><strong>Kovalam Bay Resorts</strong><small>online</small></div></div>
-            <div class="chat-bubble">Hi, what's our cost per lead this week? Our MD is asking 😟<time>11:42 PM</time></div>
+
+          <!-- Front layer -->
+          <div class="chaos-card chaos-notify" style="--x:55%;--y:47%;--r:2.5deg;--tx:-20%;--ty:-6%;--d:.3s">
+            <div class="notify-head"><span class="wa-icon">✆</span>WhatsApp<time>now</time></div>
+            <strong>Kovalam Bay Resorts <span class="notify-count">3</span></strong>
+            <p>Hi, what's our cost per lead this week? Our MD is asking 😟</p>
           </div>
-          <div class="chaos-card chaos-note" style="--x:34%;--y:74%;--r:-8deg;--tx:6%;--ty:-34%;--d:.6s">Pause Onam campaign before the budget runs out!!</div>
-          <div class="chaos-card chaos-tab" style="--x:64%;--y:68%;--r:6deg;--tx:-30%;--ty:-30%;--d:1s">
-            <div class="chaos-bar"><span class="platform-dot platform-tiktok">T</span>TikTok Ads Manager</div>
-            <div class="chaos-warn">Session expired. Please log in again.</div>
-          </div>
-          <div class="chaos-card chaos-toast" style="--x:-2%;--y:78%;--r:2deg;--tx:36%;--ty:-40%;--d:.5s"><span class="toast-dot"></span>Your ad was disapproved · 3 days ago</div>
+          <div class="chaos-card chaos-note" style="--x:22%;--y:82%;--r:-6deg;--tx:8%;--ty:-38%;--d:.7s">Pause Onam campaign before budget runs out!!</div>
+          <div class="chaos-card chaos-toast" style="--x:56%;--y:90%;--r:1.5deg;--tx:-24%;--ty:-44%;--d:1.1s"><b class="platform-dot platform-tiktok">T</b>Session expired. Log in again.</div>
         </div>
       </div>
     </div>
@@ -49,7 +72,7 @@ Without JavaScript or with reduced motion, the panels simply stack. landing.js a
     </div>
 
     <!-- 3. Introducing Camply -->
-    <div class="story-panel story-after">
+    <div class="story-panel story-after" id="story-after">
       <div class="lp-container story-grid">
         <div class="story-copy">
           <span class="lp-eyebrow">Introducing Camply</span>

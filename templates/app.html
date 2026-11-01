@@ -23,7 +23,7 @@
       <a href="{% url 'dashboard:home' %}" class="{% nav_active 'dashboard:home' %}"><i data-lucide="layout-dashboard"></i>Dashboard</a>
       {% can 'accounts.view' as c %}{% if c %}<a href="{% url 'ads:accounts' %}" class="{% nav_active 'ads:accounts' %}"><i data-lucide="wallet-cards"></i>Ad Accounts</a>{% endif %}
       {% can 'campaigns.view' as c %}{% if c %}<a href="{% url 'dashboard:campaigns' %}" class="{% nav_active 'dashboard:campaigns' %}"><i data-lucide="megaphone"></i>Campaigns</a>{% endif %}
-      {% can 'creatives.view' as c %}{% if c %}<a href="{% url 'dashboard:creatives' %}" class="{% nav_active 'dashboard:creatives' %}"><i data-lucide="image"></i>Creatives<span class="pill">Soon</span></a>{% endif %}
+      {% can 'creatives.view' as c %}{% if c %}<a href="{% url 'creatives:library' %}" class="{% nav_active 'creatives:library' %}"><i data-lucide="image"></i>Creative Studio</a>{% endif %}
       {% can 'reports.view' as c %}{% if c %}<a href="{% url 'dashboard:reports' %}" class="{% nav_active 'dashboard:reports' %}"><i data-lucide="chart-column"></i>Reports</a>{% endif %}
       {% can 'leads.view' as c %}{% if c %}<a href="{% url 'leads:inbox' %}" class="{% nav_active 'leads:inbox' %}"><i data-lucide="users"></i>Leads</a>{% endif %}
       {% can 'copilot.use' as c %}{% if c %}<a href="{% url 'dashboard:copilot' %}" class="{% nav_active 'dashboard:copilot' %}"><i data-lucide="sparkles"></i>AI Copilot<span class="pill">Soon</span></a>{% endif %}

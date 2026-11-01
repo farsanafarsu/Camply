@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     "dashboard",
     "console",
     "leads",
+    "creatives",
 ]
 
 MIGRATION_MODULES = {
@@ -172,6 +173,8 @@ if env("MICROSOFT_CLIENT_ID"):
 
 # --- Locale: India -------------------------------------------------------------
 LANGUAGE_CODE = "en-in"
+# URLs typed without a scheme (e.g. "example.com") are treated as https.
+FORMS_URLFIELD_ASSUME_HTTPS = True
 TIME_ZONE = "Asia/Kolkata"
 USE_I18N = True
 USE_TZ = True
@@ -218,6 +221,27 @@ RAZORPAY_KEY_SECRET = env("RAZORPAY_KEY_SECRET")
 ANTHROPIC_API_KEY = env("ANTHROPIC_API_KEY")
 S3_BUCKET = env("S3_BUCKET")
 S3_ENDPOINT_URL = env("S3_ENDPOINT_URL")
+
+# Creative uploads: an S3-compatible bucket when configured (needed on hosts with temporary
+# disks, like Render), otherwise the local media folder. Files are always served through
+# Camply's own permission-checked view, never by public URL.
+MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_URL = "/media/"
+CREATIVE_MAX_UPLOAD_MB = int(env("CREATIVE_MAX_UPLOAD_MB", "50"))
+if S3_BUCKET:
+    STORAGES["default"] = {
+        "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": {
+            "bucket_name": S3_BUCKET,
+            "endpoint_url": S3_ENDPOINT_URL or None,
+            "access_key": env("S3_ACCESS_KEY_ID"),
+            "secret_key": env("S3_SECRET_ACCESS_KEY"),
+            "region_name": env("S3_REGION") or None,
+            "default_acl": "private",
+            "querystring_auth": True,
+            "file_overwrite": False,
+        },
+    }
 
 # Billing defaults
 GST_RATE_PERCENT = 18

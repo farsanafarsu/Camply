@@ -1,0 +1,23 @@
+{% extends "app.html" %}
+{% block title %}{% if creative %}Edit {{ creative }}{% else %}Add creative{% endif %}{% endblock %}
+{% block content %}
+<p class="small"><a href="{% if creative %}{% url 'creatives:detail' creative.pk %}{% else %}{% url 'creatives:library' %}{% endif %}">← Back</a></p>
+<div class="page-head"><div><h1>{% if creative %}Edit {{ creative }}{% else %}Add a creative{% endif %}</h1><p>Upload an image or video, or write ad copy. New creatives start as drafts.</p></div></div>
+<div class="grid grid-2-1">
+  <div class="card card-pad">
+    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+      {% include "partials/form_fields.html" with form=form %}
+      <button class="btn btn-primary" type="submit">Save</button>
+    </form>
+  </div>
+  <div class="card card-pad stack">
+    <h2>Copy limits</h2>
+    <ul class="checklist">
+      <li>Meta: headline 40, primary text 125, description 30</li>
+      <li>Google: headline 30, description 90</li>
+      <li>TikTok: ad text 100</li>
+      <li>Images: 1080×1080 or 1080×1920 for Meta and TikTok; 1200×628 for Google</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

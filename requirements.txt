@@ -12,6 +12,8 @@ anthropic>=2.3
 razorpay>=2.0
 resend>=2.50
 boto3>=1.43
+django-storages[s3]>=1.14
+pillow>=11
 gunicorn>=23; sys_platform != "win32"
 
 # Development and tests

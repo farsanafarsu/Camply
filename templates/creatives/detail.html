@@ -1,0 +1,52 @@
+{% extends "app.html" %}
+{% block title %}{{ creative }}{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url 'creatives:library' %}">← Creative Studio</a></p>
+<div class="page-head">
+  <div><div class="row"><span class="badge creative-{{ creative.status }}">{{ creative.get_status_display }}</span><span class="chip">{{ creative.get_kind_display }}</span>{% if creative.version > 1 %}<span class="chip">Version {{ creative.version }}</span>{% endif %}</div>
+  <h1 style="margin-top:8px">{{ creative.name }}</h1><p>{{ creative.client.name }}{% if creative.campaign %} · {{ creative.campaign.name }}{% endif %} · by {{ creative.created_by.display_name|default:"–" }}, updated {{ creative.updated_at|date:"d M Y" }}</p></div>
+  {% if can_edit %}<a class="btn" href="{% url 'creatives:edit' creative.pk %}"><i data-lucide="pencil"></i>Edit</a>{% endif %}
+</div>
+
+<section class="grid grid-2-1">
+  <div class="stack">
+    <div class="card card-pad">
+      {% if creative.is_image %}<img class="creative-full" src="{% url 'creatives:file' creative.pk %}" alt="{{ creative.name }}">
+      {% elif creative.kind == 'video' and creative.file %}<video class="creative-full" src="{% url 'creatives:file' creative.pk %}" controls preload="metadata"></video>{% endif %}
+      {% if creative.file %}<p class="small"><a href="{% url 'creatives:file' creative.pk %}?download=1">Download file</a>{% if creative.width %} · {{ creative.width }}×{{ creative.height }} px{% endif %}{% if creative.size_bytes %} · {{ creative.size_bytes|filesizeformat }}{% endif %}</p>{% endif %}
+      <dl class="kv">
+        {% if creative.headline %}<dt>Headline</dt><dd>{{ creative.headline }}</dd>{% endif %}
+        {% if creative.primary_text %}<dt>Primary text</dt><dd>{{ creative.primary_text|linebreaksbr }}</dd>{% endif %}
+        {% if creative.description %}<dt>Description</dt><dd>{{ creative.description }}</dd>{% endif %}
+        {% if creative.cta %}<dt>Call to action</dt><dd>{{ creative.get_cta_display }}</dd>{% endif %}
+        {% if creative.landing_url %}<dt>Landing page</dt><dd class="small"><a href="{{ creative.landing_url }}" target="_blank" rel="noopener noreferrer">{{ creative.landing_url }}</a></dd>{% endif %}
+        <dt>Platforms</dt><dd>{% for p in creative.platform_labels %}<span class="chip">{{ p }}</span> {% empty %}–{% endfor %}</dd>
+        <dt>Tags</dt><dd>{% for t in creative.tags %}<a class="chip" href="{% url 'creatives:library' %}?tag={{ t|urlencode }}">{{ t }}</a> {% empty %}–{% endfor %}</dd>
+        <dt>Language</dt><dd>{{ creative.get_language_display }}</dd>
+      </dl>
+    </div>
+    <div class="card"><div class="card-head"><h2>Platform checklist</h2></div><div class="card-body">
+      <ul class="list-plain">{% for ok, message in checks %}<li>{% if ok is True %}<span class="badge badge-ok">OK</span>{% elif ok is False %}<span class="badge badge-error">Fix</span>{% else %}<span class="badge badge-never">Check</span>{% endif %}<span>{{ message }}</span></li>{% endfor %}</ul>
+    </div></div>
+  </div>
+  <div class="stack">
+    <div class="card"><div class="card-head"><h2>Approval</h2></div><div class="card-body">
+      <ol class="steps-mini">
+        {% for value, label in flow %}<li class="{% if creative.status == value %}is-current{% endif %}">{{ label }}</li>{% endfor %}
+        {% if creative.status == 'rejected' %}<li class="is-current is-rejected">Rejected</li>{% endif %}
+      </ol>
+      {% if actions %}
+      <form method="post" action="{% url 'creatives:transition' creative.pk %}" class="stack" style="gap:10px;margin-top:12px">{% csrf_token %}
+        <label for="comment" class="label">Comment <span class="muted small">(required when asking for changes or rejecting)</span></label>
+        <textarea id="comment" name="comment" rows="2"></textarea>
+        <div class="row">{% for a in actions %}<button class="btn {% if not a.needs_comment %}btn-primary{% endif %} btn-sm" type="submit" name="action" value="{{ a.value }}">{{ a.label }}</button>{% endfor %}</div>
+      </form>
+      {% elif creative.status == 'ready' %}<p class="small" style="margin:12px 0 0">Approved and ready to publish.</p>{% endif %}
+      <ul class="list-plain" style="margin-top:12px">{% for r in reviews %}<li><span class="avatar">{{ r.actor.initials|default:"?" }}</span><span><strong>{{ r.actor.display_name|default:"Someone" }}</strong> · {{ r.get_action_display }}{% if r.comment %}<br>“{{ r.comment }}”{% endif %}<br><span class="muted tiny">{{ r.created_at|date:"d M Y, h:i A" }}</span></span></li>{% empty %}<li class="muted small">No review activity yet.</li>{% endfor %}</ul>
+    </div></div>
+    {% if versions %}<div class="card"><div class="card-head"><h2>Versions</h2></div><div class="card-body"><ul class="list-plain">
+      {% for v in versions %}<li><span class="chip">v{{ v.version }}</span><span>{% if v.pk == creative.pk %}<strong>This version</strong>{% else %}<a href="{% url 'creatives:detail' v.pk %}">{{ v.name }}</a>{% endif %} · <span class="badge creative-{{ v.status }}">{{ v.get_status_display }}</span><br><span class="muted tiny">{{ v.updated_at|date:"d M Y" }}</span></span></li>{% endfor %}
+    </ul></div></div>{% endif %}
+  </div>
+</section>
+{% endblock %}

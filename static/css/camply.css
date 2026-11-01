@@ -327,6 +327,26 @@ details.dropdown .menu a:hover, details.dropdown .menu button:hover { background
 .utm-out { display: block; padding: 14px; border-radius: var(--radius-sm); background: var(--surface-2); word-break: break-all; font-size: 0.85rem; }
 code { font-size: 0.85em; background: var(--surface-2); padding: 1px 6px; border-radius: 6px; }
 
+/* ---------- Creative Studio ---------- */
+.creative-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.creative-card { overflow: hidden; display: flex; flex-direction: column; }
+.creative-thumb { aspect-ratio: 4 / 3; background: var(--surface-2); display: grid; place-items: center; overflow: hidden; color: var(--text-muted); }
+.creative-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.creative-thumb svg { width: 36px; height: 36px; }
+.copy-preview { padding: 16px; font-family: var(--font-heading); font-weight: 600; font-size: 0.95rem; color: var(--text); text-align: center; }
+.creative-meta { padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+.creative-full { width: 100%; max-height: 520px; object-fit: contain; border-radius: var(--radius-sm); background: var(--surface-2); margin-bottom: 12px; }
+.creative-draft { background: var(--surface-2); color: var(--text-muted); }
+.creative-internal_review, .creative-client_approval { background: var(--warning-bg); color: var(--warning); }
+.creative-ready { background: var(--positive-bg); color: var(--positive); }
+.creative-rejected { background: var(--negative-bg); color: var(--negative); }
+.steps-mini { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px; counter-reset: step; }
+.steps-mini li { counter-increment: step; font-size: 0.8rem; padding: 4px 10px 4px 6px; border-radius: 99px; background: var(--surface-2); color: var(--text-muted); display: inline-flex; align-items: center; gap: 6px; }
+.steps-mini li::before { content: counter(step); width: 18px; height: 18px; border-radius: 50%; background: var(--surface); display: grid; place-items: center; font-weight: 700; font-size: 0.7rem; }
+.steps-mini li.is-current { background: var(--selected); color: var(--selected-text); font-weight: 600; }
+.steps-mini li.is-current::before { background: var(--orange); color: var(--midnight); }
+.steps-mini li.is-rejected { background: var(--negative-bg); color: var(--negative); }
+
 /* ---------- Auth (sign in / sign up) ---------- */
 .auth { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; background: var(--bg); }
 .auth-brand {

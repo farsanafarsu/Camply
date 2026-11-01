@@ -84,6 +84,21 @@ The password is only set when the account is created (set `CAMPLY_ADMIN_RESET_PA
 Platform admins sign in to the console at `/platform/`: every agency and user, and the data editor at `/admin/`. A redeploy also clears any
 "Too many failed login attempts" block.
 
+## Deploying the website (Cloudflare)
+
+The public home page is also published as plain static files in `frontend/dist/`, served by Cloudflare Workers
+(`wrangler.jsonc` at the repository root). Sign-in and sign-up links point at the Django app on Render.
+
+In Cloudflare: **Workers & Pages → Create → Import a repository**, pick this repo, leave the **Build command**
+empty and set the **Deploy command** to `npx wrangler deploy`.
+
+After changing the home page design, rebuild and commit `frontend/dist/` (Cloudflare redeploys on push):
+
+```
+python backend/manage.py build_frontend                     # app links -> https://camply-tcee.onrender.com
+python backend/manage.py build_frontend --app-url https://…  # if the Django app moves
+```
+
 ## How it is organised
 
 | App | What it owns |

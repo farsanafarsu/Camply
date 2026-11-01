@@ -27,9 +27,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         email = (os.environ.get("CAMPLY_ADMIN_EMAIL") or "").strip().lower()
-        password = os.environ.get("CAMPLY_ADMIN_PASSWORD") or ""
+        # Spaces pasted around the value in a hosting dashboard are a common cause of failed sign-ins.
+        password = (os.environ.get("CAMPLY_ADMIN_PASSWORD") or "").strip()
         if not email:
-            self.stdout.write("CAMPLY_ADMIN_EMAIL is not set; skipping admin setup.")
+            self.stdout.write("Camply admin setup: CAMPLY_ADMIN_EMAIL is not set; skipping.")
             return
         if not password:
             raise CommandError("CAMPLY_ADMIN_PASSWORD must be set together with CAMPLY_ADMIN_EMAIL.")
@@ -64,4 +65,7 @@ class Command(BaseCommand):
             organization=org, user=user, defaults={"role": Role.OWNER, "all_clients": True}
         )
         action = "Created" if created else "Updated"
-        self.stdout.write(self.style.SUCCESS(f"{action} admin {email} as Owner of {org.name}."))
+        self.stdout.write(self.style.SUCCESS(
+            f"Camply admin setup: {action} admin {email} as Owner of {org.name} "
+            f"(password length {len(password)})."
+        ))

@@ -1,8 +1,8 @@
 {% extends "allauth/layouts/base.html" %}
 {% block allauth_body %}
 <div class="auth">
-  <section class="auth-brand" aria-hidden="true">
-    <span class="brand">{% include "partials/logo.html" %}Camply</span>
+  <section class="auth-brand">
+    <a class="brand" href="/" aria-label="Camply home">{% include "partials/logo.html" %}Camply</a>
     <h2>All your ads.<br>One dashboard.</h2>
     <ul>
       <li><span class="ok"><i data-lucide="check"></i></span>Connect Meta, Google, TikTok &amp; ChatGPT Ads</li>
@@ -10,10 +10,11 @@
       <li><span class="ok"><i data-lucide="check"></i></span>Manage budgets, wallets and GST invoices</li>
       <li><span class="ok"><i data-lucide="check"></i></span>Role-based access for your team and clients</li>
     </ul>
-    <svg class="auth-wave" viewBox="0 0 600 300" preserveAspectRatio="none"><path d="M0 180 C 150 120, 260 300, 420 210 S 600 140, 600 140 L600 300 L0 300 Z" fill="#FF6B35"/><path d="M0 230 C 180 170, 300 320, 460 250 S 600 210, 600 210 L600 300 L0 300 Z" fill="#FF9F43" opacity="0.85"/></svg>
+    <svg class="auth-wave" aria-hidden="true" viewBox="0 0 600 300" preserveAspectRatio="none"><path d="M0 180 C 150 120, 260 300, 420 210 S 600 140, 600 140 L600 300 L0 300 Z" fill="#FF6B35"/><path d="M0 230 C 180 170, 300 320, 460 250 S 600 210, 600 210 L600 300 L0 300 Z" fill="#FF9F43" opacity="0.85"/></svg>
   </section>
   <section class="auth-panel">
     <div class="auth-card">
+      <a class="auth-back" href="/"><i data-lucide="arrow-left"></i>Back to home</a>
       {% include "partials/messages.html" %}
       {% block content %}{% endblock content %}
     </div>

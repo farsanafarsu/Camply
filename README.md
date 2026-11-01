@@ -17,6 +17,10 @@ python -m venv .venv
 copy .env.example .env        # then fill in DJANGO_SECRET_KEY, FIELD_ENCRYPTION_KEY, CAMPLY_DEMO_PASSWORD
 ```
 
+**Quick start (after the first-time setup below):** double-click `start.bat`. It starts MongoDB if it isn't
+running, applies any new migrations, starts the app and opens http://127.0.0.1:8000. Close the window or press
+Ctrl+C to stop the app. Don't use VS Code's "Go Live" (port 5500): it only lists files and can't run Django.
+
 Start MongoDB, either with Docker (`docker compose up -d`) or with the portable server in `.mongodb/`:
 
 ```powershell

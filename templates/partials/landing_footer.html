@@ -1,0 +1,83 @@
+{% comment %}Closing call to action (with a 3D platform orbit) and the site footer.{% endcomment %}
+<section class="finale" aria-labelledby="finale-title">
+  <div class="lp-container">
+    <div class="finale-card">
+      <div class="finale-copy">
+        <span class="lp-eyebrow finale-eyebrow">Your agency, organised</span>
+        <h2 id="finale-title">Bring every campaign into <span class="lp-accent">one place</span></h2>
+        <p>Set up your agency workspace in a couple of minutes, add your clients, and see every platform side by side.</p>
+        <div class="lp-cta-row">
+          <a class="btn btn-primary lp-btn-lg" href="{% url 'account_signup' %}">Get started free <i data-lucide="arrow-right"></i></a>
+          <a class="btn lp-btn-lg finale-ghost" href="{% url 'account_login' %}">Log in</a>
+        </div>
+        <ul class="finale-points">
+          <li><i data-lucide="zap"></i>Set up in minutes</li>
+          <li><i data-lucide="indian-rupee"></i>INR, GST and IST ready</li>
+          <li><i data-lucide="layers"></i>Meta, Google, TikTok &amp; ChatGPT Ads</li>
+        </ul>
+      </div>
+
+      <div class="orbit" aria-hidden="true">
+        <div class="orbit-tilt">
+          <div class="orbit-ring orbit-ring-outer"></div>
+          <div class="orbit-ring orbit-ring-inner"></div>
+          <div class="orbit-spin">
+            <div class="orbit-item" style="--a:0deg"><span class="orbit-face platform-meta">M</span></div>
+            <div class="orbit-item" style="--a:90deg"><span class="orbit-face platform-google">G</span></div>
+            <div class="orbit-item" style="--a:180deg"><span class="orbit-face platform-tiktok">T</span></div>
+            <div class="orbit-item" style="--a:270deg"><span class="orbit-face platform-openai">AI</span></div>
+          </div>
+          <div class="orbit-core">{% include "partials/logo.html" %}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="lp-container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="lp-logo" href="/">{% include "partials/logo.html" %}Camply</a>
+        <p class="footer-tagline">Every campaign. One platform.</p>
+        <p class="footer-about">The ad management workspace for agencies: Meta, Google, TikTok and ChatGPT Ads, budgets, GST invoices, approvals and leads, together.</p>
+      </div>
+      <nav aria-label="Product">
+        <h3>Product</h3>
+        <ul>
+          <li><a href="#change">Why Camply</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#how">How it works</a></li>
+          <li><a href="#india">Built for India</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Platforms">
+        <h3>Platforms</h3>
+        <ul>
+          <li><a href="#platforms">Meta Ads</a></li>
+          <li><a href="#platforms">Google Ads</a></li>
+          <li><a href="#platforms">TikTok Ads</a></li>
+          <li><a href="#platforms">ChatGPT Ads</a></li>
+        </ul>
+      </nav>
+      <nav aria-label="Account">
+        <h3>Account</h3>
+        <ul>
+          <li><a href="{% url 'account_login' %}">Log in</a></li>
+          <li><a href="{% url 'account_signup' %}">Create an account</a></li>
+          <li><a href="{% url 'account_reset_password' %}">Forgot password</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© {% now "Y" %} Camply · Made in Kerala, India</p>
+      <p class="footer-locale"><span>INR</span><span>GST</span><span>IST</span></p>
+      <div class="footer-actions">
+        <button class="footer-btn" type="button" data-theme-toggle aria-label="Switch light or dark mode"><i data-lucide="sun-moon"></i></button>
+        <a class="footer-btn footer-top" href="#top"><i data-lucide="arrow-up"></i>Back to top</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-wordmark" aria-hidden="true">Camply</div>
+</footer>

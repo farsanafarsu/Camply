@@ -1,0 +1,88 @@
+/* =====================================================================
+   Closing call to action (3D platform orbit) and site footer.
+   Both sit on Midnight in light and dark mode.
+   ===================================================================== */
+@property --spin { syntax: "<angle>"; inherits: true; initial-value: 0deg; }
+
+.finale { padding: 40px 0 0; background: linear-gradient(180deg, var(--bg) 0 50%, var(--midnight) 50%); }
+.finale-card {
+  position: relative; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); align-items: center; gap: 32px;
+  padding: 56px 56px; border-radius: 32px; overflow: hidden; color: #fff;
+  background: radial-gradient(600px 380px at 85% 50%, rgba(255, 107, 53, 0.28), transparent 65%), linear-gradient(135deg, #1E2130, #12131A);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+/* A thin glowing orange edge along the top. */
+.finale-card::before { content: ""; position: absolute; left: 10%; right: 10%; top: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--orange), var(--amber), transparent); }
+.finale-eyebrow { background: rgba(255, 107, 53, 0.16); color: #FFB48F; }
+.finale-copy h2 { color: #fff; margin: 16px 0 12px; font: 700 clamp(2rem, 3.6vw, 3rem)/1.08 var(--font-heading); letter-spacing: -0.03em; }
+.finale-copy p { color: #C9CBD3; font-size: 1.05rem; margin: 0 0 26px; max-width: 30em; }
+.finale-ghost { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.28); }
+.finale-ghost:hover { border-color: #fff; }
+.finale-points { list-style: none; margin: 26px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 22px; color: #A3A7B5; font-size: 0.88rem; }
+.finale-points li { display: inline-flex; align-items: center; gap: 8px; }
+.finale-points svg { width: 16px; height: 16px; color: var(--orange); }
+
+/* ---------- 3D orbit ---------- */
+.orbit { position: relative; height: 360px; perspective: 1100px; }
+.orbit-tilt { position: absolute; left: 50%; top: 50%; width: 300px; height: 300px; margin: -150px 0 0 -150px; transform-style: preserve-3d; transform: rotateX(66deg); }
+.orbit-ring { position: absolute; inset: 0; border-radius: 50%; border: 1.5px dashed rgba(255, 159, 67, 0.45); }
+.orbit-ring-inner { inset: 26%; border-style: solid; border-color: rgba(255, 107, 53, 0.35); box-shadow: 0 0 40px rgba(255, 107, 53, 0.35), inset 0 0 30px rgba(255, 107, 53, 0.25); }
+.orbit-spin { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateZ(var(--spin)); animation: orbit 16s linear infinite; }
+@keyframes orbit { to { --spin: 360deg; } }
+.orbit-item { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transform-style: preserve-3d; transform: rotateZ(var(--a)) translateX(150px); }
+/* Each tile undoes the spin and the tilt so it always faces the viewer. */
+.orbit-face {
+  position: absolute; left: -28px; top: -56px; width: 56px; height: 56px; border-radius: 16px; display: grid; place-items: center;
+  color: #fff; font: 700 1.05rem var(--font-heading); transform-origin: 50% 100%;
+  transform: rotateZ(calc(-1 * (var(--spin) + var(--a)))) rotateX(-66deg);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 14px 24px -8px rgba(0, 0, 0, 0.6);
+}
+.orbit-face.platform-tiktok { box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.25), 0 14px 24px -8px rgba(0, 0, 0, 0.6); }
+.orbit-core { position: absolute; left: 50%; top: 50%; width: 92px; height: 92px; margin: -92px 0 0 -46px; transform-origin: 50% 100%; transform: rotateX(-66deg); filter: drop-shadow(0 0 30px rgba(255, 107, 53, 0.7)); }
+.orbit-core .brand-mark { width: 92px; height: 92px; }
+
+/* ---------- Footer ---------- */
+.site-footer { position: relative; overflow: hidden; padding: 72px 0 0; background: var(--midnight); color: #C9CBD3; }
+.footer-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) repeat(3, minmax(0, 1fr)); gap: 40px; padding-bottom: 48px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
+.site-footer .lp-logo { color: #fff; }
+.footer-tagline { margin: 14px 0 6px; font: 600 1rem var(--font-heading); color: #fff; }
+.footer-about { margin: 0; max-width: 34em; font-size: 0.9rem; line-height: 1.6; color: #A3A7B5; }
+.site-footer h3 { margin: 4px 0 16px; font: 700 0.74rem var(--font-body); letter-spacing: 0.08em; text-transform: uppercase; color: #7D8193; }
+.site-footer nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.site-footer nav a { color: #C9CBD3; font-size: 0.94rem; }
+.site-footer nav a:hover { color: #fff; text-decoration: none; }
+.footer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 22px 0; font-size: 0.84rem; color: #7D8193; }
+.footer-bottom p { margin: 0; }
+.footer-locale { display: flex; gap: 6px; }
+.footer-locale span { padding: 3px 10px; border-radius: 99px; border: 1px solid rgba(255, 255, 255, 0.12); font-weight: 600; font-size: 0.74rem; letter-spacing: 0.05em; color: #C9CBD3; }
+.footer-actions { display: flex; gap: 8px; }
+.footer-btn {
+  display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14); background: rgba(255, 255, 255, 0.04); color: #E3E4EA; font: 600 0.84rem var(--font-body); cursor: pointer;
+}
+.footer-btn:hover { border-color: var(--orange); color: #fff; text-decoration: none; }
+.footer-btn svg { width: 16px; height: 16px; }
+.footer-wordmark {
+  font: 800 clamp(5rem, 20vw, 17rem)/0.78 var(--font-heading); letter-spacing: -0.06em; text-align: center; user-select: none;
+  margin: 8px 0 -0.08em; color: transparent;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0)); -webkit-background-clip: text; background-clip: text;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+  .finale-card { grid-template-columns: 1fr; padding: 44px 32px 20px; }
+  .orbit { height: 320px; }
+  .footer-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .footer-brand { grid-column: 1 / -1; }
+}
+@media (max-width: 560px) {
+  .finale-card { padding: 36px 22px 10px; border-radius: 24px; }
+  .orbit { height: 280px; }
+  .orbit-tilt { scale: 0.78; }
+  .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .orbit-spin { animation: none; }
+}

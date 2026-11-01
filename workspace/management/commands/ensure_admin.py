@@ -18,7 +18,7 @@ CAMPLY_ADMIN_RESET_PASSWORD is true.
 
 import os
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from accounts.models import User
 from workspace.models import Membership, Organization, Role
@@ -40,7 +40,12 @@ class Command(BaseCommand):
         user = User.objects.filter(email__iexact=email).first()
         created = user is None
         if created and not password:
-            raise CommandError("Set CAMPLY_ADMIN_PASSWORD to create the admin account for CAMPLY_ADMIN_EMAIL.")
+            # Never fail: this runs in start commands, and an error here would stop the site deploying.
+            self.stdout.write(self.style.WARNING(
+                f"Camply admin setup: no account for {email} yet and CAMPLY_ADMIN_PASSWORD is not set; "
+                "skipping. Set CAMPLY_ADMIN_PASSWORD to create it."
+            ))
+            return
         reset = bool(password) and (
             (os.environ.get("CAMPLY_ADMIN_RESET_PASSWORD") or "").strip().lower() in {"1", "true", "yes"}
         )

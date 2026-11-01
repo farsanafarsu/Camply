@@ -49,10 +49,10 @@ account on the live site, add these environment variables in Render, then redepl
 - `CAMPLY_ADMIN_EMAIL` and `CAMPLY_ADMIN_PASSWORD`: your login
 - `CAMPLY_ORG_NAME`: optional; also makes you Owner of that agency. Leave it out for a pure platform admin
 
-Use this start command so the database is migrated and the admin is created on every deploy:
+Use this start command (the admin account is set up automatically when the web server starts):
 
 ```
-python manage.py migrate && python manage.py ensure_admin && gunicorn camply.wsgi
+python manage.py migrate && gunicorn camply.wsgi
 ```
 
 The password is only set when the account is created (set `CAMPLY_ADMIN_RESET_PASSWORD=true` to force it).

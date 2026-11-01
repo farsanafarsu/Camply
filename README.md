@@ -41,6 +41,23 @@ from `.env`. Other demo users: `arjun@` (Campaign manager), `diya@` (Analyst), `
 
 Run the tests (MongoDB must be running): `.venv\Scripts\python -m pytest`
 
+## Deploying (Render)
+
+The live site uses its own database, so accounts made on your PC don't exist there. To create your admin
+account on the live site, add these environment variables in Render, then redeploy:
+
+- `CAMPLY_ADMIN_EMAIL` and `CAMPLY_ADMIN_PASSWORD`: your login
+- `CAMPLY_ORG_NAME`: optional, defaults to `PRception Media`
+
+Use this start command so the database is migrated and the admin is created on every deploy:
+
+```
+python manage.py migrate && python manage.py ensure_admin && gunicorn camply.wsgi
+```
+
+Changing `CAMPLY_ADMIN_PASSWORD` and redeploying changes the password. A redeploy also clears any
+"Too many failed login attempts" block.
+
 ## How it is organised
 
 | App | What it owns |

@@ -79,4 +79,4 @@
 </section>
 {{ series|json_script:"campaign-series-data" }}
 {% endblock %}
-{% block scripts %}<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>{% endblock %}
+{% block scripts %}{% load static %}<script src="{% static 'vendor/chart-4.4.1.umd.min.js' %}"></script>{% endblock %}

@@ -9,7 +9,10 @@ def workspace(request):
     if user.is_superuser:
         memberships = platform_admin_memberships(user)
     else:
-        memberships = Membership.objects.filter(user=user).select_related("organization")
+        # Already loaded by CurrentMembershipMiddleware for this request.
+        memberships = getattr(request, "user_memberships", None)
+        if memberships is None:
+            memberships = Membership.objects.filter(user=user).select_related("organization")
     return {
         "current_membership": getattr(request, "membership", None),
         "current_org": getattr(request, "organization", None),

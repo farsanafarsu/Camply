@@ -36,12 +36,13 @@ def adapter_for_account(account) -> AdPlatformAdapter:
 
 
 def capabilities_for_account(account) -> frozenset[Capability]:
+    """What Camply can do on this account's platform. Answered from the adapter classes,
+    without building an adapter (which would query the account's campaigns)."""
     if account.is_manual:
         return frozenset()
-    try:
-        return adapter_for_account(account).capabilities
-    except NotConfigured:
-        return frozenset()
+    if account.connection_id is None:
+        return SandboxAdapter.capabilities if settings.CAMPLY_SANDBOX_ADAPTERS else frozenset()
+    return ADAPTERS[account.platform].capabilities
 
 
 __all__ = [

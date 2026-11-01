@@ -16,6 +16,13 @@ logger = logging.getLogger(__name__)
 DEFAULT_LOOKBACK_DAYS = 30
 
 
+def _results_changed(organization_id):
+    """Drop cached dashboard/report numbers for this agency."""
+    from dashboard.analytics import invalidate
+
+    invalidate(organization_id)
+
+
 def today_ist():
     return timezone.localdate()
 
@@ -102,6 +109,7 @@ def sync_account(account: AdAccount, *, days: int = DEFAULT_LOOKBACK_DAYS, actor
     account.last_synced_at = timezone.now()
     account.save(update_fields=["sync_status", "last_sync_error", "last_synced_at"])
     summary = {"campaigns": len(by_external_id), "rows": written, "unmatched": unmatched}
+    _results_changed(account.organization_id)
     audit.record(
         organization=account.organization, action="sync", entity=account, actor=actor, request=request,
         after=summary,
@@ -130,6 +138,7 @@ def set_campaign_status(campaign: Campaign, new_status: str, *, actor, request=N
         raise
     campaign.status = new_status
     campaign.save(update_fields=["status", "updated_at"])
+    _results_changed(campaign.organization_id)
     audit.record(
         organization=campaign.organization, action="campaign.status", entity=campaign, actor=actor,
         request=request, before=before, after={"status": new_status},
@@ -152,5 +161,6 @@ def set_daily_budget(campaign: Campaign, daily_budget_paise: int, *, actor, requ
         raise
     campaign.daily_budget_paise = daily_budget_paise
     campaign.save(update_fields=["daily_budget_paise", "updated_at"])
+    _results_changed(campaign.organization_id)
     audit.record(organization=campaign.organization, action="campaign.budget", entity=campaign, actor=actor,
                  request=request, before=before, after=after)

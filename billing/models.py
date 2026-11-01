@@ -51,14 +51,15 @@ class LedgerEntry(models.Model):
         return -self.amount_paise if self.is_debit else self.amount_paise
 
 
-def ledger_balance(entries) -> int:
-    """Balance in paise for a queryset of ledger entries."""
-    credits = entries.filter(kind=LedgerEntry.Kind.DEPOSIT).aggregate(t=Sum("amount_paise"))["t"] or 0
-    debits = entries.filter(kind__in=list(LedgerEntry.DEBIT_KINDS)).aggregate(t=Sum("amount_paise"))["t"] or 0
-    adjustments = entries.filter(kind=LedgerEntry.Kind.ADJUSTMENT)
-    adj_credit = adjustments.filter(is_credit_adjustment=True).aggregate(t=Sum("amount_paise"))["t"] or 0
-    adj_debit = adjustments.filter(is_credit_adjustment=False).aggregate(t=Sum("amount_paise"))["t"] or 0
-    return credits + adj_credit - debits - adj_debit
+def ledger_balances_by_client(entries) -> dict:
+    """{client_id: balance in paise} for a queryset of entries, in a single grouped query."""
+    balances = {}
+    rows = entries.values("client_id", "kind", "is_credit_adjustment").annotate(total=Sum("amount_paise"))
+    for row in rows:
+        entry = LedgerEntry(kind=row["kind"], is_credit_adjustment=row["is_credit_adjustment"],
+                            amount_paise=row["total"] or 0)
+        balances[row["client_id"]] = balances.get(row["client_id"], 0) + entry.signed_paise
+    return balances
 
 
 class Invoice(models.Model):

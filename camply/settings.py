@@ -119,8 +119,19 @@ DATABASES = {
         "ENGINE": "django_mongodb_backend",
         "HOST": env("MONGODB_URI", "mongodb://localhost:27017"),
         "NAME": env("MONGODB_DB", "camply"),
+        # Keep the client open between requests. Reconnecting to Atlas (DNS, TLS, auth) on
+        # every click costs far more than the queries themselves.
+        "CONN_MAX_AGE": None,
+        "CONN_HEALTH_CHECKS": True,
     }
 }
+
+# In-process cache for short-lived per-user data (notification counts).
+CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache", "LOCATION": "camply"}}
+
+# Signed-cookie sessions: no database read/write on every request.
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+SESSION_COOKIE_HTTPONLY = True
 DEFAULT_AUTO_FIELD = "django_mongodb_backend.fields.ObjectIdAutoField"
 ALLAUTH_DEFAULT_AUTO_FIELD = DEFAULT_AUTO_FIELD
 

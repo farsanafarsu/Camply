@@ -19,7 +19,13 @@ def allowed_clients(membership):
 
 
 def allowed_client_ids(membership):
-    return list(allowed_clients(membership).values_list("pk", flat=True))
+    # Pages call this several times per request; remember the answer on the membership.
+    cached = getattr(membership, "_allowed_client_ids", None)
+    if cached is None:
+        cached = list(allowed_clients(membership).values_list("pk", flat=True))
+        if membership is not None:
+            membership._allowed_client_ids = cached
+    return cached
 
 
 def scope(queryset, membership, *, client_field="client", include_unassigned=None):

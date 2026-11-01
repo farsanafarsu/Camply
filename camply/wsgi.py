@@ -15,11 +15,15 @@ def _ensure_admin():
     `manage.py ensure_admin`. It's idempotent; a failure is logged and never stops the site.
     """
     from django.core.management import call_command
+    from django.db import connections
 
     try:
         call_command("ensure_admin")
     except Exception:
         logging.getLogger("camply").exception("Camply admin setup failed at startup")
+    finally:
+        # Gunicorn forks workers after this (preload_app); each must open its own MongoDB client.
+        connections.close_all()
 
 
 _ensure_admin()

@@ -13,7 +13,7 @@ from workspace.decorators import require_perm
 from workspace.scoping import allowed_clients, get_scoped_or_404, scope
 
 from .forms import InvoiceForm, LedgerEntryForm
-from .models import Invoice, LedgerEntry, ledger_balance
+from .models import Invoice, LedgerEntry, ledger_balances_by_client
 
 
 @login_required
@@ -28,12 +28,12 @@ def wallet(request):
         for r in scope(MetricSnapshot.objects.filter(date__gte=month_start), membership)
         .values("client_id").annotate(spend=Sum("spend_paise"))
     }
+    balance_by_client = ledger_balances_by_client(entries)
     balances = []
     for client in clients:
-        client_entries = entries.filter(client=client)
         balances.append({
             "client": client,
-            "balance_paise": ledger_balance(client_entries),
+            "balance_paise": balance_by_client.get(client.pk, 0),
             "platform_spend_mtd": spend_by_client.get(client.pk, 0),
             "budget_paise": client.monthly_budget_paise,
             "utilisation": (spend_by_client.get(client.pk, 0) * 100 / client.monthly_budget_paise)

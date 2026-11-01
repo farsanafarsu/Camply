@@ -43,14 +43,16 @@ class CurrentMembershipMiddleware:
             if user.is_superuser:
                 membership = self._platform_admin_membership(user, selected)
             else:
-                memberships = Membership.objects.filter(user=user).select_related("organization")
-                membership = memberships.filter(organization_id=selected).first() if selected else None
-                if membership is None:
-                    membership = memberships.first()
+                # One query; the agency switcher reuses this list (see context_processors).
+                memberships = list(Membership.objects.filter(user=user).select_related("organization"))
+                request.user_memberships = memberships
+                membership = next((m for m in memberships if str(m.organization_id) == selected), None) \
+                    or (memberships[0] if memberships else None)
             if membership is not None:
                 request.membership = membership
                 request.organization = membership.organization
-                request.session[SESSION_KEY] = str(membership.organization_id)
+                if selected != str(membership.organization_id):
+                    request.session[SESSION_KEY] = str(membership.organization_id)
             elif not request.path.startswith(EXEMPT_PREFIXES):
                 # A platform admin with no agencies on Camply yet only has the console.
                 if user.is_superuser:

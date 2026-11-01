@@ -12,6 +12,7 @@ from workspace.permissions import has_perm
 from workspace.scoping import allowed_clients, ensure_client_allowed, get_scoped_or_404, scope
 
 from .approvals import ApprovalError, decide
+from .context_processors import forget_counts
 from .engine import run_rules
 from .forms import RuleForm
 from .models import ActionRequest, Alert, Rule
@@ -72,6 +73,7 @@ def rule_action(request, pk):
 @require_perm("automation.manage")
 def run_now(request):
     created = run_rules(organization_id=request.organization.pk)
+    forget_counts(request)
     messages.success(request, f"Checked every rule. {len(created)} new alert{'s' if len(created) != 1 else ''}.")
     return redirect("automation:alerts")
 
@@ -93,6 +95,7 @@ def alert_action(request):
     membership = request.membership
     qs = scope(Alert.objects.filter(resolved_at__isnull=True), membership, include_unassigned=True)
     alert_id = request.POST.get("alert", "")
+    forget_counts(request)
     if request.POST.get("action") == "read_all":
         qs.update(is_read=True)
     elif ObjectId.is_valid(alert_id):
@@ -124,6 +127,7 @@ def approvals(request):
 def approval_decide(request, pk):
     action_request = get_scoped_or_404(ActionRequest.objects.select_related("campaign"), request.membership, pk=pk)
     approve = request.POST.get("decision") == "approve"
+    forget_counts(request)
     try:
         decide(action_request, approve=approve, user=request.user, request=request)
     except ApprovalError as exc:

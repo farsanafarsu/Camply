@@ -3,7 +3,10 @@
 from dataclasses import dataclass
 from datetime import date, timedelta
 
+import time
+
 from bson import ObjectId
+from django.core.cache import cache
 from django.db.models import Count, Max, Sum
 from django.utils import timezone
 
@@ -47,6 +50,36 @@ PRESETS = {
     "mtd": "This month",
     "last_month": "Last month",
 }
+
+
+CACHE_SECONDS = 120
+
+
+def _version_key(organization_id):
+    return f"analytics-version:{organization_id}"
+
+
+def invalidate(organization_id):
+    """Call when an agency's campaigns or results change (sync, pause, budget)."""
+    cache.set(_version_key(organization_id), time.time(), None)
+
+
+def cached(membership, filters: "Filters", name, compute):
+    """Cache a page's analytics briefly per person, agency and filter.
+
+    Results only change when accounts sync or campaigns are edited, which bump the
+    agency's version (see invalidate), so a stale answer never outlives a change.
+    """
+    version = cache.get(_version_key(membership.organization_id), 0)
+    key = ":".join(str(part) for part in (
+        "analytics", name, version, membership.organization_id, membership.user_id, membership.role,
+        filters.start, filters.end, filters.platform, filters.client_id,
+    ))
+    value = cache.get(key)
+    if value is None:
+        value = compute()
+        cache.set(key, value, CACHE_SECONDS)
+    return value
 
 
 def parse_filters(params) -> Filters:

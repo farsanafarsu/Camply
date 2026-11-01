@@ -50,19 +50,23 @@ def home(request):
 def dashboard(request):
     membership = request.membership
     filters, ctx = filter_context(request)
-    breakdown, total_spend = analytics.platform_breakdown(membership, filters)
-    ctx.update({
-        "kpis": analytics.kpis(membership, filters),
-        "trend": analytics.spend_trend(membership, filters),
-        "breakdown": breakdown,
-        "total_spend": total_spend,
-        "donut": [{"label": p["label"], "value": round(p["spend_paise"] / 100), "color": p["color"]}
-                  for p in breakdown],
-        "recent_campaigns": analytics.campaign_rows(membership, filters, limit=6),
-        "active_campaigns": analytics.active_campaign_count(membership, filters),
-        "freshness": analytics.data_freshness(membership),
-        "activity": scope(AuditEvent.objects.select_related("actor"), membership, include_unassigned=True)[:6],
-    })
+
+    def compute():
+        breakdown, total_spend = analytics.platform_breakdown(membership, filters)
+        return {
+            "kpis": analytics.kpis(membership, filters),
+            "trend": analytics.spend_trend(membership, filters),
+            "breakdown": breakdown,
+            "total_spend": total_spend,
+            "donut": [{"label": p["label"], "value": round(p["spend_paise"] / 100), "color": p["color"]}
+                      for p in breakdown],
+            "recent_campaigns": analytics.campaign_rows(membership, filters, limit=6),
+            "active_campaigns": analytics.active_campaign_count(membership, filters),
+            "freshness": analytics.data_freshness(membership),
+        }
+
+    ctx.update(analytics.cached(membership, filters, "dashboard", compute))
+    ctx["activity"] = scope(AuditEvent.objects.select_related("actor"), membership, include_unassigned=True)[:6]
     return render(request, "dashboard/home.html", ctx)
 
 
@@ -135,14 +139,18 @@ def campaign_status(request, pk):
 def reports(request):
     filters, ctx = filter_context(request)
     membership = request.membership
-    breakdown, total_spend = analytics.platform_breakdown(membership, filters)
-    ctx.update({
-        "kpis": analytics.kpis(membership, filters),
-        "breakdown": breakdown,
-        "total_spend": total_spend,
-        "rows": analytics.campaign_rows(membership, filters),
-        "freshness": analytics.data_freshness(membership),
-    })
+
+    def compute():
+        breakdown, total_spend = analytics.platform_breakdown(membership, filters)
+        return {
+            "kpis": analytics.kpis(membership, filters),
+            "breakdown": breakdown,
+            "total_spend": total_spend,
+            "rows": analytics.campaign_rows(membership, filters),
+            "freshness": analytics.data_freshness(membership),
+        }
+
+    ctx.update(analytics.cached(membership, filters, "reports", compute))
     return render(request, "dashboard/reports.html", ctx)
 
 

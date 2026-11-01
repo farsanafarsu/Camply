@@ -152,4 +152,4 @@
 {{ trend|json_script:"spend-trend-data" }}
 {{ donut|json_script:"platform-donut-data" }}
 {% endblock %}
-{% block scripts %}<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>{% endblock %}
+{% block scripts %}{% load static %}<script src="{% static 'vendor/chart-4.4.1.umd.min.js' %}"></script>{% endblock %}

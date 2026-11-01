@@ -1,0 +1,85 @@
+{% comment %}
+"Built for how India bills": an interactive 3D invoice (switch the client's state to see
+CGST + SGST become IGST) beside a bento of India-specific features with a live IST clock.
+Behaviour lives in landing.js ([data-gst-demo], [data-ist-clock], [data-tilt]).
+{% endcomment %}
+<section class="lp-section india" id="india">
+  <div class="lp-container">
+    <div class="lp-section-head">
+      <span class="lp-eyebrow">Made for Indian agencies</span>
+      <h2>Built for how India bills</h2>
+      <p>Rupees with lakh grouping, GST that knows your client's state, and reports in IST. No spreadsheet formulas to fix.</p>
+    </div>
+
+    <div class="india-grid">
+      <!-- Interactive invoice -->
+      <div class="gst-demo" data-gst-demo>
+        <div class="gst-switch" role="radiogroup" aria-label="Where is the client registered?">
+          <span class="gst-switch-label">Client in</span>
+          <button type="button" role="radio" aria-checked="true" class="is-on" data-state="Kerala">Kerala</button>
+          <button type="button" role="radio" aria-checked="false" data-state="Tamil Nadu">Tamil Nadu</button>
+        </div>
+
+        <div class="invoice-stage" data-tilt>
+          <div class="invoice-sheet invoice-back-2" aria-hidden="true"></div>
+          <div class="invoice-sheet invoice-back-1" aria-hidden="true"></div>
+          <article class="invoice-sheet invoice-front" aria-live="polite">
+            <header class="inv-head">
+              <div>
+                <span class="inv-brand">{% include "partials/logo.html" %}PRception Media</span>
+                <span class="inv-meta">GSTIN 32ABCDE1234F1Z5 · Thiruvananthapuram</span>
+              </div>
+              <div class="inv-title"><strong>TAX INVOICE</strong><span>CMP/2627/0001</span></div>
+            </header>
+            <div class="inv-to">
+              <div><small>Billed to</small><strong data-gst-client>Kovalam Bay Resorts</strong></div>
+              <div><small>Place of supply</small><strong data-gst-place>Kerala</strong></div>
+              <span class="inv-kind" data-gst-kind>Intra-state</span>
+            </div>
+            <dl class="inv-lines">
+              <dt>Ad management fee · SAC 998361</dt><dd>₹25,000.00</dd>
+              <dt class="inv-tax" data-tax="intra">CGST @ 9%</dt><dd class="inv-tax" data-tax="intra">₹2,250.00</dd>
+              <dt class="inv-tax" data-tax="intra">SGST @ 9%</dt><dd class="inv-tax" data-tax="intra">₹2,250.00</dd>
+              <dt class="inv-tax" data-tax="inter" hidden>IGST @ 18%</dt><dd class="inv-tax" data-tax="inter" hidden>₹4,500.00</dd>
+            </dl>
+            <div class="inv-total"><span>Total</span><strong>₹29,500.00</strong></div>
+            <span class="inv-stamp" aria-label="Paid">PAID</span>
+          </article>
+        </div>
+        <p class="gst-caption">Switch the client's state. Camply picks <strong data-gst-rule>CGST + SGST</strong> automatically.</p>
+      </div>
+
+      <!-- Bento -->
+      <div class="bento">
+        <div class="bento-tile bento-number">
+          <span class="bento-kicker">Indian number format</span>
+          <strong class="bento-big">₹4,87,320</strong>
+          <span class="bento-not">not <s>₹487,320</s></span>
+          <p>Lakhs and crores everywhere: dashboards, reports, invoices and exports.</p>
+        </div>
+        <div class="bento-tile bento-gst">
+          <span class="bento-kicker">GST, done right</span>
+          <strong class="bento-big">18%</strong>
+          <div class="bento-split"><span>CGST 9%</span><span>+</span><span>SGST 9%</span><span class="or">or</span><span>IGST 18%</span></div>
+          <p>Picked from the client's state, with SAC codes and invoice numbers per financial year.</p>
+        </div>
+        <div class="bento-tile bento-clock">
+          <span class="bento-kicker">Asia/Kolkata</span>
+          <strong class="bento-big bento-time" data-ist-clock>11:42 <small>PM</small></strong>
+          <span class="bento-sync"><span class="sync-dot" aria-hidden="true"></span>Last sync 4 min ago</span>
+          <p>Every report and alert runs on Indian Standard Time.</p>
+        </div>
+        <div class="bento-tile bento-wallet">
+          <span class="bento-kicker">Client wallet</span>
+          <div class="wallet-bar" aria-label="Wallet split: ad spend 62%, agency fee 21%, GST 4%, balance 13%">
+            <span style="--w:62%;--c:#3B82F6"></span><span style="--w:21%;--c:var(--orange)"></span><span style="--w:4%;--c:#8B5CF6"></span><span style="--w:13%;--c:var(--teal)"></span>
+          </div>
+          <ul class="wallet-legend">
+            <li><i style="--c:#3B82F6"></i>Ad spend</li><li><i style="--c:var(--orange)"></i>Agency fee</li><li><i style="--c:#8B5CF6"></i>GST</li><li><i style="--c:var(--teal)"></i>Balance</li>
+          </ul>
+          <p>Ad spend, fees and GST kept apart, so every rupee is accounted for.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

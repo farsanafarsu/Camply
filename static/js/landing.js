@@ -80,6 +80,62 @@
   });
   setMode();
 
+  // GST demo: switching the client's state swaps CGST + SGST for IGST on the invoice.
+  var gst = document.querySelector("[data-gst-demo]");
+  if (gst) {
+    var clients = { "Kerala": "Kovalam Bay Resorts", "Tamil Nadu": "Lumen Dental Care" };
+    gst.addEventListener("click", function (e) {
+      var button = e.target.closest("[data-state]");
+      if (!button) return;
+      var state = button.getAttribute("data-state");
+      var intra = state === "Kerala";  // the agency is registered in Kerala
+      gst.querySelectorAll("[data-state]").forEach(function (b) {
+        var on = b === button;
+        b.classList.toggle("is-on", on);
+        b.setAttribute("aria-checked", on ? "true" : "false");
+      });
+      gst.querySelectorAll("[data-tax]").forEach(function (row) {
+        row.hidden = (row.getAttribute("data-tax") === "intra") !== intra;
+      });
+      gst.querySelector("[data-gst-place]").textContent = state;
+      gst.querySelector("[data-gst-client]").textContent = clients[state];
+      gst.querySelector("[data-gst-kind]").textContent = intra ? "Intra-state" : "Inter-state";
+      gst.querySelector("[data-gst-rule]").textContent = intra ? "CGST + SGST" : "IGST";
+    });
+  }
+
+  // Invoice stack tilts toward the pointer.
+  var tilt = document.querySelector("[data-tilt]");
+  if (tilt && window.matchMedia("(hover: hover)").matches && !reduce.matches) {
+    tilt.addEventListener("pointermove", function (e) {
+      var r = tilt.getBoundingClientRect();
+      var x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+      tilt.querySelectorAll(".invoice-sheet").forEach(function (sheet) {
+        sheet.style.setProperty("--ry", (x * 18).toFixed(2) + "deg");
+        sheet.style.setProperty("--rx", (y * -14).toFixed(2) + "deg");
+      });
+    });
+    tilt.addEventListener("pointerleave", function () {
+      tilt.querySelectorAll(".invoice-sheet").forEach(function (sheet) {
+        sheet.style.removeProperty("--ry");
+        sheet.style.removeProperty("--rx");
+      });
+    });
+  }
+
+  // Live Indian Standard Time on the clock tile.
+  var clock = document.querySelector("[data-ist-clock]");
+  if (clock) {
+    var fmt = new Intl.DateTimeFormat("en-IN", { timeZone: "Asia/Kolkata", hour: "numeric", minute: "2-digit", hour12: true });
+    var tick = function () {
+      var parts = fmt.formatToParts(new Date());
+      var get = function (t) { var p = parts.find(function (x) { return x.type === t; }); return p ? p.value : ""; };
+      clock.innerHTML = get("hour") + ":" + get("minute") + " <small>" + get("dayPeriod").toUpperCase() + " IST</small>";
+    };
+    tick();
+    setInterval(tick, 15000);
+  }
+
   // Flip cards: each turns from "Before" to "With Camply" as it rises from the bottom
   // of the screen to the middle, and lifts toward the viewer mid-turn.
   var flips = Array.prototype.slice.call(document.querySelectorAll("[data-flip]"));

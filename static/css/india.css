@@ -1,0 +1,114 @@
+/* =====================================================================
+   "Built for how India bills": interactive 3D invoice + feature bento.
+   ===================================================================== */
+/* overflow-x: clip keeps the offset back sheets from widening the page on phones. */
+.india { overflow-x: clip; background: linear-gradient(180deg, var(--bg-subtle), var(--bg)); }
+.india-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: center; }
+
+/* ---------- GST switch ---------- */
+.gst-demo { display: flex; flex-direction: column; align-items: center; gap: 22px; }
+.gst-switch { display: inline-flex; align-items: center; gap: 4px; padding: 5px; border-radius: 99px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow); }
+.gst-switch-label { padding: 0 10px 0 12px; font: 600 0.8rem var(--font-body); color: var(--text-muted); }
+.gst-switch button { border: 0; background: none; padding: 8px 16px; border-radius: 99px; font: 600 0.88rem var(--font-body); color: var(--text-muted); cursor: pointer; transition: background 0.2s, color 0.2s; }
+.gst-switch button:hover { color: var(--text); }
+.gst-switch button.is-on { background: var(--midnight); color: #fff; }
+:root[data-theme="dark"] .gst-switch button.is-on { background: #F2F3F6; color: var(--midnight); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .gst-switch button.is-on { background: #F2F3F6; color: var(--midnight); } }
+.gst-caption { margin: 22px 0 0; font-size: 0.9rem; color: var(--text-muted); text-align: center; }
+.gst-caption strong { color: var(--accent-text); }
+
+/* ---------- 3D invoice stack ---------- */
+/* The shadow lives on the stage: a mask on the sheets themselves would clip it off. */
+.invoice-stage { position: relative; width: min(100%, 440px); perspective: 1400px; filter: drop-shadow(0 30px 34px rgba(23, 25, 35, 0.2)); }
+.invoice-sheet {
+  --rx: 8deg; --ry: -10deg;
+  position: relative; border-radius: 14px 14px 0 0; background: #FFFDF9; color: #171923;
+  transform-style: preserve-3d; transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform 0.5s cubic-bezier(.2, .7, .2, 1);
+  /* Torn, zig-zag bottom edge */
+  -webkit-mask: linear-gradient(#000 0 0) top / 100% calc(100% - 10px) no-repeat, conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 20px 10px repeat-x;
+          mask: linear-gradient(#000 0 0) top / 100% calc(100% - 10px) no-repeat, conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 20px 10px repeat-x;
+}
+.invoice-back-1, .invoice-back-2 { position: absolute; inset: 0; background: #F4EFE7; }
+.invoice-back-1 { transform: rotateX(var(--rx)) rotateY(var(--ry)) translate3d(14px, 12px, -30px) rotateZ(3deg); }
+.invoice-back-2 { transform: rotateX(var(--rx)) rotateY(var(--ry)) translate3d(26px, 22px, -60px) rotateZ(6deg); background: #ECE5DA; }
+.invoice-front {
+  padding: 26px 26px 34px; font-size: 0.86rem;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+  background-image: radial-gradient(circle at 1px 1px, rgba(23, 25, 35, 0.035) 1px, transparent 0); background-size: 6px 6px; background-color: #FFFDF9;
+}
+.inv-head { display: flex; justify-content: space-between; gap: 16px; padding-bottom: 16px; border-bottom: 1.5px dashed #E6DFD3; }
+.inv-brand { display: flex; align-items: center; gap: 8px; font: 700 0.98rem var(--font-heading); }
+.inv-brand .brand-mark { width: 22px; height: 22px; }
+.inv-meta { display: block; margin-top: 4px; font-size: 0.72rem; color: #6B7079; }
+.inv-title { text-align: right; }
+.inv-title strong { display: block; font: 700 0.78rem var(--font-heading); letter-spacing: 0.08em; }
+.inv-title span { font-size: 0.74rem; color: #6B7079; font-variant-numeric: tabular-nums; }
+.inv-to { position: relative; display: grid; grid-template-columns: 1fr 1fr auto; align-items: end; gap: 12px; padding: 16px 0; }
+.inv-to small { display: block; font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; color: #6B7079; }
+.inv-to strong { font-weight: 600; }
+.inv-kind { justify-self: end; white-space: nowrap; padding: 3px 10px; border-radius: 99px; background: #FFF1E8; color: #C2410C; font: 700 0.68rem var(--font-body); letter-spacing: 0.04em; text-transform: uppercase; }
+.inv-lines { display: grid; grid-template-columns: 1fr auto; gap: 10px 16px; margin: 0; padding: 14px 0; border-top: 1px solid #EFE9DF; font-variant-numeric: tabular-nums; }
+.inv-lines dt { color: #4B5060; }
+.inv-lines dd { margin: 0; text-align: right; }
+.inv-tax { animation: tax-in 0.45s cubic-bezier(.2, .7, .2, 1); }
+@keyframes tax-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+.inv-total { display: flex; justify-content: space-between; align-items: baseline; padding-top: 14px; border-top: 2px solid #171923; font-family: var(--font-heading); }
+.inv-total strong { font-size: 1.35rem; letter-spacing: -0.02em; }
+.inv-stamp {
+  /* Over the gap between "Total" and the amount: the one row present in both GST layouts. */
+  position: absolute; left: 32%; bottom: 22px; padding: 6px 14px; rotate: -12deg;
+  border: 3px solid #0E8C7D; border-radius: 8px; color: #0E8C7D; font: 800 1.15rem var(--font-heading); letter-spacing: 0.18em;
+  opacity: 0.82; mix-blend-mode: multiply; transform: translateZ(20px);
+  -webkit-mask: radial-gradient(circle at 30% 40%, #000 60%, rgba(0, 0, 0, 0.55) 61%) 0 0 / 7px 7px; mask: radial-gradient(circle at 30% 40%, #000 60%, rgba(0, 0, 0, 0.55) 61%) 0 0 / 7px 7px;
+}
+
+/* ---------- Bento ---------- */
+.bento { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.bento-tile {
+  position: relative; display: flex; flex-direction: column; gap: 8px; padding: 22px; border-radius: 20px;
+  background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.bento-tile:hover { transform: translateY(-3px); box-shadow: 0 22px 40px -24px rgba(23, 25, 35, 0.35); }
+.bento-tile p { margin: auto 0 0; font-size: 0.88rem; color: var(--text-muted); line-height: 1.45; }
+.bento-kicker { font: 700 0.7rem var(--font-body); letter-spacing: 0.07em; text-transform: uppercase; color: var(--accent-text); }
+.bento-big { font: 700 2.1rem/1.1 var(--font-heading); letter-spacing: -0.03em; color: var(--text); font-variant-numeric: tabular-nums; }
+.bento-not { font-size: 0.86rem; color: var(--text-muted); }
+.bento-not s { text-decoration-color: var(--negative); text-decoration-thickness: 2px; }
+.bento-number { background: radial-gradient(240px 140px at 100% 0%, var(--selected), transparent 70%), var(--surface); }
+.bento-split { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 0.78rem; font-weight: 600; }
+.bento-split span:not(.or) { padding: 3px 8px; border-radius: 99px; background: var(--surface-2); }
+.bento-split span:nth-child(2) { background: none; padding: 0; color: var(--text-muted); }
+.bento-split .or { color: var(--text-muted); font-weight: 500; }
+.bento-clock { background: var(--midnight); border-color: var(--midnight); }
+.bento-clock .bento-kicker { color: var(--amber); }
+.bento-clock .bento-big { color: #fff; }
+.bento-clock .bento-big small { font-size: 1rem; color: #A3A7B5; }
+.bento-clock p { color: #C9CBD3; }
+.bento-sync { display: inline-flex; align-items: center; gap: 8px; font-size: 0.8rem; color: #C9CBD3; }
+.sync-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 0 0 rgba(34, 184, 165, 0.6); animation: sync 2s ease-out infinite; }
+@keyframes sync { 0% { box-shadow: 0 0 0 0 rgba(34, 184, 165, 0.55); } 80%, 100% { box-shadow: 0 0 0 9px rgba(34, 184, 165, 0); } }
+.wallet-bar { display: flex; height: 14px; border-radius: 99px; overflow: hidden; gap: 3px; margin: 8px 0 4px; }
+.wallet-bar span { width: var(--w); background: var(--c); border-radius: 3px; }
+.wallet-legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 0.78rem; color: var(--text-muted); }
+.wallet-legend li { display: inline-flex; align-items: center; gap: 6px; }
+.wallet-legend i { width: 9px; height: 9px; border-radius: 3px; background: var(--c); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+  .india-grid { grid-template-columns: 1fr; gap: 40px; }
+}
+@media (max-width: 560px) {
+  .bento { grid-template-columns: 1fr; }
+  .invoice-front { padding: 20px 18px 30px; font-size: 0.8rem; }
+  .inv-head { flex-direction: column; gap: 8px; }
+  .inv-to { grid-template-columns: 1fr 1fr; }
+  .inv-kind { grid-column: 1 / -1; justify-self: start; }
+  .inv-stamp { left: 22%; font-size: 1rem; padding: 4px 10px; }
+  .inv-title { text-align: left; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .invoice-sheet, .bento-tile { transition: none; }
+  .inv-tax, .sync-dot { animation: none; }
+}

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}Every campaign. One platform.{% endblock %}
-{% block head %}<link rel="stylesheet" href="{% static 'css/landing.css' %}"><link rel="stylesheet" href="{% static 'css/story.css' %}"><link rel="stylesheet" href="{% static 'css/hub.css' %}"><link rel="stylesheet" href="{% static 'css/flip.css' %}">{% endblock %}
+{% block head %}<link rel="stylesheet" href="{% static 'css/landing.css' %}"><link rel="stylesheet" href="{% static 'css/story.css' %}"><link rel="stylesheet" href="{% static 'css/hub.css' %}"><link rel="stylesheet" href="{% static 'css/flip.css' %}"><link rel="stylesheet" href="{% static 'css/india.css' %}">{% endblock %}
 {% block body %}
 <header class="lp-nav" data-lp-nav>
   <div class="lp-container lp-nav-inner">
@@ -98,31 +98,7 @@
     </div>
   </section>
 
-  <!-- India -->
-  <section class="lp-section lp-tint" id="india">
-    <div class="lp-container lp-split lp-split-rev">
-      <div class="lp-invoice card" aria-hidden="true">
-        <div class="row"><strong>TAX INVOICE</strong><span class="spacer"></span><span class="badge badge-paid">Paid</span></div>
-        <div class="muted small">CMP/2627/0001 · Place of supply: Kerala</div>
-        <dl>
-          <dt>Management fee</dt><dd>₹25,000.00</dd>
-          <dt>CGST @ 9%</dt><dd>₹2,250.00</dd>
-          <dt>SGST @ 9%</dt><dd>₹2,250.00</dd>
-          <dt class="total">Total</dt><dd class="total">₹29,500.00</dd>
-        </dl>
-      </div>
-      <div>
-        <span class="lp-eyebrow">Made for Indian agencies</span>
-        <h2>Rupees, GST and IST, without the spreadsheet</h2>
-        <ul class="lp-checks">
-          <li><span class="ok"><i data-lucide="check"></i></span>Amounts in INR with lakh grouping: ₹4,87,320, not ₹487,320</li>
-          <li><span class="ok"><i data-lucide="check"></i></span>GST invoices that pick CGST + SGST or IGST from the client's state</li>
-          <li><span class="ok"><i data-lucide="check"></i></span>Reports in Asia/Kolkata time, with the last sync shown</li>
-          <li><span class="ok"><i data-lucide="check"></i></span>Client wallets that keep ad spend, agency fees and GST separate</li>
-        </ul>
-      </div>
-    </div>
-  </section>
+  {% include "partials/landing_india.html" %}
 
   <!-- Security -->
   <section class="lp-section">

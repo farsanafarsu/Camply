@@ -13,6 +13,7 @@
     <label class="sr-only" for="q">Search users</label>
     <input id="q" type="search" name="q" value="{{ q }}" placeholder="Search name or email">
   </form>
+  <a class="btn btn-primary" href="{% url 'console:user_add' %}"><i data-lucide="user-plus"></i>Add user</a>
 </div>
 <div class="card"><div class="card-body table-wrap">
   <table class="table">

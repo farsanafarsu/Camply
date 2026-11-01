@@ -1,0 +1,13 @@
+{% extends "console/base.html" %}
+{% block title %}Add user{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url 'console:users' %}">← All users</a></p>
+<div class="page-head"><div><h1>Add a user</h1><p>Create a login and give it a role in an agency. If the email already exists, its password, role and access are updated.</p></div></div>
+<div class="card card-pad" style="max-width:640px">
+  <form method="post" autocomplete="off">{% csrf_token %}
+    {% include "partials/form_fields.html" with form=form %}
+    <div class="row"><button class="btn btn-primary" type="submit"><i data-lucide="user-plus"></i>Save user</button><a class="btn btn-ghost" href="{% url 'console:users' %}">Cancel</a></div>
+  </form>
+  <p class="footnote">The email is marked as verified, so they can sign in straight away. Share the password with them privately.</p>
+</div>
+{% endblock %}

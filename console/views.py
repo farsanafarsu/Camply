@@ -8,6 +8,7 @@ import logging
 from datetime import timedelta
 from functools import wraps
 
+from allauth.account.models import EmailAddress
 from allauth.mfa.models import Authenticator
 from bson import ObjectId
 from django.contrib import messages
@@ -21,7 +22,9 @@ from django.views.decorators.http import require_POST
 
 from accounts.models import User
 from ads.models import AdAccount, Campaign
-from workspace.models import Client, Membership, Organization
+from workspace.models import Client, Membership, Organization, Role
+
+from .forms import UserForm
 
 logger = logging.getLogger("camply.console")
 
@@ -126,6 +129,47 @@ def users(request):
     memberships = _memberships_by_user(ids)
     rows = [{"user": u, "memberships": memberships.get(u.pk, []), "two_factor": u.pk in with_2fa} for u in people]
     return render(request, "console/users.html", {"rows": rows, "q": q, "status": status})
+
+
+@platform_admin_required
+def user_add(request):
+    form = UserForm(request.POST or None, initial={"organization": request.GET.get("agency", "")})
+    if request.method == "POST" and form.is_valid():
+        data = form.cleaned_data
+        user = User.objects.filter(email__iexact=data["email"]).first()
+        created = user is None
+        if user is not None and user.pk == request.user.pk and not data["platform_admin"]:
+            form.add_error("platform_admin", "You can't remove your own platform admin access.")
+        else:
+            if created:
+                user = User(email=data["email"])
+            user.first_name = data["first_name"] or user.first_name
+            user.last_name = data["last_name"] or user.last_name
+            user.set_password(data["password"])
+            user.is_active = True
+            user.is_superuser = user.is_staff = data["platform_admin"]
+            user.save()
+            # Created by an admin, so the address doesn't need email verification.
+            address = EmailAddress.objects.filter(user=user, email__iexact=user.email).first()
+            if address is None:
+                EmailAddress.objects.create(user=user, email=user.email, verified=True, primary=True)
+            elif not (address.verified and address.primary):
+                address.verified = address.primary = True
+                address.save(update_fields=["verified", "primary"])
+            org = data["organization"]
+            if org is not None:
+                Membership.objects.update_or_create(
+                    organization=org, user=user,
+                    defaults={"role": data["role"], "all_clients": data["role"] == Role.OWNER},
+                )
+            logger.info("Platform admin %s %s user %s", request.user.email,
+                        "created" if created else "updated", user.email)
+            where = f" in {org.name} as {Role(data['role']).label}" if org else ""
+            kind = "platform admin" if data["platform_admin"] else "user"
+            messages.success(request, f"{'Created' if created else 'Updated'} {kind} {user.email}{where}. "
+                                      "They can sign in now.")
+            return redirect("console:users")
+    return render(request, "console/user_form.html", {"form": form})
 
 
 @require_POST

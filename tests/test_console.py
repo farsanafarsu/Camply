@@ -69,3 +69,54 @@ def test_admin_cannot_disable_self(client, people):
     client.post(reverse("console:user_status", args=[people["admin"].pk]), {"action": "disable"})
     people["admin"].refresh_from_db()
     assert people["admin"].is_active is True
+
+
+def test_add_normal_user_to_agency_can_sign_in(client, people):
+    client.force_login(people["admin"])
+    response = client.post(reverse("console:user_add"), {
+        "email": "New.User@Agency.test", "first_name": "New", "password": "Test-Pass-2026",
+        "organization": str(people["org"].pk), "role": Role.OWNER,
+    })
+    assert response.status_code == 302
+    user = User.objects.get(email="new.user@agency.test")
+    assert not user.is_superuser and not user.is_staff
+    membership = Membership.objects.get(user=user, organization=people["org"])
+    assert membership.role == Role.OWNER and membership.all_clients
+
+    client.logout()
+    response = client.post(reverse("account_login"), {"login": "new.user@agency.test", "password": "Test-Pass-2026"})
+    assert response.url == reverse("dashboard:home")
+    assert client.get(reverse("console:home")).status_code == 403
+
+
+def test_add_user_turns_existing_platform_admin_into_normal_user(client, people):
+    other_admin = User.objects.create_user(email="new.user@agency.test", password="x" * 10,
+                                           is_staff=True, is_superuser=True)
+    client.force_login(people["admin"])
+    client.post(reverse("console:user_add"), {
+        "email": "new.user@agency.test", "password": "Test-Pass-2026",
+        "organization": str(people["org"].pk), "role": Role.OWNER,
+    })
+    other_admin.refresh_from_db()
+    assert not other_admin.is_superuser
+    assert other_admin.check_password("Test-Pass-2026")
+
+
+def test_cannot_remove_own_platform_admin(client, people):
+    client.force_login(people["admin"])
+    response = client.post(reverse("console:user_add"), {
+        "email": "admin@camply.test", "password": "whatever-123",
+        "organization": str(people["org"].pk), "role": Role.OWNER,
+    })
+    assert response.status_code == 200
+    people["admin"].refresh_from_db()
+    assert people["admin"].is_superuser
+
+
+def test_agency_owner_cannot_add_users_through_console(client, people):
+    client.force_login(people["owner"])
+    response = client.post(reverse("console:user_add"), {
+        "email": "x@y.test", "password": "whatever-123", "platform_admin": "on",
+    })
+    assert response.status_code == 403
+    assert not User.objects.filter(email="x@y.test").exists()

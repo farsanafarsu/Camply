@@ -83,7 +83,6 @@ def overview(request):
         "stats": stats,
         "recent_agencies": _agency_rows(Organization.objects.order_by("-created_at")[:6]),
         "recent_users": recent_users,
-        "user_memberships": _memberships_by_user([u.pk for u in recent_users]),
     })
 
 

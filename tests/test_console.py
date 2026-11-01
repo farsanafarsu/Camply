@@ -35,16 +35,44 @@ def test_platform_admin_without_agency_sees_console(client, people):
     assert "owner@a.test" in html
 
 
-def test_platform_admin_is_not_sent_to_onboarding(client, people):
+def test_platform_admin_sees_every_agency_feature_as_owner(client, people):
     client.force_login(people["admin"])
-    response = client.get(reverse("dashboard:campaigns"))
-    assert response.status_code == 302 and response.url == reverse("console:home")
+    for name in ("dashboard:home", "dashboard:campaigns", "dashboard:reports", "billing:wallet",
+                 "workspace:team", "workspace:settings", "dashboard:audit_log", "ads:accounts"):
+        assert client.get(reverse(name)).status_code == 200, name
+    html = client.get(reverse("dashboard:home")).content.decode()
+    assert "Platform overview" in html and "Agency A" in html
+    # Acting as Owner doesn't make them a listed member of the agency.
+    assert not Membership.objects.filter(user=people["admin"]).exists()
 
 
-def test_sign_in_lands_platform_admin_in_console(client, people):
+def test_platform_admin_can_switch_to_any_agency(client, people):
+    other = Organization.objects.create(name="Agency B", state="Kerala")
+    client.force_login(people["admin"])
+    client.post(reverse("workspace:switch"), {"organization": str(other.pk)})
+    response = client.get(reverse("dashboard:home"))
+    assert response.context["current_org"] == other
+
+
+def test_agency_member_cannot_switch_to_other_agency(client, people):
+    other = Organization.objects.create(name="Agency B", state="Kerala")
+    client.force_login(people["owner"])
+    assert client.post(reverse("workspace:switch"), {"organization": str(other.pk)}).status_code == 403
+
+
+def test_sign_in_lands_platform_admin_on_dashboard(client, people):
     response = client.post(reverse("account_login"),
                            {"login": "admin@camply.test", "password": "console-pass-123"})
-    assert response.url == reverse("console:home")
+    assert response.url == reverse("dashboard:home")
+    assert client.get(response.url).status_code == 200
+
+
+def test_platform_admin_with_no_agencies_goes_to_console(client):
+    admin = make_user("solo@camply.test", is_staff=True, is_superuser=True)
+    client.force_login(admin)
+    response = client.get(reverse("dashboard:home"))
+    assert response.status_code == 302 and response.url == reverse("console:home")
+    assert client.get(reverse("console:home")).status_code == 200
 
 
 def test_agency_owner_cannot_open_console(client, people):

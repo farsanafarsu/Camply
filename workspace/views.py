@@ -14,7 +14,7 @@ from audit import log as audit
 from .decorators import require_perm
 from .forms import ClientForm, InviteForm, MemberAccessForm, OrganizationForm
 from .middleware import SESSION_KEY
-from .models import Client, Invitation, Membership, Role
+from .models import Client, Invitation, Membership, Organization, Role
 from .permissions import ASSIGNABLE_ROLES, has_perm, permission_matrix
 from .scoping import allowed_clients, get_scoped_or_404
 
@@ -40,11 +40,15 @@ def onboarding(request):
 @require_POST
 def switch_organization(request):
     org_id = request.POST.get("organization", "")
-    membership = Membership.objects.filter(user=request.user, organization_id=org_id).first() \
-        if ObjectId.is_valid(org_id) else None
-    if membership is None:
+    if not ObjectId.is_valid(org_id):
         raise PermissionDenied
-    request.session[SESSION_KEY] = str(membership.organization_id)
+    if request.user.is_superuser:
+        allowed = Organization.objects.filter(pk=org_id).exists()
+    else:
+        allowed = Membership.objects.filter(user=request.user, organization_id=org_id).exists()
+    if not allowed:
+        raise PermissionDenied
+    request.session[SESSION_KEY] = org_id
     return redirect("dashboard:home")
 
 

@@ -16,7 +16,10 @@
     </form>
     {% endif %}
 
+    {% if user.is_superuser %}<div class="console-badge"><i data-lucide="shield-check"></i><span>Platform admin</span></div>{% endif %}
+
     <nav class="nav">
+      {% if current_org %}
       <a href="{% url 'dashboard:home' %}" class="{% nav_active 'dashboard:home' %}"><i data-lucide="layout-dashboard"></i>Dashboard</a>
       {% can 'accounts.view' as c %}{% if c %}<a href="{% url 'ads:accounts' %}" class="{% nav_active 'ads:accounts' %}"><i data-lucide="wallet-cards"></i>Ad Accounts</a>{% endif %}
       {% can 'campaigns.view' as c %}{% if c %}<a href="{% url 'dashboard:campaigns' %}" class="{% nav_active 'dashboard:campaigns' %}"><i data-lucide="megaphone"></i>Campaigns</a>{% endif %}
@@ -33,6 +36,15 @@
       {% can 'accounts.view' as c %}{% if c %}<a href="{% url 'ads:integrations' %}" class="{% nav_active 'ads:integrations' %}"><i data-lucide="plug"></i>Integrations</a>{% endif %}
       {% can 'audit.view' as c %}{% if c %}<a href="{% url 'dashboard:audit_log' %}" class="{% nav_active 'dashboard:audit_log' %}"><i data-lucide="history"></i>Audit log</a>{% endif %}
       {% can 'org.manage' as c %}{% if c %}<a href="{% url 'workspace:settings' %}" class="{% nav_active 'workspace:settings' %}"><i data-lucide="settings"></i>Settings</a>{% endif %}
+      {% endif %}
+
+      {% if user.is_superuser %}
+      <span class="nav-label">Platform admin</span>
+      <a href="{% url 'console:home' %}" class="{% nav_active 'console:home' exact=True %}"><i data-lucide="gauge"></i>Platform overview</a>
+      <a href="{% url 'console:agencies' %}" class="{% nav_active 'console:agencies' %}"><i data-lucide="landmark"></i>All agencies</a>
+      <a href="{% url 'console:users' %}" class="{% nav_active 'console:users' %}"><i data-lucide="contact"></i>All users</a>
+      <a href="{% url 'admin:index' %}"><i data-lucide="database"></i>Data editor</a>
+      {% endif %}
     </nav>
     <div class="sidebar-footer">All amounts in INR · Asia/Kolkata</div>
   </aside>
@@ -44,11 +56,10 @@
       <details class="dropdown">
         <summary class="user-menu" aria-label="Account menu">
           <span class="avatar">{{ user.initials }}</span>
-          <span><span class="name">{{ user.display_name }}</span><br><span class="muted tiny">{{ current_membership.get_role_display }}</span></span>
+          <span><span class="name">{{ user.display_name }}</span><br><span class="muted tiny">{% if user.is_superuser %}Platform admin{% else %}{{ current_membership.get_role_display }}{% endif %}</span></span>
           <i data-lucide="chevron-down"></i>
         </summary>
         <div class="menu">
-          {% if user.is_superuser %}<a href="{% url 'console:home' %}">Platform admin</a>{% endif %}
           <a href="{% url 'workspace:profile' %}">Profile &amp; security</a>
           <a href="{% url 'mfa_index' %}">Two-step verification</a>
           <form method="post" action="{% url 'account_logout' %}">{% csrf_token %}<button type="submit">Sign out</button></form>

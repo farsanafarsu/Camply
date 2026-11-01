@@ -22,6 +22,8 @@ from django.views.decorators.http import require_POST
 
 from accounts.models import User
 from ads.models import AdAccount, Campaign
+from workspace.forms import OrganizationForm
+from workspace.middleware import SESSION_KEY
 from workspace.models import Client, Membership, Organization, Role
 
 from .forms import UserForm
@@ -93,6 +95,19 @@ def agencies(request):
     if q:
         orgs = orgs.filter(Q(name__icontains=q) | Q(city__icontains=q) | Q(gstin__icontains=q))
     return render(request, "console/agencies.html", {"rows": _agency_rows(orgs), "q": q})
+
+
+@platform_admin_required
+def agency_add(request):
+    form = OrganizationForm(request.POST or None, initial={"state": "Kerala"})
+    if request.method == "POST" and form.is_valid():
+        org = form.save()
+        logger.info("Platform admin %s created agency %s", request.user.email, org.name)
+        # Open the new agency so its dashboard and every feature are one click away.
+        request.session[SESSION_KEY] = str(org.pk)
+        messages.success(request, f"{org.name} is ready. Every feature for it is now in the sidebar.")
+        return redirect("dashboard:home")
+    return render(request, "console/agency_form.html", {"form": form})
 
 
 @platform_admin_required

@@ -148,3 +148,28 @@ def test_agency_owner_cannot_add_users_through_console(client, people):
     })
     assert response.status_code == 403
     assert not User.objects.filter(email="x@y.test").exists()
+
+
+def test_admin_with_no_agencies_adds_one_and_gets_every_feature(client):
+    admin = make_user("fresh@camply.test", is_staff=True, is_superuser=True)
+    client.force_login(admin)
+    html = client.get(reverse("console:home")).content.decode()
+    assert "Start by adding an agency" in html
+
+    response = client.post(reverse("console:agency_add"),
+                           {"name": "Test Media", "state": "Kerala", "city": "Thiruvananthapuram"})
+    assert response.status_code == 302 and response.url == reverse("dashboard:home")
+    org = Organization.objects.get(name="Test Media")
+
+    response = client.get(reverse("dashboard:home"))
+    assert response.status_code == 200 and response.context["current_org"] == org
+    html = response.content.decode()
+    for feature in ("Campaigns", "Reports", "Wallet &amp; Billing", "Team", "Platform overview"):
+        assert feature in html, feature
+
+
+def test_agency_owner_cannot_add_agencies_through_console(client, people):
+    client.force_login(people["owner"])
+    response = client.post(reverse("console:agency_add"), {"name": "Sneaky", "state": "Kerala"})
+    assert response.status_code == 403
+    assert not Organization.objects.filter(name="Sneaky").exists()

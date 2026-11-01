@@ -1,0 +1,13 @@
+{% extends "console/base.html" %}
+{% block title %}Add agency{% endblock %}
+{% block content %}
+<p class="small"><a href="{% url 'console:agencies' %}">← All agencies</a></p>
+<div class="page-head"><div><h1>Add an agency</h1><p>An agency is an organization using Camply, such as PRception Media. Its clients, ad accounts, campaigns, reports, wallet and team all live inside it.</p></div></div>
+<div class="card card-pad" style="max-width:640px">
+  <form method="post">{% csrf_token %}
+    {% include "partials/form_fields.html" with form=form %}
+    <div class="row"><button class="btn btn-primary" type="submit"><i data-lucide="building-2"></i>Create agency</button><a class="btn btn-ghost" href="{% url 'console:agencies' %}">Cancel</a></div>
+  </form>
+  <p class="footnote">GSTIN, state and city appear on GST invoices. The state decides CGST + SGST or IGST. You can change these later in the agency's Settings.</p>
+</div>
+{% endblock %}

@@ -5,6 +5,13 @@
   <div><h1>Platform overview</h1><p>Every agency and user on Camply.</p></div>
 </div>
 
+{% if not stats.agencies %}
+<div class="callout stack" style="margin-bottom:18px">
+  <strong>Start by adding an agency</strong>
+  <span>The dashboard, campaigns, reports, wallet and team features all belong to an agency. Add PRception Media (or any agency) and they appear in the sidebar.</span>
+  <div><a class="btn btn-primary" href="{% url 'console:agency_add' %}"><i data-lucide="plus"></i>Add agency</a></div>
+</div>
+{% endif %}
 <section class="grid grid-3" aria-label="Platform totals">
   <a class="card kpi" href="{% url 'console:agencies' %}"><span class="kpi-icon"><i data-lucide="building-2"></i></span><div><div class="kpi-label">Agencies</div><div class="kpi-value">{{ stats.agencies|num }}</div></div></a>
   <a class="card kpi" href="{% url 'console:users' %}"><span class="kpi-icon"><i data-lucide="users"></i></span><div><div class="kpi-label">Users</div><div class="kpi-value">{{ stats.users|num }}</div><span class="muted small">{{ stats.active_users|num }} signed in in the last 30 days</span></div></a>

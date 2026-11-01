@@ -9,11 +9,34 @@ verification) · Celery + Redis for background sync · Chart.js for charts.
 
 Reference material is in [`docs/`](docs): the product blueprint, the colour guide and the dashboard mockup.
 
+## Project layout
+
+```
+Camply/
+├── backend/            Django project (Python): runs on the server
+│   ├── manage.py
+│   ├── camply/         settings, URLs, WSGI, Celery
+│   ├── accounts/  workspace/  ads/  billing/  audit/  dashboard/
+│   ├── leads/  creatives/  automation/  console/
+│   ├── mongo_migrations/   tests/
+│   ├── requirements.txt    pytest.ini    gunicorn.conf.py
+├── frontend/           What the browser receives
+│   ├── templates/      HTML pages (Django templates)
+│   └── static/         CSS, JavaScript, images, vendored Lucide and Chart.js
+├── docs/               Blueprint, colour guide, mockup
+├── .env                Local settings (not committed; see .env.example)
+└── start.bat / start.ps1   One-click local start
+```
+
+The backend reads templates and static files from `frontend/` (see `FRONTEND_DIR` in
+`backend/camply/settings.py`). Run Django commands from the repository root as `python backend/manage.py …`,
+or from inside `backend/`.
+
 ## Run it locally (Windows)
 
 ```powershell
 python -m venv .venv
-.venv\Scripts\pip install -r requirements.txt
+.venv\Scripts\pip install -r backend\requirements.txt
 copy .env.example .env        # then fill in DJANGO_SECRET_KEY, FIELD_ENCRYPTION_KEY, CAMPLY_DEMO_PASSWORD
 ```
 
@@ -30,16 +53,16 @@ Start MongoDB, either with Docker (`docker compose up -d`) or with the portable 
 Then, in another terminal:
 
 ```powershell
-.venv\Scripts\python manage.py migrate
-.venv\Scripts\python manage.py seed_demo      # PRception Media demo workspace
-.venv\Scripts\python manage.py runserver
+.venv\Scripts\python backend\manage.py migrate
+.venv\Scripts\python backend\manage.py seed_demo      # PRception Media demo workspace
+.venv\Scripts\python backend\manage.py runserver
 ```
 
 Open http://127.0.0.1:8000 and sign in as `farsana@prception.test` (Owner) with the `CAMPLY_DEMO_PASSWORD`
 from `.env`. Other demo users: `arjun@` (Campaign manager), `diya@` (Analyst), `accounts@` (Finance), all
 `@prception.test`, and `marketing@kovalambay.test` (Client).
 
-Run the tests (MongoDB must be running): `.venv\Scripts\python -m pytest`
+Run the tests (MongoDB must be running): `cd backend` then `..\.venv\Scripts\python -m pytest`
 
 ## Deploying (Render)
 
@@ -49,10 +72,12 @@ account on the live site, add these environment variables in Render, then redepl
 - `CAMPLY_ADMIN_EMAIL` and `CAMPLY_ADMIN_PASSWORD`: your login
 - `CAMPLY_ORG_NAME`: optional; also makes you Owner of that agency. Leave it out for a pure platform admin
 
-Use this start command (the admin account is set up automatically when the web server starts):
+Use these commands (the admin account is set up automatically when the web server starts). In Render, set
+**Root Directory** to `backend`, or keep the root and use the `cd backend &&` forms:
 
 ```
-python manage.py migrate && gunicorn camply.wsgi
+Build:  pip install -r requirements.txt
+Start:  cd backend && python manage.py collectstatic --noinput && python manage.py migrate && gunicorn camply.wsgi
 ```
 
 The password is only set when the account is created (set `CAMPLY_ADMIN_RESET_PASSWORD=true` to force it).
@@ -84,15 +109,17 @@ Platform admins sign in to the console at `/platform/`: every agency and user, a
 - **Wallet ≠ platform balance.** The wallet is Camply's internal client ledger, and the UI says so.
 - **Every change is audited.** Pauses, resumes, syncs, ledger entries, invoices and team changes write an `AuditEvent`.
 
-## Status (Phase 1 of the blueprint)
+## Status
 
 Working: sign in/up, two-step verification, Google/Microsoft sign-in (when keys are set), onboarding, clients, team
-invites and roles, dashboard, campaigns list and detail, pause/resume, ad accounts with sync, cross-channel report
-with CSV export, wallet ledger, GST invoices, audit log, light and dark mode, mobile layout.
+invites and roles, platform admin console, dashboard, campaigns list and detail, pause/resume, ad accounts with
+sync, cross-channel report with CSV export, wallet ledger, GST invoices, audit log, **Leads** (inbox, pipeline,
+website-form webhook, UTM builder, tracking health), **Creative Studio** (library, versions, platform checks,
+approval workflow, S3-compatible storage), **Automation** (rules, alerts, approvals, scheduled summaries), the
+scroll-story home page, light and dark mode, mobile layout.
 
 Not built yet:
 - **Live platform connections.** The Meta adapter has read and pause/resume code but has not been run against the
   real API. Google, TikTok and ChatGPT Ads adapters are stubs. Without a live connection, accounts use the
   sandbox adapter (deterministic demo data) in development.
-- Creatives, Leads, AI Copilot and Automation are placeholder pages (blueprint phases 3–4).
-- Razorpay recharge, scheduled email reports and S3 creative uploads.
+- Campaign creation and bulk actions, report sharing and manual entry, AI Copilot, Razorpay recharge.

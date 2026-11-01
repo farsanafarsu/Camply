@@ -9,7 +9,13 @@ from pathlib import Path
 from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
+# Repository layout: backend/ holds the Django project (BASE_DIR), frontend/ holds
+# templates and static files.
 BASE_DIR = Path(__file__).resolve().parent.parent
+REPO_DIR = BASE_DIR.parent
+FRONTEND_DIR = REPO_DIR / "frontend"
+# .env normally sits at the repository root; backend/.env is also read if present.
+load_dotenv(REPO_DIR / ".env")
 load_dotenv(BASE_DIR / ".env")
 
 
@@ -98,7 +104,7 @@ WSGI_APPLICATION = "camply.wsgi.application"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],
+        "DIRS": [FRONTEND_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -192,7 +198,7 @@ USE_TZ = True
 
 # --- Static files ----------------------------------------------------------------
 STATIC_URL = "static/"
-STATICFILES_DIRS = [BASE_DIR / "static"]
+STATICFILES_DIRS = [FRONTEND_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
@@ -237,7 +243,7 @@ S3_ENDPOINT_URL = env("S3_ENDPOINT_URL")
 # Creative uploads: an S3-compatible bucket when configured (needed on hosts with temporary
 # disks, like Render), otherwise the local media folder. Files are always served through
 # Camply's own permission-checked view, never by public URL.
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = REPO_DIR / "media"
 MEDIA_URL = "/media/"
 CREATIVE_MAX_UPLOAD_MB = int(env("CREATIVE_MAX_UPLOAD_MB", "50"))
 if S3_BUCKET:

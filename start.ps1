@@ -21,7 +21,7 @@ $python = Join-Path $root ".venv\Scripts\python.exe"
 if (-not (Test-Path $python)) {
     Write-Host "Python environment not found. Run these first:" -ForegroundColor Red
     Write-Host "  python -m venv .venv"
-    Write-Host "  .venv\Scripts\pip install -r requirements.txt"
+    Write-Host "  .venv\Scripts\pip install -r backend\requirements.txt"
     exit 1
 }
 
@@ -60,10 +60,10 @@ if (Test-Port 8000) {
     exit 0
 }
 
-& $python manage.py migrate --noinput | Out-Null
+& $python backend\manage.py migrate --noinput | Out-Null
 Write-Host "Starting Camply at http://127.0.0.1:8000 (press Ctrl+C to stop)..." -ForegroundColor Green
 Start-Job -ScriptBlock {
     Start-Sleep -Seconds 3
     Start-Process "http://127.0.0.1:8000"
 } | Out-Null
-& $python manage.py runserver 127.0.0.1:8000
+& $python backend\manage.py runserver 127.0.0.1:8000

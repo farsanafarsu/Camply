@@ -517,6 +517,102 @@ body:has(.hud) { background: #0B0C11; }
   .hud-btn { width: 100%; justify-content: center; }
 }
 
+/* Tablet: an odd card at the end of a 2-column grid spans the full row */
+@media (min-width: 561px) and (max-width: 900px) {
+  .feature-grid article:last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+
+/* Phones: tighter spacing, compact cards, readable hero copy */
+@media (max-width: 560px) {
+  .hud-container { width: min(1200px, 100% - 32px); }
+  .hud-nav { padding: 16px; gap: 12px; }
+  .hud-nav.is-scrolled { padding-block: 10px; }
+  .hud-logo-tag { display: none; }
+  .hud-menu { width: 42px; height: 42px; }
+  .hud-mobile { right: 16px; width: calc(100vw - 32px); }
+
+  .hero { padding: calc(min(440px, 90vw) + 40px) 16px 40px; gap: 24px; }
+  .core { --size: min(440px, 90vw); top: calc(56px + var(--size) / 2); }
+  .core-sat b { width: 36px; height: 36px; left: -18px; top: -18px; border-radius: 10px; font-size: .7rem; }
+  .hud-kicker { letter-spacing: .14em; font-size: .64rem; line-height: 1.5; align-items: flex-start; }
+  .hud-kicker .hud-live { margin-top: 4px; }
+  .hero-title { font-size: clamp(1.9rem, 9.6vw, 2.6rem); }
+  .hero-lede { font: 400 .95rem/1.65 var(--f-body); text-transform: none; letter-spacing: 0; }
+  .hero-cta { gap: 10px; }
+
+  .strip-grid div { padding: 20px 14px; gap: 6px; }
+  .strip-grid div:nth-child(odd) { padding-left: 0; }
+  .strip-grid strong { font-size: 1.6rem; }
+  .strip-grid span { font-size: .6rem; letter-spacing: .1em; }
+
+  .hud-section { padding: 64px 0; }
+  .sec-head { gap: 14px; margin-bottom: 32px; }
+  .sec-head h2 { font-size: clamp(1.35rem, 6.6vw, 1.8rem); }
+  .sec-head p { font-size: .98rem; }
+  .sec-index { letter-spacing: .16em; font-size: .64rem; }
+  .sec-index i { width: 24px; }
+
+  .change-row { padding: 18px 18px 18px 16px; grid-template-columns: 30px 1fr; gap: 10px 12px; }
+  .change-num { font-size: .9rem; }
+
+  /* Feature and security cards: icon beside the title, text below */
+  .feature-grid article { grid-template-columns: 40px 1fr; align-items: center; column-gap: 14px; row-gap: 10px; padding: 20px 18px 22px; }
+  .feature-grid .f-icon { width: 40px; height: 40px; }
+  .feature-grid h3 { margin: 0; font-size: .82rem; }
+  .feature-grid p { grid-column: 1 / -1; font-size: .93rem; }
+
+  .steps li { grid-template-columns: 48px 1fr; column-gap: 16px; }
+  .steps::before { left: 23px; }
+  .step-num { width: 48px; height: 48px; font-size: .9rem; }
+  .steps h3 { font-size: .92rem; }
+
+  .split { gap: 32px; }
+  .platform-card { padding: 20px 18px; }
+
+  .gst-switch button { padding: 10px 12px; }
+  .invoice { padding: 20px 18px; gap: 16px; }
+  .inv-head { flex-direction: column; gap: 12px; }
+  .inv-title { text-align: left; grid-auto-flow: column; justify-content: start; align-items: baseline; gap: 12px; }
+  .inv-lines { font-size: .86rem; gap: 10px 12px; }
+  .inv-total strong { font-size: 1.3rem; }
+  .inv-stamp { position: static; justify-self: start; transform: rotate(-4deg); font-size: .72rem; padding: 6px 10px; }
+  .bento-tile { padding: 20px 18px; }
+  .b-big { font-size: 1.5rem; }
+
+  .finale { padding: 16px 0 64px; }
+  .finale-panel { padding: 56px 20px 48px; gap: 16px; }
+  .finale-panel h2 { font-size: clamp(1.5rem, 7.4vw, 2rem); }
+  .finale-panel p { font-size: .98rem; }
+  .finale-cta { width: 100%; flex-direction: column; }
+  .finale-points { flex-direction: column; align-items: flex-start; gap: 12px; margin-top: 12px; text-align: left; }
+  .finale-points li { letter-spacing: .1em; line-height: 1.4; align-items: flex-start; }
+  .finale-points svg { flex: none; margin-top: 1px; }
+  .corner { width: 16px; height: 16px; }
+
+  .hud-footer { padding-top: 48px; }
+  .footer-grid { gap: 32px 20px; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; gap: 14px; margin-top: 40px; }
+}
+
+/* Very small phones */
+@media (max-width: 360px) {
+  .strip-grid { grid-template-columns: 1fr 1fr; }
+  .inv-to { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+}
+
+/* Short landscape phones: don't let the emblem push the copy off screen */
+@media (max-height: 520px) and (orientation: landscape) {
+  .hero { min-height: auto; padding-top: 96px; grid-template-columns: 1fr auto; align-items: end; }
+  .core { --size: min(320px, 70vh); top: 50%; left: auto; right: 4%; transform: translateY(-50%); }
+  .readout, .hud-dots, .hud-tick, .hud-scroll, .hero-lines { display: none; }
+  .hero-copy { max-width: 55%; gap: 14px; }
+  .hero-title { font-size: clamp(1.6rem, 4.2vw, 2.4rem); }
+  .hero-lede { font: 400 .92rem/1.55 var(--f-body); text-transform: none; letter-spacing: 0; }
+  .hero-cta { grid-column: 1; justify-content: flex-start; }
+  .hero-cta .hud-btn { width: auto; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hud *, .hud *::before, .hud *::after { animation: none !important; transition: none !important; }
   .hud.js-reveal [data-reveal] { opacity: 1; transform: none; }

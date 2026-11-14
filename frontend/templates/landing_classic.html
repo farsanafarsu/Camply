@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Every campaign. One platform.{% endblock %}
+{% block head %}<link rel="stylesheet" href="{% static 'css/landing.css' %}"><link rel="stylesheet" href="{% static 'css/story.css' %}"><link rel="stylesheet" href="{% static 'css/hub.css' %}"><link rel="stylesheet" href="{% static 'css/flip.css' %}"><link rel="stylesheet" href="{% static 'css/india.css' %}"><link rel="stylesheet" href="{% static 'css/footer.css' %}">{% endblock %}
+{% block body %}
+<header class="lp-nav" id="top" data-lp-nav>
+  <div class="lp-container lp-nav-inner">
+    <a class="lp-logo" href="/">{% include "partials/logo.html" %}Camply</a>
+    <nav class="lp-links" aria-label="Main">
+      <a href="#change">Why Camply</a>
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#platforms">Integrations</a>
+      <a href="#india">For agencies</a>
+    </nav>
+    <div class="lp-actions">
+      <button class="btn btn-ghost icon-btn" type="button" data-theme-toggle aria-label="Switch light or dark mode"><i data-lucide="sun-moon"></i></button>
+      <a class="btn lp-hide-sm" href="{% url 'account_login' %}">Log in</a>
+      <a class="btn btn-primary" href="{% url 'account_signup' %}">Get started</a>
+      <button class="btn btn-ghost icon-btn lp-menu-btn" type="button" data-lp-menu aria-label="Open menu" aria-expanded="false"><i data-lucide="menu"></i></button>
+    </div>
+  </div>
+  <nav class="lp-mobile" aria-label="Mobile">
+    <a href="#change">Why Camply</a>
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a href="#platforms">Integrations</a>
+    <a href="#india">For agencies</a>
+    <a href="{% url 'account_login' %}">Log in</a>
+  </nav>
+</header>
+
+<main>
+  {% include "partials/landing_story.html" %}
+
+  <!-- Proof strip -->
+  <section class="lp-strip" aria-label="At a glance">
+    <div class="lp-container lp-strip-grid">
+      <div><strong>4</strong><span>ad platforms in one view</span></div>
+      <div><strong>₹</strong><span>INR with Indian number format</span></div>
+      <div><strong>18%</strong><span>GST invoices, CGST/SGST or IGST</span></div>
+      <div><strong>7</strong><span>roles, from owner to client</span></div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="lp-section" id="features">
+    <div class="lp-container">
+      <div class="lp-section-head">
+        <span class="lp-eyebrow">Features</span>
+        <h2>Everything your agency needs to run paid ads</h2>
+        <p>Stop switching between ad managers and spreadsheets. Camply puts every client, account and result in one workspace.</p>
+      </div>
+      <div class="lp-features">
+        <article><span class="kpi-icon"><i data-lucide="layers"></i></span><h3>Multi-platform management</h3><p>Meta, Google, TikTok and ChatGPT Ads side by side, each keeping its own campaign structure.</p></article>
+        <article><span class="kpi-icon"><i data-lucide="layout-dashboard"></i></span><h3>Unified dashboard</h3><p>Spend, leads, cost per lead and ROAS across every client, compared with the previous period.</p></article>
+        <article><span class="kpi-icon"><i data-lucide="megaphone"></i></span><h3>Campaign control</h3><p>Pause and resume campaigns where the platform allows, with every change in the audit log.</p></article>
+        <article><span class="kpi-icon"><i data-lucide="chart-column"></i></span><h3>Reports and insights</h3><p>Cross-channel reports with clear metric definitions, ready to export for clients.</p></article>
+        <article><span class="kpi-icon"><i data-lucide="indian-rupee"></i></span><h3>Budget and wallet</h3><p>Client ledgers, monthly budget pacing and GST invoices, kept separate from platform spend.</p></article>
+        <article><span class="kpi-icon"><i data-lucide="users"></i></span><h3>Team and client access</h3><p>Give each person the right role and only the clients they work on.</p></article>
+        <article class="is-soon"><span class="kpi-icon"><i data-lucide="image"></i></span><h3>Creative hub <span class="chip">Coming soon</span></h3><p>One library for images, videos and copy, with client approvals.</p></article>
+        <article class="is-soon"><span class="kpi-icon"><i data-lucide="inbox"></i></span><h3>Lead inbox <span class="chip">Coming soon</span></h3><p>Leads from every platform in one pipeline, from new to won.</p></article>
+        <article class="is-soon"><span class="kpi-icon"><i data-lucide="sparkles"></i></span><h3>AI Copilot <span class="chip">Coming soon</span></h3><p>Ask questions about your campaigns in plain English and get suggested next steps.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="lp-section lp-tint" id="how">
+    <div class="lp-container">
+      <div class="lp-section-head">
+        <span class="lp-eyebrow">How it works</span>
+        <h2>From scattered ad managers to one clear view</h2>
+      </div>
+      <ol class="lp-steps">
+        <li><span class="lp-step-num">1</span><h3>Connect your ad accounts</h3><p>Sign in to each platform once. Access tokens are encrypted and never shown in the browser.</p></li>
+        <li><span class="lp-step-num">2</span><h3>Organise by client</h3><p>Assign each ad account to a client. Results sync automatically, with the last sync time always visible.</p></li>
+        <li><span class="lp-step-num">3</span><h3>Track and act</h3><p>Compare platforms, spot underperforming campaigns and make changes, with a full record of who did what.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Platforms -->
+  <section class="lp-section" id="platforms">
+    <div class="lp-container lp-split">
+      <div>
+        <span class="lp-eyebrow">Integrations</span>
+        <h2>Built around the platforms your clients use</h2>
+        <p>Camply shows what each platform can and can't do through its API, so your team never wonders why a button is missing. Accounts that can't connect yet can still be reported manually.</p>
+        <a class="btn lp-btn-lg" href="{% url 'account_signup' %}">Start with your accounts <i data-lucide="arrow-right"></i></a>
+      </div>
+      <div class="lp-platform-grid">
+        <div class="card card-pad">{% include "partials/platform.html" with code="meta" label="Meta Ads" %}<p>Facebook and Instagram campaigns, ad sets, ads and results.</p></div>
+        <div class="card card-pad">{% include "partials/platform.html" with code="google" label="Google Ads" %}<p>Search, Performance Max and YouTube campaigns.</p></div>
+        <div class="card card-pad">{% include "partials/platform.html" with code="tiktok" label="TikTok Ads" %}<p>Advertiser accounts, ad groups and creative results.</p></div>
+        <div class="card card-pad">{% include "partials/platform.html" with code="openai" label="ChatGPT Ads" %}<p>Campaigns on OpenAI Ads, where API access is available.</p></div>
+      </div>
+    </div>
+  </section>
+
+  {% include "partials/landing_india.html" %}
+
+  <!-- Security -->
+  <section class="lp-section">
+    <div class="lp-container">
+      <div class="lp-section-head">
+        <span class="lp-eyebrow">Security</span>
+        <h2>Each client's data stays with that client</h2>
+      </div>
+      <div class="lp-features lp-features-4">
+        <article><span class="kpi-icon"><i data-lucide="lock"></i></span><h3>Separate workspaces</h3><p>People only see the clients they are assigned to.</p></article>
+        <article><span class="kpi-icon"><i data-lucide="user-cog"></i></span><h3>Role-based access</h3><p>Owner, admin, campaign manager, analyst, finance, client and viewer.</p></article>
+        <article><span class="kpi-icon"><i data-lucide="shield-check"></i></span><h3>Two-step verification</h3><p>Authenticator app sign-in and recovery codes.</p></article>
+        <article><span class="kpi-icon"><i data-lucide="history"></i></span><h3>Full audit log</h3><p>Every change records who made it, when, and the result.</p></article>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+{% include "partials/landing_footer.html" %}
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'js/landing.js' %}" defer></script>
+<script>
+  (function () {
+    var nav = document.querySelector("[data-lp-nav]");
+    var button = document.querySelector("[data-lp-menu]");
+    button.addEventListener("click", function () {
+      var open = nav.classList.toggle("is-open");
+      button.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    nav.querySelectorAll(".lp-mobile a").forEach(function (link) {
+      link.addEventListener("click", function () { nav.classList.remove("is-open"); });
+    });
+    window.addEventListener("scroll", function () {
+      nav.classList.toggle("is-scrolled", window.scrollY > 8);
+    }, { passive: true });
+  })();
+</script>
+{% endblock %}

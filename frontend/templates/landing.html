@@ -1,141 +1,354 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}Every campaign. One platform.{% endblock %}
-{% block head %}<link rel="stylesheet" href="{% static 'css/landing.css' %}"><link rel="stylesheet" href="{% static 'css/story.css' %}"><link rel="stylesheet" href="{% static 'css/hub.css' %}"><link rel="stylesheet" href="{% static 'css/flip.css' %}"><link rel="stylesheet" href="{% static 'css/india.css' %}"><link rel="stylesheet" href="{% static 'css/footer.css' %}">{% endblock %}
+{% block head %}
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/hud.css' %}">
+{% endblock %}
 {% block body %}
-<header class="lp-nav" id="top" data-lp-nav>
-  <div class="lp-container lp-nav-inner">
-    <a class="lp-logo" href="/">{% include "partials/logo.html" %}Camply</a>
-    <nav class="lp-links" aria-label="Main">
-      <a href="#change">Why Camply</a>
-      <a href="#features">Features</a>
-      <a href="#how">How it works</a>
-      <a href="#platforms">Integrations</a>
-      <a href="#india">For agencies</a>
-    </nav>
-    <div class="lp-actions">
-      <button class="btn btn-ghost icon-btn" type="button" data-theme-toggle aria-label="Switch light or dark mode"><i data-lucide="sun-moon"></i></button>
-      <a class="btn lp-hide-sm" href="{% url 'account_login' %}">Log in</a>
-      <a class="btn btn-primary" href="{% url 'account_signup' %}">Get started</a>
-      <button class="btn btn-ghost icon-btn lp-menu-btn" type="button" data-lp-menu aria-label="Open menu" aria-expanded="false"><i data-lucide="menu"></i></button>
-    </div>
+{% comment %}
+Dark "HUD" home page: futuristic, sci-fi interface look in the Camply palette
+(midnight + orange, amber and teal accents). The previous design is kept in
+landing_classic.html. Behaviour lives in static/js/hud.js.
+{% endcomment %}
+<div class="hud" id="top">
+
+<header class="hud-nav" data-hud-nav>
+  <a class="hud-logo" href="/" aria-label="Camply home">
+    {% include "partials/logo.html" %}
+    <span class="hud-logo-word">CAMPLY</span><span class="hud-logo-tag">ADS</span>
+  </a>
+  <nav class="hud-links" aria-label="Main">
+    <a href="#change">Why Camply</a><span class="hud-rule" aria-hidden="true"></span>
+    <a href="#features">Features</a><span class="hud-rule" aria-hidden="true"></span>
+    <a href="#how">How it works</a><span class="hud-rule" aria-hidden="true"></span>
+    <a href="#platforms">Integrations</a><span class="hud-rule" aria-hidden="true"></span>
+    <a href="#india">For agencies</a>
+  </nav>
+  <div class="hud-actions">
+    <a class="hud-login" href="{% url 'account_login' %}">Log in</a>
+    <button class="hud-menu" type="button" data-hud-menu aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span><span></span>
+    </button>
   </div>
-  <nav class="lp-mobile" aria-label="Mobile">
+  <nav class="hud-mobile" aria-label="Mobile">
     <a href="#change">Why Camply</a>
     <a href="#features">Features</a>
     <a href="#how">How it works</a>
     <a href="#platforms">Integrations</a>
     <a href="#india">For agencies</a>
     <a href="{% url 'account_login' %}">Log in</a>
+    <a class="is-cta" href="{% url 'account_signup' %}">Get started free</a>
   </nav>
 </header>
 
 <main>
-  {% include "partials/landing_story.html" %}
 
-  <!-- Proof strip -->
-  <section class="lp-strip" aria-label="At a glance">
-    <div class="lp-container lp-strip-grid">
-      <div><strong>4</strong><span>ad platforms in one view</span></div>
+  <!-- ============ HERO ============ -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="hero-grid-bg" aria-hidden="true"></div>
+
+    <!-- Thin HUD frame lines and node points, like a heads-up display -->
+    <svg class="hero-lines" viewBox="0 0 1440 900" preserveAspectRatio="none" aria-hidden="true">
+      <polyline points="250,250 470,120 970,120 1190,250" />
+      <polyline points="250,250 180,470 300,700" />
+      <polyline points="1190,250 1260,470 1140,700" />
+      <line x1="40" y1="450" x2="180" y2="470" />
+      <line x1="1260" y1="470" x2="1400" y2="450" />
+      <g class="hero-nodes">
+        <circle cx="250" cy="250" r="3"/><circle cx="1190" cy="250" r="3"/>
+        <circle cx="180" cy="470" r="3"/><circle cx="1260" cy="470" r="3"/>
+        <circle cx="470" cy="120" r="2"/><circle cx="970" cy="120" r="2"/>
+      </g>
+    </svg>
+
+    <!-- Edge details -->
+    <div class="hud-dots hud-dots-l" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="hud-dots hud-dots-r" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <span class="hud-tick hud-tick-l" aria-hidden="true">N 08.52° · E 76.93°</span>
+    <span class="hud-tick hud-tick-r" aria-hidden="true">SYS · ONLINE</span>
+    <div class="hud-scroll" aria-hidden="true"><span data-hud-progress></span></div>
+
+    <!-- Centrepiece: a 3D, glowing Camply emblem with platforms in orbit -->
+    <div class="core" data-core aria-hidden="true">
+      <svg class="core-rings" viewBox="0 0 600 600">
+        <circle class="ring ring-a" cx="300" cy="300" r="286"/>
+        <circle class="ring ring-b" cx="300" cy="300" r="250"/>
+        <circle class="ring ring-c" cx="300" cy="300" r="214"/>
+        <circle class="ring ring-d" cx="300" cy="300" r="168"/>
+      </svg>
+      <div class="core-stage">
+        <div class="core-emblem">
+          {% for i in "0123456789abcdef" %}
+          <svg class="core-layer" style="--i:{{ forloop.counter0 }}" viewBox="0 0 32 32"><path d="M22.5 11.2a8 8 0 1 0 0 9.6" fill="none" stroke-width="3.6" stroke-linecap="round"/><circle cx="23" cy="16" r="2"/></svg>
+          {% endfor %}
+          <svg class="core-layer core-front" viewBox="0 0 32 32">
+            <defs>
+              <linearGradient id="coreFace" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#FFE3D3"/><stop offset=".35" stop-color="#FF9F43"/><stop offset="1" stop-color="#FF6B35"/>
+              </linearGradient>
+            </defs>
+            <path d="M22.5 11.2a8 8 0 1 0 0 9.6" fill="none" stroke="url(#coreFace)" stroke-width="3.6" stroke-linecap="round"/>
+            <circle cx="23" cy="16" r="2" fill="#FFF1E8"/>
+          </svg>
+        </div>
+        <div class="core-orbit">
+          <span class="core-sat" style="--a:0deg"><b class="platform-meta">M</b></span>
+          <span class="core-sat" style="--a:90deg"><b class="platform-google">G</b></span>
+          <span class="core-sat" style="--a:180deg"><b class="platform-tiktok">T</b></span>
+          <span class="core-sat" style="--a:270deg"><b class="platform-openai">AI</b></span>
+        </div>
+      </div>
+      <!-- Live readouts with leader lines -->
+      <div class="readout readout-a"><small>Spend</small><strong>₹4,87,320</strong></div>
+      <div class="readout readout-b"><small>Leads</small><strong>2,846</strong></div>
+      <div class="readout readout-c"><small>CPL</small><strong>₹171</strong><em>▼ 27.6%</em></div>
+    </div>
+
+    <div class="hero-copy">
+      <span class="hud-kicker"><span class="hud-live"></span>Ad management for agencies · India</span>
+      <h1 class="hero-title" id="hero-title">Every campaign.<br><span>One platform.</span></h1>
+      <p class="hero-lede">Camply brings Meta, Google, TikTok and ChatGPT Ads for every client into one dashboard, with live results, budgets, GST invoices, approvals and leads.</p>
+    </div>
+
+    <div class="hero-cta">
+      <a class="hud-btn hud-btn-primary" href="{% url 'account_signup' %}">Get started free <i data-lucide="arrow-up-right"></i></a>
+      <a class="hud-btn hud-btn-ghost" href="#change">See what changes</a>
+    </div>
+  </section>
+
+  <!-- ============ STATS STRIP ============ -->
+  <section class="strip" aria-label="At a glance">
+    <div class="hud-container strip-grid">
+      <div><strong>04</strong><span>Ad platforms in one view</span></div>
       <div><strong>₹</strong><span>INR with Indian number format</span></div>
       <div><strong>18%</strong><span>GST invoices, CGST/SGST or IGST</span></div>
-      <div><strong>7</strong><span>roles, from owner to client</span></div>
+      <div><strong>07</strong><span>Roles, from owner to client</span></div>
     </div>
   </section>
 
-  <!-- Features -->
-  <section class="lp-section" id="features">
-    <div class="lp-container">
-      <div class="lp-section-head">
-        <span class="lp-eyebrow">Features</span>
-        <h2>Everything your agency needs to run paid ads</h2>
-        <p>Stop switching between ad managers and spreadsheets. Camply puts every client, account and result in one workspace.</p>
-      </div>
-      <div class="lp-features">
-        <article><span class="kpi-icon"><i data-lucide="layers"></i></span><h3>Multi-platform management</h3><p>Meta, Google, TikTok and ChatGPT Ads side by side, each keeping its own campaign structure.</p></article>
-        <article><span class="kpi-icon"><i data-lucide="layout-dashboard"></i></span><h3>Unified dashboard</h3><p>Spend, leads, cost per lead and ROAS across every client, compared with the previous period.</p></article>
-        <article><span class="kpi-icon"><i data-lucide="megaphone"></i></span><h3>Campaign control</h3><p>Pause and resume campaigns where the platform allows, with every change in the audit log.</p></article>
-        <article><span class="kpi-icon"><i data-lucide="chart-column"></i></span><h3>Reports and insights</h3><p>Cross-channel reports with clear metric definitions, ready to export for clients.</p></article>
-        <article><span class="kpi-icon"><i data-lucide="indian-rupee"></i></span><h3>Budget and wallet</h3><p>Client ledgers, monthly budget pacing and GST invoices, kept separate from platform spend.</p></article>
-        <article><span class="kpi-icon"><i data-lucide="users"></i></span><h3>Team and client access</h3><p>Give each person the right role and only the clients they work on.</p></article>
-        <article class="is-soon"><span class="kpi-icon"><i data-lucide="image"></i></span><h3>Creative hub <span class="chip">Coming soon</span></h3><p>One library for images, videos and copy, with client approvals.</p></article>
-        <article class="is-soon"><span class="kpi-icon"><i data-lucide="inbox"></i></span><h3>Lead inbox <span class="chip">Coming soon</span></h3><p>Leads from every platform in one pipeline, from new to won.</p></article>
-        <article class="is-soon"><span class="kpi-icon"><i data-lucide="sparkles"></i></span><h3>AI Copilot <span class="chip">Coming soon</span></h3><p>Ask questions about your campaigns in plain English and get suggested next steps.</p></article>
-      </div>
-    </div>
-  </section>
-
-  <!-- How it works -->
-  <section class="lp-section lp-tint" id="how">
-    <div class="lp-container">
-      <div class="lp-section-head">
-        <span class="lp-eyebrow">How it works</span>
-        <h2>From scattered ad managers to one clear view</h2>
-      </div>
-      <ol class="lp-steps">
-        <li><span class="lp-step-num">1</span><h3>Connect your ad accounts</h3><p>Sign in to each platform once. Access tokens are encrypted and never shown in the browser.</p></li>
-        <li><span class="lp-step-num">2</span><h3>Organise by client</h3><p>Assign each ad account to a client. Results sync automatically, with the last sync time always visible.</p></li>
-        <li><span class="lp-step-num">3</span><h3>Track and act</h3><p>Compare platforms, spot underperforming campaigns and make changes, with a full record of who did what.</p></li>
+  <!-- ============ BEFORE / AFTER ============ -->
+  <section class="hud-section" id="change">
+    <div class="hud-container">
+      <header class="sec-head">
+        <span class="sec-index">01 <i></i> From chaos to clarity</span>
+        <h2>It's time to <span class="hl">change.</span></h2>
+        <p>Five ad managers, twelve spreadsheets and zero clear answers. Here is what your team does today, and how it works in Camply.</p>
+      </header>
+      <ol class="change-list">
+        {% for before, after, icon in change_rows %}
+        <li class="change-row hud-card" data-reveal>
+          <span class="change-num">0{{ forloop.counter }}</span>
+          <p class="change-before"><span class="tag">Before</span><s>{{ before }}</s></p>
+          <span class="change-arrow" aria-hidden="true"><i data-lucide="chevrons-right"></i></span>
+          <p class="change-after"><span class="tag is-on"><i data-lucide="{{ icon }}"></i>With Camply</span>{{ after }}</p>
+        </li>
+        {% endfor %}
       </ol>
     </div>
   </section>
 
-  <!-- Platforms -->
-  <section class="lp-section" id="platforms">
-    <div class="lp-container lp-split">
-      <div>
-        <span class="lp-eyebrow">Integrations</span>
-        <h2>Built around the platforms your clients use</h2>
-        <p>Camply shows what each platform can and can't do through its API, so your team never wonders why a button is missing. Accounts that can't connect yet can still be reported manually.</p>
-        <a class="btn lp-btn-lg" href="{% url 'account_signup' %}">Start with your accounts <i data-lucide="arrow-right"></i></a>
-      </div>
-      <div class="lp-platform-grid">
-        <div class="card card-pad">{% include "partials/platform.html" with code="meta" label="Meta Ads" %}<p>Facebook and Instagram campaigns, ad sets, ads and results.</p></div>
-        <div class="card card-pad">{% include "partials/platform.html" with code="google" label="Google Ads" %}<p>Search, Performance Max and YouTube campaigns.</p></div>
-        <div class="card card-pad">{% include "partials/platform.html" with code="tiktok" label="TikTok Ads" %}<p>Advertiser accounts, ad groups and creative results.</p></div>
-        <div class="card card-pad">{% include "partials/platform.html" with code="openai" label="ChatGPT Ads" %}<p>Campaigns on OpenAI Ads, where API access is available.</p></div>
+  <!-- ============ FEATURES ============ -->
+  <section class="hud-section" id="features">
+    <div class="hud-container">
+      <header class="sec-head">
+        <span class="sec-index">02 <i></i> Features</span>
+        <h2>Everything your agency needs to run <span class="hl">paid ads</span></h2>
+        <p>Stop switching between ad managers and spreadsheets. Camply puts every client, account and result in one workspace.</p>
+      </header>
+      <div class="feature-grid">
+        <article class="hud-card" data-reveal><span class="f-icon"><i data-lucide="layers"></i></span><h3>Multi-platform management</h3><p>Meta, Google, TikTok and ChatGPT Ads side by side, each keeping its own campaign structure.</p></article>
+        <article class="hud-card" data-reveal><span class="f-icon"><i data-lucide="layout-dashboard"></i></span><h3>Unified dashboard</h3><p>Spend, leads, cost per lead and ROAS across every client, compared with the previous period.</p></article>
+        <article class="hud-card" data-reveal><span class="f-icon"><i data-lucide="megaphone"></i></span><h3>Campaign control</h3><p>Pause and resume campaigns where the platform allows, with every change in the audit log.</p></article>
+        <article class="hud-card" data-reveal><span class="f-icon"><i data-lucide="chart-column"></i></span><h3>Reports and insights</h3><p>Cross-channel reports with clear metric definitions, ready to export for clients.</p></article>
+        <article class="hud-card" data-reveal><span class="f-icon"><i data-lucide="indian-rupee"></i></span><h3>Budget and wallet</h3><p>Client ledgers, monthly budget pacing and GST invoices, kept separate from platform spend.</p></article>
+        <article class="hud-card" data-reveal><span class="f-icon"><i data-lucide="users"></i></span><h3>Team and client access</h3><p>Give each person the right role and only the clients they work on.</p></article>
+        <article class="hud-card is-soon" data-reveal><span class="f-icon"><i data-lucide="image"></i></span><h3>Creative hub <span class="soon">Coming soon</span></h3><p>One library for images, videos and copy, with client approvals.</p></article>
+        <article class="hud-card is-soon" data-reveal><span class="f-icon"><i data-lucide="inbox"></i></span><h3>Lead inbox <span class="soon">Coming soon</span></h3><p>Leads from every platform in one pipeline, from new to won.</p></article>
+        <article class="hud-card is-soon" data-reveal><span class="f-icon"><i data-lucide="sparkles"></i></span><h3>AI Copilot <span class="soon">Coming soon</span></h3><p>Ask questions about your campaigns in plain English and get suggested next steps.</p></article>
       </div>
     </div>
   </section>
 
-  {% include "partials/landing_india.html" %}
+  <!-- ============ HOW IT WORKS ============ -->
+  <section class="hud-section hud-section-alt" id="how">
+    <div class="hud-container">
+      <header class="sec-head">
+        <span class="sec-index">03 <i></i> How it works</span>
+        <h2>From scattered ad managers to <span class="hl">one clear view</span></h2>
+      </header>
+      <ol class="steps">
+        <li data-reveal><span class="step-num">01</span><h3>Connect your ad accounts</h3><p>Sign in to each platform once. Access tokens are encrypted and never shown in the browser.</p></li>
+        <li data-reveal><span class="step-num">02</span><h3>Organise by client</h3><p>Assign each ad account to a client. Results sync automatically, with the last sync time always visible.</p></li>
+        <li data-reveal><span class="step-num">03</span><h3>Track and act</h3><p>Compare platforms, spot underperforming campaigns and make changes, with a full record of who did what.</p></li>
+      </ol>
+    </div>
+  </section>
 
-  <!-- Security -->
-  <section class="lp-section">
-    <div class="lp-container">
-      <div class="lp-section-head">
-        <span class="lp-eyebrow">Security</span>
-        <h2>Each client's data stays with that client</h2>
+  <!-- ============ PLATFORMS ============ -->
+  <section class="hud-section" id="platforms">
+    <div class="hud-container split">
+      <header class="sec-head sec-head-left">
+        <span class="sec-index">04 <i></i> Integrations</span>
+        <h2>Built around the platforms <span class="hl">your clients use</span></h2>
+        <p>Camply shows what each platform can and can't do through its API, so your team never wonders why a button is missing. Accounts that can't connect yet can still be reported manually.</p>
+        <a class="hud-btn hud-btn-ghost" href="{% url 'account_signup' %}">Start with your accounts <i data-lucide="arrow-right"></i></a>
+      </header>
+      <div class="platform-grid">
+        <div class="hud-card platform-card" data-reveal>{% include "partials/platform.html" with code="meta" label="Meta Ads" %}<p>Facebook and Instagram campaigns, ad sets, ads and results.</p><span class="status">Connected</span></div>
+        <div class="hud-card platform-card" data-reveal>{% include "partials/platform.html" with code="google" label="Google Ads" %}<p>Search, Performance Max and YouTube campaigns.</p><span class="status">Connected</span></div>
+        <div class="hud-card platform-card" data-reveal>{% include "partials/platform.html" with code="tiktok" label="TikTok Ads" %}<p>Advertiser accounts, ad groups and creative results.</p><span class="status">Connected</span></div>
+        <div class="hud-card platform-card" data-reveal>{% include "partials/platform.html" with code="openai" label="ChatGPT Ads" %}<p>Campaigns on OpenAI Ads, where API access is available.</p><span class="status is-limited">Where available</span></div>
       </div>
-      <div class="lp-features lp-features-4">
-        <article><span class="kpi-icon"><i data-lucide="lock"></i></span><h3>Separate workspaces</h3><p>People only see the clients they are assigned to.</p></article>
-        <article><span class="kpi-icon"><i data-lucide="user-cog"></i></span><h3>Role-based access</h3><p>Owner, admin, campaign manager, analyst, finance, client and viewer.</p></article>
-        <article><span class="kpi-icon"><i data-lucide="shield-check"></i></span><h3>Two-step verification</h3><p>Authenticator app sign-in and recovery codes.</p></article>
-        <article><span class="kpi-icon"><i data-lucide="history"></i></span><h3>Full audit log</h3><p>Every change records who made it, when, and the result.</p></article>
+    </div>
+  </section>
+
+  <!-- ============ INDIA / GST ============ -->
+  <section class="hud-section hud-section-alt" id="india">
+    <div class="hud-container">
+      <header class="sec-head">
+        <span class="sec-index">05 <i></i> Made for Indian agencies</span>
+        <h2>Built for how <span class="hl">India bills</span></h2>
+        <p>Rupees with lakh grouping, GST that knows your client's state, and reports in IST. No spreadsheet formulas to fix.</p>
+      </header>
+
+      <div class="india-grid">
+        <div class="gst" data-gst-demo>
+          <div class="gst-switch" role="radiogroup" aria-label="Where is the client registered?">
+            <span>Client in</span>
+            <button type="button" role="radio" aria-checked="true" class="is-on" data-state="Kerala">Kerala</button>
+            <button type="button" role="radio" aria-checked="false" data-state="Tamil Nadu">Tamil Nadu</button>
+          </div>
+          <article class="invoice hud-card" aria-live="polite" data-tilt>
+            <header class="inv-head">
+              <div>
+                <span class="inv-brand">{% include "partials/logo.html" %}PRception Media</span>
+                <span class="inv-meta">GSTIN 32ABCDE1234F1Z5 · Thiruvananthapuram</span>
+              </div>
+              <div class="inv-title"><strong>TAX INVOICE</strong><span>CMP/2627/0001</span></div>
+            </header>
+            <div class="inv-to">
+              <div><small>Billed to</small><strong data-gst-client>Kovalam Bay Resorts</strong></div>
+              <div><small>Place of supply</small><strong data-gst-place>Kerala</strong></div>
+              <span class="inv-kind" data-gst-kind>Intra-state</span>
+            </div>
+            <dl class="inv-lines">
+              <dt>Ad management fee · SAC 998361</dt><dd>₹25,000.00</dd>
+              <dt data-tax="intra">CGST @ 9%</dt><dd data-tax="intra">₹2,250.00</dd>
+              <dt data-tax="intra">SGST @ 9%</dt><dd data-tax="intra">₹2,250.00</dd>
+              <dt data-tax="inter" hidden>IGST @ 18%</dt><dd data-tax="inter" hidden>₹4,500.00</dd>
+            </dl>
+            <div class="inv-total"><span>Total</span><strong>₹29,500.00</strong></div>
+            <span class="inv-stamp">PAID</span>
+          </article>
+          <p class="gst-caption">Switch the client's state. Camply picks <strong data-gst-rule>CGST + SGST</strong> automatically.</p>
+        </div>
+
+        <div class="bento">
+          <div class="hud-card bento-tile" data-reveal>
+            <span class="b-kicker">Indian number format</span>
+            <strong class="b-big">₹4,87,320</strong>
+            <span class="b-not">not <s>₹487,320</s></span>
+            <p>Lakhs and crores everywhere: dashboards, reports, invoices and exports.</p>
+          </div>
+          <div class="hud-card bento-tile" data-reveal>
+            <span class="b-kicker">GST, done right</span>
+            <strong class="b-big">18%</strong>
+            <div class="b-split"><span>CGST 9%</span><span>+</span><span>SGST 9%</span><span class="or">or</span><span>IGST 18%</span></div>
+            <p>Picked from the client's state, with SAC codes and invoice numbers per financial year.</p>
+          </div>
+          <div class="hud-card bento-tile" data-reveal>
+            <span class="b-kicker">Asia/Kolkata</span>
+            <strong class="b-big b-time" data-ist-clock>11:42 <small>PM</small></strong>
+            <span class="b-sync"><span class="hud-live"></span>Last sync 4 min ago</span>
+            <p>Every report and alert runs on Indian Standard Time.</p>
+          </div>
+          <div class="hud-card bento-tile" data-reveal>
+            <span class="b-kicker">Client wallet</span>
+            <div class="wallet-bar" role="img" aria-label="Wallet split: ad spend 62%, agency fee 21%, GST 4%, balance 13%">
+              <span style="--w:62%;--c:#FFF1E8"></span><span style="--w:21%;--c:#FF6B35"></span><span style="--w:4%;--c:#FF9F43"></span><span style="--w:13%;--c:#22B8A5"></span>
+            </div>
+            <ul class="wallet-legend">
+              <li><i style="--c:#FFF1E8"></i>Ad spend</li><li><i style="--c:#FF6B35"></i>Agency fee</li><li><i style="--c:#FF9F43"></i>GST</li><li><i style="--c:#22B8A5"></i>Balance</li>
+            </ul>
+            <p>Ad spend, fees and GST kept apart, so every rupee is accounted for.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SECURITY ============ -->
+  <section class="hud-section" id="security">
+    <div class="hud-container">
+      <header class="sec-head">
+        <span class="sec-index">06 <i></i> Security</span>
+        <h2>Each client's data stays <span class="hl">with that client</span></h2>
+      </header>
+      <div class="feature-grid feature-grid-4">
+        <article class="hud-card" data-reveal><span class="f-icon"><i data-lucide="lock"></i></span><h3>Separate workspaces</h3><p>People only see the clients they are assigned to.</p></article>
+        <article class="hud-card" data-reveal><span class="f-icon"><i data-lucide="user-cog"></i></span><h3>Role-based access</h3><p>Owner, admin, campaign manager, analyst, finance, client and viewer.</p></article>
+        <article class="hud-card" data-reveal><span class="f-icon"><i data-lucide="shield-check"></i></span><h3>Two-step verification</h3><p>Authenticator app sign-in and recovery codes.</p></article>
+        <article class="hud-card" data-reveal><span class="f-icon"><i data-lucide="history"></i></span><h3>Full audit log</h3><p>Every change records who made it, when, and the result.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FINAL CTA ============ -->
+  <section class="finale" aria-labelledby="finale-title">
+    <div class="hud-container">
+      <div class="finale-panel">
+        <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+        <span class="sec-index">Your agency, organised</span>
+        <h2 id="finale-title">Bring every campaign into <span class="hl">one place</span></h2>
+        <p>Set up your agency workspace in a couple of minutes, add your clients, and see every platform side by side.</p>
+        <div class="finale-cta">
+          <a class="hud-btn hud-btn-primary" href="{% url 'account_signup' %}">Get started free <i data-lucide="arrow-up-right"></i></a>
+          <a class="hud-btn hud-btn-ghost" href="{% url 'account_login' %}">Log in</a>
+        </div>
+        <ul class="finale-points">
+          <li><i data-lucide="zap"></i>Set up in minutes</li>
+          <li><i data-lucide="indian-rupee"></i>INR, GST and IST ready</li>
+          <li><i data-lucide="layers"></i>Meta, Google, TikTok &amp; ChatGPT Ads</li>
+        </ul>
       </div>
     </div>
   </section>
 
 </main>
 
-{% include "partials/landing_footer.html" %}
+<footer class="hud-footer">
+  <div class="hud-container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="hud-logo" href="/">{% include "partials/logo.html" %}<span class="hud-logo-word">CAMPLY</span></a>
+        <p>Every campaign. One platform. The ad management workspace for agencies: Meta, Google, TikTok and ChatGPT Ads, budgets, GST invoices, approvals and leads, together.</p>
+      </div>
+      <nav aria-label="Product">
+        <h3>Product</h3>
+        <a href="#change">Why Camply</a><a href="#features">Features</a><a href="#how">How it works</a><a href="#india">Built for India</a>
+      </nav>
+      <nav aria-label="Platforms">
+        <h3>Platforms</h3>
+        <a href="#platforms">Meta Ads</a><a href="#platforms">Google Ads</a><a href="#platforms">TikTok Ads</a><a href="#platforms">ChatGPT Ads</a>
+      </nav>
+      <nav aria-label="Account">
+        <h3>Account</h3>
+        <a href="{% url 'account_login' %}">Log in</a><a href="{% url 'account_signup' %}">Create an account</a><a href="{% url 'account_reset_password' %}">Forgot password</a>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <p>© {% now "Y" %} Camply · Made in Kerala, India</p>
+      <p class="footer-locale"><span>INR</span><span>GST</span><span>IST</span></p>
+      <a class="footer-top" href="#top"><i data-lucide="arrow-up"></i>Back to top</a>
+    </div>
+  </div>
+  <div class="footer-wordmark" aria-hidden="true">CAMPLY</div>
+</footer>
+
+</div>
 {% endblock %}
 {% block scripts %}
-<script src="{% static 'js/landing.js' %}" defer></script>
-<script>
-  (function () {
-    var nav = document.querySelector("[data-lp-nav]");
-    var button = document.querySelector("[data-lp-menu]");
-    button.addEventListener("click", function () {
-      var open = nav.classList.toggle("is-open");
-      button.setAttribute("aria-expanded", open ? "true" : "false");
-    });
-    nav.querySelectorAll(".lp-mobile a").forEach(function (link) {
-      link.addEventListener("click", function () { nav.classList.remove("is-open"); });
-    });
-    window.addEventListener("scroll", function () {
-      nav.classList.toggle("is-scrolled", window.scrollY > 8);
-    }, { passive: true });
-  })();
-</script>
+<script src="{% static 'js/hud.js' %}" defer></script>
 {% endblock %}
